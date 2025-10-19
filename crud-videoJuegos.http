@@ -1,0 +1,58 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+
+### getVideoJuegosAll
+GET http://localhost:3000/api/v1/videoJuegos
+
+### getvideoJuegosAll por nombre
+GET http://localhost:3000/api/v1/videoJuegos?nombre=gta
+
+### getAll por plataforma
+GET http://localhost:3000/api/v1/videoJuegos?plataforma=PS5
+
+### get all by genero
+GET http://localhost:3000/api/v1/videoJuegos?genero=shooter
+
+### get all by nombre y genero
+GET http://localhost:3000/api/v1/videoJuegos?nombre=counter&genero=shooter
+
+### get all by nombre y plataforma
+GET http://localhost:3000/api/v1/videoJuegos?nombre=fc&plataforma=PS5
+
+### get all by genero  y plataforma
+GET http://localhost:3000/api/v1/videoJuegos?genero=shooter&plataforma=PC
+
+### get por id
+GET http://localhost:3000/api/v1/videoJuegos/5
+
+### post creando un nuevo videojuego
+POST http://localhost:3000/api/v1/videoJuegos
+content-type: application/json
+
+{
+  "nombre": "Horizon Forbidden West",
+  "precio": 69.99,
+  "fecha_lanzamiento": "2022-02-18",
+  "genero": "Aventura",
+  "plataforma": "PS5",
+  "edad": 18
+}
+
+### actualizando con put
+PUT http://localhost:3000/api/v1/videoJuegos/7
+content-type: application/json
+
+{
+  "nombre": "Star Wars BattleFront",
+  "precio": 79.99,
+  "fecha_lanzamiento": "2019-03-13",
+  "genero": "Rpg",
+  "plataforma": "NINTENDO",
+  "edad": 7
+}
+
+### borrando por id
+DELETE http://localhost:3000/api/v1/videoJuegos/8
