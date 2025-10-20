@@ -75,33 +75,20 @@ public class VideoJuegosServiceImpl implements VideoJuegoService{
 
     }
 
-    /*@Override
-    public List<VideoJuegos> findAllByPlataforma(VideoJuegos.Plataforma plataforma){
-        if(plataforma == null){
-            log.info("No se encontro la plataforma que buscas, devolviendo todos los videoJuegos");
-            return videoJuegosRepository.findAll();
-        }
-
-        log.info("Buscando videoJuegos por plataforma: " + plataforma);
-        return videoJuegosRepository.findAllByPlataforma(plataforma);
-    }*/
 
     @Override
     @Cacheable
-    public VideoJuegos findById(Long id){
+    public VideoJuegosResponseDto findById(Long id){
+        log.info("Buscando tarjeta por id {}", id);
+        return videoJuegosMapper.toVideoJuegosResponseDto(videoJuegosRepository.findById(id)
+                .orElseThrow(() -> new VideoJuegosNotFound(id)));
 
-        Optional<VideoJuegos> videoJuegosEncontrado = videoJuegosRepository.findById(id);
-        if(videoJuegosEncontrado.isPresent()){
-            return videoJuegosEncontrado.get();
-        }else {
-            throw new VideoJuegosNotFound(id);
-        }
     }
 
     @Override
     @CachePut
     public VideoJuegosResponseDto save(VideoJuegosCreateDto videoJuegosCreateDto) {
-        log.info("Guardando nuevo VideoJuego: " +  videoJuegosCreateDto);
+        log.info("Guardando nuevo VideoJuego: {}" ,  videoJuegosCreateDto);
 
         Long id = videoJuegosRepository.nextId();
 
@@ -112,24 +99,22 @@ public class VideoJuegosServiceImpl implements VideoJuegoService{
 
     @Override
     @CachePut
-    public VideoJuegos update(Long id, VideoJuegosUpdateDto videoJuegosUpdateDto) {
-        log.info("Actualizamos el VideoJuegos por id: " + id);
+    public VideoJuegosResponseDto update(Long id, VideoJuegosUpdateDto videoJuegosUpdateDto) {
+        log.info("Actualizamos el VideoJuegos por id: {} ", id);
 
-        var videoJuegoActual = this.findById(id);
+        var videoJuegoActual = videoJuegosRepository.findById(id).orElseThrow(() -> new VideoJuegosNotFound(id));
 
         VideoJuegos videoJuegoActualizado = videoJuegosMapper.toVideoJuegos(videoJuegosUpdateDto, videoJuegoActual);
 
-        return videoJuegosRepository.save(videoJuegoActualizado);
+        return videoJuegosMapper.toVideoJuegosResponseDto(videoJuegosRepository.save(videoJuegoActualizado));
     }
 
     @Override
     @CacheEvict
     public void deleteById(Long id) {
-        log.info("Eliminando el VideoJuego por id: " + id);
-        var videoJuegoEncontrado = this.findById(id);
+        log.info("Eliminando el VideoJuego por id: {}" ,id);
 
-        if(videoJuegoEncontrado != null){
-            videoJuegosRepository.deleteById(id);
-        }
+        videoJuegosRepository.findById(id).orElseThrow(() -> new VideoJuegosNotFound(id));
+        videoJuegosRepository.deleteById(id);
     }
 }

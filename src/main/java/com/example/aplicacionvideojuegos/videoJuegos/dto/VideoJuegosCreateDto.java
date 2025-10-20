@@ -15,16 +15,16 @@ public class VideoJuegosCreateDto {
     @Positive(message = "El precio no puede ser negativo")
     private final Double precio;
 
-    @PastOrPresent(message = "La fecha de lanzamiento no puede ser modificada")
+    @PastOrPresent(message = "La fecha de lanzamiento debe ser anterior a la fecha actual")
     private final LocalDate fecha_lanzamiento;
 
     @NotNull(message = "El genero no puede ser nulo")
     private final String genero;
 
-    @Pattern(regexp = "^(PS4|PS5|PC|XBOXONE|NINTENDO)$",message = "La plataforma no es válida. Debe ser uno de: PS4, PS5, PC, XBOXONE, NINTENDO")
+    @NotNull(message = "La plataforma no puede ser nula")
     private final VideoJuegos.Plataforma plataforma;
 
-    @Positive(message = "La edad no puede ser negativa.")
+    @PositiveOrZero(message = "La edad no puede ser negativa.")
     private final Integer edad;
 
 }

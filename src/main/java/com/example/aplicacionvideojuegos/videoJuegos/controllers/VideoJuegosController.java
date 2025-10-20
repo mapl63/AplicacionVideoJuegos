@@ -3,6 +3,7 @@ package com.example.aplicacionvideojuegos.videoJuegos.controllers;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosCreateDto;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosResponseDto;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosUpdateDto;
+import com.example.aplicacionvideojuegos.videoJuegos.exceptions.VideoJuegosBadRequest;
 import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
 import com.example.aplicacionvideojuegos.videoJuegos.services.VideoJuegoService;
 import jakarta.validation.Valid;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -39,28 +41,33 @@ public class VideoJuegosController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VideoJuegos> getVideoJuegoById(@PathVariable Long id){
+    public ResponseEntity<VideoJuegosResponseDto> getVideoJuegoById(@PathVariable Long id){
         log.info("Buscando videojuegos por id {}", id);
 
         return ResponseEntity.ok(videoJuegoService.findById(id));
     }
 
     @PostMapping()
-    public ResponseEntity<VideoJuegosResponseDto> create(@Valid @RequestBody VideoJuegosCreateDto videoJuegosCreateDto){
-        log.info("Creando videojuegos {}", videoJuegosCreateDto);
+    public ResponseEntity<VideoJuegosResponseDto> create(@Valid @RequestBody VideoJuegosCreateDto videoJuegosCreateDto, BindingResult result){
+        log.info("Creando un nuevo videojuegos {}", videoJuegosCreateDto);
+        if(result.hasErrors()){
+            log.info("Error al crear un videojuegos {}", result.getAllErrors());
+            throw new VideoJuegosBadRequest("Error al crear un videojuegos " + result.getAllErrors());
+        }
         var saved =  videoJuegoService.save(videoJuegosCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+
 
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VideoJuegos> update(@PathVariable Long id,@RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
+    public ResponseEntity<VideoJuegosResponseDto> update( @PathVariable Long id,@Valid @RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
         log.info("Actualizando videojuegos por id={} con videojuego={}",id, videoJuegosUpdateDto);
         return ResponseEntity.ok(videoJuegoService.update(id, videoJuegosUpdateDto));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<VideoJuegos> updatePartial(@PathVariable Long id, @RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
+    public ResponseEntity<VideoJuegosResponseDto> updatePartial(@PathVariable Long id,@Valid @RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
         log.info("Actualizando parcialmente un videojuego con id={} con videojuego={}" ,id, videoJuegosUpdateDto);
         return ResponseEntity.ok(videoJuegoService.update(id, videoJuegosUpdateDto));
     }

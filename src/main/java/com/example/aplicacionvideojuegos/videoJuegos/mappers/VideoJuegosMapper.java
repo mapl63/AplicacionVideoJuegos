@@ -4,8 +4,10 @@ import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosCreateDto;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosResponseDto;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosUpdateDto;
 import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class VideoJuegosMapper {
     public VideoJuegos toVideoJuegos(Long id, VideoJuegosCreateDto videojuegosCreateDto) {
@@ -33,6 +35,7 @@ public class VideoJuegosMapper {
     }
 
     public VideoJuegosResponseDto toVideoJuegosResponseDto(VideoJuegos videojuegos) {
+        log.info("Es");
         return new  VideoJuegosResponseDto(
                 videojuegos.getId(),
                 videojuegos.getNombre(),

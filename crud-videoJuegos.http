@@ -41,7 +41,9 @@ content-type: application/json
   "edad": 18
 }
 
-### actualizando con put
+
+
+### actualizando total con put
 PUT http://localhost:3000/api/v1/videoJuegos/7
 content-type: application/json
 
@@ -54,5 +56,59 @@ content-type: application/json
   "edad": 7
 }
 
+### Patch actualización parcial cambio el nombre y genero del id 1
+PATCH http://localhost:3000/api/v1/videoJuegos/1
+content-type: application/json
+
+{
+"nombre": "Grand The Auto 6",
+"precio": 79.99,
+"fecha_lanzamiento": "2019-03-13",
+"genero": "RACING",
+"plataforma": "NINTENDO",
+"edad": 18
+}
+
 ### borrando por id
 DELETE http://localhost:3000/api/v1/videoJuegos/8
+
+###
+
+### Post para las validaciones que salten
+POST http://localhost:3000/api/v1/videoJuegos
+content-type: application/json
+
+{
+  "nombre": "",
+  "precio": 0,
+  "fecha_lanzamiento": "2027-02-18",
+  "genero": null,
+  "plataforma": null,
+  "edad": -1
+}
+
+### Patch para que las validaciones que salten
+PATCH http://localhost:3000/api/v1/videoJuegos/1
+content-type: application/json
+
+{
+  "nombre": "",
+  "precio": 0,
+  "fecha_lanzamiento": "2027-02-18",
+  "genero": null,
+  "plataforma": null,
+  "edad": -1
+}
+
+### Patch para que las validaciones que salten
+PUT http://localhost:3000/api/v1/videoJuegos/1
+content-type: application/json
+
+{
+  "nombre": "",
+  "precio": 0,
+  "fecha_lanzamiento": "2027-02-18",
+  "genero": null,
+  "plataforma": null,
+  "edad": -1
+}

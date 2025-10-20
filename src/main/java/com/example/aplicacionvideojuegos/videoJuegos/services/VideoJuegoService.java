@@ -12,11 +12,11 @@ public interface VideoJuegoService {
 
     List<VideoJuegos> findAll(String nombre, String genero, VideoJuegos.Plataforma plataforma);
 
-    VideoJuegos findById(Long id);
+    VideoJuegosResponseDto findById(Long id);
 
     VideoJuegosResponseDto save(VideoJuegosCreateDto  videoJuegosCreateDto);
 
-    VideoJuegos update(Long id, VideoJuegosUpdateDto videoJuegosUpdateDto);
+    VideoJuegosResponseDto update(Long id, VideoJuegosUpdateDto videoJuegosUpdateDto);
 
     void deleteById(Long id);
 
