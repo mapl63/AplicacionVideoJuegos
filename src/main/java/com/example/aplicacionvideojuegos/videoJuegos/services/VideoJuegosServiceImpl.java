@@ -33,45 +33,45 @@ public class VideoJuegosServiceImpl implements VideoJuegoService{
     }
 
     @Override
-    public List<VideoJuegos> findAll(String nombre, String genero, VideoJuegos.Plataforma plataforma) {
+    public List<VideoJuegosResponseDto> findAll(String nombre, String genero, VideoJuegos.Plataforma plataforma) {
         //Mostrar todos los juegos
         if((nombre == null || nombre.isEmpty()) && (genero == null || genero.isEmpty()) && (plataforma == null)) {
             log.info("Buscamos todos los videojuegos");
-            return videoJuegosRepository.findAll();
+            return videoJuegosMapper.toVideoJuegosResponseDto(videoJuegosRepository.findAll());
         }
 
         //Mostrar juegos por nombre
         if ((nombre != null && !nombre.isEmpty()) && (genero == null || genero.isEmpty()) &&  (plataforma == null)) {
             log.info("Buscamos los videojuegos por nombre: " + nombre);
-            return videoJuegosRepository.findAllByNombre(nombre);
+            return videoJuegosMapper.toVideoJuegosResponseDto(videoJuegosRepository.findAllByNombre(nombre));
         }
 
         //Mostrar juegos por genero
         if((genero != null && !genero.isEmpty()) && (nombre == null || nombre.isEmpty()) && (plataforma == null)) {
             log.info("Buscamos todos los videojuegos por genero: " + genero);
-            return videoJuegosRepository.findAllByGenero(genero);
+            return videoJuegosMapper.toVideoJuegosResponseDto(videoJuegosRepository.findAllByGenero(genero));
         }
 
         //Mostrar por plataforma
         if((plataforma != null)&&(nombre == null || nombre.isEmpty()) && (genero == null || genero.isEmpty())) {
             log.info("Buscamos los videojuegos por plataforma: " + plataforma);
-            return videoJuegosRepository.findAllByPlataforma(plataforma);
+            return videoJuegosMapper.toVideoJuegosResponseDto(videoJuegosRepository.findAllByPlataforma(plataforma));
         }
 
         //Mostrar por nombre y plataforma
         if((nombre != null && !nombre.isEmpty()) && (plataforma != null) && (genero == null || genero.isEmpty())) {
             log.info("Buscamos los videojuegos por nombre: " + nombre +  " y por plataforma: " + plataforma);
-            return videoJuegosRepository.findByNombreAndPlataforma(nombre, plataforma);
+            return videoJuegosMapper.toVideoJuegosResponseDto(videoJuegosRepository.findByNombreAndPlataforma(nombre, plataforma));
         }
 
         //Mostrar por genero y plataforma
         if ((genero != null && !genero.isEmpty()) && (plataforma != null) && (nombre == null || nombre.isEmpty())) {
             log.info("Buscamos por genero" + genero + " y plataforma: " + plataforma);
-            return videoJuegosRepository.findByGeneroAndPlataforma(genero, plataforma);
+            return videoJuegosMapper.toVideoJuegosResponseDto(videoJuegosRepository.findByGeneroAndPlataforma(genero, plataforma));
         }
 
         log.info("Buscamos el videojuego por nombre: " + nombre + " por genero: " + genero);
-        return videoJuegosRepository.findByNombreAndGenero(nombre, genero);
+        return videoJuegosMapper.toVideoJuegosResponseDto(videoJuegosRepository.findByNombreAndGenero(nombre, genero));
 
     }
 
@@ -92,7 +92,7 @@ public class VideoJuegosServiceImpl implements VideoJuegoService{
 
         Long id = videoJuegosRepository.nextId();
 
-        VideoJuegos videojuegoNuevo = videoJuegosMapper.toVideoJuegos(id, videoJuegosCreateDto);
+        VideoJuegos videojuegoNuevo = videoJuegosMapper.toVideoJuegosCreated(id, videoJuegosCreateDto);
 
         return videoJuegosMapper.toVideoJuegosResponseDto(videoJuegosRepository.save(videojuegoNuevo));
     }
@@ -104,7 +104,7 @@ public class VideoJuegosServiceImpl implements VideoJuegoService{
 
         var videoJuegoActual = videoJuegosRepository.findById(id).orElseThrow(() -> new VideoJuegosNotFound(id));
 
-        VideoJuegos videoJuegoActualizado = videoJuegosMapper.toVideoJuegos(videoJuegosUpdateDto, videoJuegoActual);
+        VideoJuegos videoJuegoActualizado = videoJuegosMapper.toVideoJuegosUpdate(videoJuegosUpdateDto, videoJuegoActual);
 
         return videoJuegosMapper.toVideoJuegosResponseDto(videoJuegosRepository.save(videoJuegoActualizado));
     }

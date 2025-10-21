@@ -12,7 +12,7 @@ public class VideoJuegosCreateDto {
     @NotBlank(message = "El nombre no puede estar vacío")
     private final String nombre;
 
-    @Positive(message = "El precio no puede ser negativo")
+    @Positive(message = "El precio no puede ser negativo ni 0")
     private final Double precio;
 
     @PastOrPresent(message = "La fecha de lanzamiento debe ser anterior a la fecha actual")

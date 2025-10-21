@@ -33,7 +33,7 @@ public class VideoJuegosController {
     }
 
     @GetMapping
-    public ResponseEntity<List<VideoJuegos>> getAllVideoJuegos(@RequestParam(required = false) String nombre,
+    public ResponseEntity<List<VideoJuegosResponseDto>> getAllVideoJuegos(@RequestParam(required = false) String nombre,
                                                                @RequestParam(required = false) String genero,
                                                                @RequestParam(required = false) VideoJuegos.Plataforma plataforma) {
         log.info("Buscando videoJuegos por el nombre {} y genero {} y plataforma {}", nombre, genero, plataforma);
@@ -48,12 +48,12 @@ public class VideoJuegosController {
     }
 
     @PostMapping()
-    public ResponseEntity<VideoJuegosResponseDto> create(@Valid @RequestBody VideoJuegosCreateDto videoJuegosCreateDto, BindingResult result){
+    public ResponseEntity<VideoJuegosResponseDto> create(@Valid @RequestBody VideoJuegosCreateDto videoJuegosCreateDto){
         log.info("Creando un nuevo videojuegos {}", videoJuegosCreateDto);
-        if(result.hasErrors()){
+        /*if(result.hasErrors()){
             log.info("Error al crear un videojuegos {}", result.getAllErrors());
             throw new VideoJuegosBadRequest("Error al crear un videojuegos " + result.getAllErrors());
-        }
+        }*/
         var saved =  videoJuegoService.save(videoJuegosCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
 
@@ -63,12 +63,22 @@ public class VideoJuegosController {
     @PutMapping("/{id}")
     public ResponseEntity<VideoJuegosResponseDto> update( @PathVariable Long id,@Valid @RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
         log.info("Actualizando videojuegos por id={} con videojuego={}",id, videoJuegosUpdateDto);
+
+        /*if(result.hasErrors()){
+            log.info("Error al actualizar totalmente un videojuego {}", result.getAllErrors());
+            throw new VideoJuegosBadRequest("Error al actualizar totalmente un videojuegos " + result.getAllErrors());
+        }*/
         return ResponseEntity.ok(videoJuegoService.update(id, videoJuegosUpdateDto));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<VideoJuegosResponseDto> updatePartial(@PathVariable Long id,@Valid @RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
         log.info("Actualizando parcialmente un videojuego con id={} con videojuego={}" ,id, videoJuegosUpdateDto);
+
+        /*if(result.hasErrors()){
+            log.info("Error al actualizar parcialmente un videojuego {}", result.getAllErrors());
+            throw new VideoJuegosBadRequest("Error al actualizar parcialemente un videoJuego " + result.getAllErrors());
+        }*/
         return ResponseEntity.ok(videoJuegoService.update(id, videoJuegosUpdateDto));
     }
 

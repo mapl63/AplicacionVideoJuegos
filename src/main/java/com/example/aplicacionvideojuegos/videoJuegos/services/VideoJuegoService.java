@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public interface VideoJuegoService {
 
-    List<VideoJuegos> findAll(String nombre, String genero, VideoJuegos.Plataforma plataforma);
+    List<VideoJuegosResponseDto> findAll(String nombre, String genero, VideoJuegos.Plataforma plataforma);
 
     VideoJuegosResponseDto findById(Long id);
 

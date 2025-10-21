@@ -7,10 +7,12 @@ import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Slf4j
 @Component
 public class VideoJuegosMapper {
-    public VideoJuegos toVideoJuegos(Long id, VideoJuegosCreateDto videojuegosCreateDto) {
+    public VideoJuegos toVideoJuegosCreated(Long id, VideoJuegosCreateDto videojuegosCreateDto) {
         return new  VideoJuegos(
           id,
           videojuegosCreateDto.getNombre(),
@@ -22,7 +24,7 @@ public class VideoJuegosMapper {
         );
     }
 
-    public VideoJuegos toVideoJuegos(VideoJuegosUpdateDto videojuegosUpdateDto, VideoJuegos videojuegos) {
+    public VideoJuegos toVideoJuegosUpdate(VideoJuegosUpdateDto videojuegosUpdateDto, VideoJuegos videojuegos) {
         return new  VideoJuegos(
                 videojuegos.getId(),
                 videojuegosUpdateDto.getNombre() != null ? videojuegosUpdateDto.getNombre() : videojuegos.getNombre(),
@@ -35,7 +37,7 @@ public class VideoJuegosMapper {
     }
 
     public VideoJuegosResponseDto toVideoJuegosResponseDto(VideoJuegos videojuegos) {
-        log.info("Es");
+        log.info("Entrando a VideoJuegosResponseDto para comprobar que entra en el mapper");
         return new  VideoJuegosResponseDto(
                 videojuegos.getId(),
                 videojuegos.getNombre(),
@@ -47,4 +49,9 @@ public class VideoJuegosMapper {
         );
     }
 
+    public List<VideoJuegosResponseDto> toVideoJuegosResponseDto(List<VideoJuegos> videojuegos) {
+        return videojuegos.stream()
+                .map(this::toVideoJuegosResponseDto)
+                .toList();
+    }
 }
