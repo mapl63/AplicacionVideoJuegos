@@ -4,32 +4,32 @@ GET https://examples.http-client.intellij.net/get
 
 ###
 
-### getVideoJuegosAll
-GET http://localhost:3000/api/v1/videoJuegos
+### getVideoJuegosAll nos muestre todos
+GET http://localhost:3005/api/v1/videoJuegos
 
 ### getvideoJuegosAll por nombre
-GET http://localhost:3000/api/v1/videoJuegos?nombre=gta
+GET http://localhost:3005/api/v1/videoJuegos?nombre=gta
 
 ### getAll por plataforma
-GET http://localhost:3000/api/v1/videoJuegos?plataforma=PS5
+GET http://localhost:3005/api/v1/videoJuegos?plataforma=PS5
 
 ### get all by genero
-GET http://localhost:3000/api/v1/videoJuegos?genero=shooter
+GET http://localhost:3005/api/v1/videoJuegos?genero=shooter
 
 ### get all by nombre y genero
-GET http://localhost:3000/api/v1/videoJuegos?nombre=counter&genero=shooter
+GET http://localhost:3005/api/v1/videoJuegos?nombre=counter&genero=shooter
 
 ### get all by nombre y plataforma
-GET http://localhost:3000/api/v1/videoJuegos?nombre=fc&plataforma=PS5
+GET http://localhost:3005/api/v1/videoJuegos?nombre=fc&plataforma=PS5
 
 ### get all by genero  y plataforma
-GET http://localhost:3000/api/v1/videoJuegos?genero=shooter&plataforma=PC
+GET http://localhost:3005/api/v1/videoJuegos?genero=shooter&plataforma=PC
 
 ### get por id
-GET http://localhost:3000/api/v1/videoJuegos/5
+GET http://localhost:3005/api/v1/videoJuegos/5
 
 ### post creando un nuevo videojuego
-POST http://localhost:3000/api/v1/videoJuegos
+POST http://localhost:3005/api/v1/videoJuegos
 content-type: application/json
 
 {
@@ -44,7 +44,7 @@ content-type: application/json
 
 
 ### actualizando total con put
-PUT http://localhost:3000/api/v1/videoJuegos/7
+PUT http://localhost:3005/api/v1/videoJuegos/7
 content-type: application/json
 
 {
@@ -57,7 +57,7 @@ content-type: application/json
 }
 
 ### Patch actualización parcial cambio el nombre y genero del id 1
-PATCH http://localhost:3000/api/v1/videoJuegos/1
+PATCH http://localhost:3005/api/v1/videoJuegos/1
 content-type: application/json
 
 {
@@ -70,12 +70,12 @@ content-type: application/json
 }
 
 ### borrando por id
-DELETE http://localhost:3000/api/v1/videoJuegos/8
+DELETE http://localhost:3005/api/v1/videoJuegos/8
 
 ###
 
 ### Post para las validaciones que salten
-POST http://localhost:3000/api/v1/videoJuegos
+POST http://localhost:3005/api/v1/videoJuegos
 content-type: application/json
 
 {
@@ -88,7 +88,7 @@ content-type: application/json
 }
 
 ### Patch para que las validaciones que salten
-PATCH http://localhost:3000/api/v1/videoJuegos/1
+PATCH http://localhost:3005/api/v1/videoJuegos/1
 content-type: application/json
 
 {
@@ -100,15 +100,3 @@ content-type: application/json
   "edad": -1
 }
 
-### Patch para que las validaciones que salten
-PUT http://localhost:3000/api/v1/videoJuegos/1
-content-type: application/json
-
-{
-  "nombre": "",
-  "precio": 0,
-  "fecha_lanzamiento": "2027-02-18",
-  "genero": null,
-  "plataforma": null,
-  "edad": -1
-}

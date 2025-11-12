@@ -3,13 +3,13 @@ package com.example.aplicacionvideojuegos.videoJuegos.controllers;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosCreateDto;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosResponseDto;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosUpdateDto;
-import com.example.aplicacionvideojuegos.videoJuegos.exceptions.VideoJuegosBadRequest;
 import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
 import com.example.aplicacionvideojuegos.videoJuegos.services.VideoJuegoService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -21,16 +21,12 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
+@RequiredArgsConstructor
 @RequestMapping("api/${api.version}/videoJuegos")
 @RestController
 
 public class VideoJuegosController {
     private final VideoJuegoService videoJuegoService;
-
-    @Autowired
-    public VideoJuegosController(VideoJuegoService videoJuegoService) {
-        this.videoJuegoService = videoJuegoService;
-    }
 
     @GetMapping
     public ResponseEntity<List<VideoJuegosResponseDto>> getAllVideoJuegos(@RequestParam(required = false) String nombre,
@@ -64,10 +60,6 @@ public class VideoJuegosController {
     public ResponseEntity<VideoJuegosResponseDto> update( @PathVariable Long id,@Valid @RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
         log.info("Actualizando videojuegos por id={} con videojuego={}",id, videoJuegosUpdateDto);
 
-        /*if(result.hasErrors()){
-            log.info("Error al actualizar totalmente un videojuego {}", result.getAllErrors());
-            throw new VideoJuegosBadRequest("Error al actualizar totalmente un videojuegos " + result.getAllErrors());
-        }*/
         return ResponseEntity.ok(videoJuegoService.update(id, videoJuegosUpdateDto));
     }
 
@@ -75,10 +67,6 @@ public class VideoJuegosController {
     public ResponseEntity<VideoJuegosResponseDto> updatePartial(@PathVariable Long id,@Valid @RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
         log.info("Actualizando parcialmente un videojuego con id={} con videojuego={}" ,id, videoJuegosUpdateDto);
 
-        /*if(result.hasErrors()){
-            log.info("Error al actualizar parcialmente un videojuego {}", result.getAllErrors());
-            throw new VideoJuegosBadRequest("Error al actualizar parcialemente un videoJuego " + result.getAllErrors());
-        }*/
         return ResponseEntity.ok(videoJuegoService.update(id, videoJuegosUpdateDto));
     }
 
@@ -91,13 +79,23 @@ public class VideoJuegosController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldNAme = ((FieldError) error).getField();
+    public ProblemDetail handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+
+        BindingResult result = ex.getBindingResult();
+        problemDetail.setDetail("Falló la validación para el objeto='" + result.getObjectName()
+                + "'. " + "Núm. errores: " + result.getErrorCount());
+
+        Map<String, String> errores = new HashMap<>();
+        result.getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
-            errors.put(fieldNAme, errorMessage);
+            errores.put(fieldName, errorMessage);
         });
-        return errors;
+
+        problemDetail.setProperty("errores", errores);
+        return problemDetail;
     }
 }

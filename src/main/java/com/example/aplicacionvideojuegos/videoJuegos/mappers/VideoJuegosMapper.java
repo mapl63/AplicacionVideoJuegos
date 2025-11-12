@@ -13,43 +13,44 @@ import java.util.List;
 @Component
 public class VideoJuegosMapper {
     public VideoJuegos toVideoJuegosCreated(Long id, VideoJuegosCreateDto videojuegosCreateDto) {
-        return new  VideoJuegos(
-          id,
-          videojuegosCreateDto.getNombre(),
-          videojuegosCreateDto.getPrecio(),
-          videojuegosCreateDto.getFecha_lanzamiento(),
-          videojuegosCreateDto.getGenero(),
-          videojuegosCreateDto.getPlataforma(),
-          videojuegosCreateDto.getEdad()
-        );
+        return VideoJuegos.builder()
+                .id(id)
+                .nombre(videojuegosCreateDto.getNombre())
+                .precio(videojuegosCreateDto.getPrecio())
+                .fecha_lanzamiento(videojuegosCreateDto.getFecha_lanzamiento())
+                .genero(videojuegosCreateDto.getGenero())
+                .plataforma(videojuegosCreateDto.getPlataforma())
+                .edad(videojuegosCreateDto.getEdad())
+                .build();
     }
 
     public VideoJuegos toVideoJuegosUpdate(VideoJuegosUpdateDto videojuegosUpdateDto, VideoJuegos videojuegos) {
-        return new  VideoJuegos(
-                videojuegos.getId(),
-                videojuegosUpdateDto.getNombre() != null ? videojuegosUpdateDto.getNombre() : videojuegos.getNombre(),
-                videojuegosUpdateDto.getPrecio() != null ? videojuegosUpdateDto.getPrecio() : videojuegos.getPrecio(),
-                videojuegosUpdateDto.getFecha_lanzamiento() != null ? videojuegosUpdateDto.getFecha_lanzamiento() : videojuegos.getFecha_lanzamiento(),
-                videojuegosUpdateDto.getGenero() != null ? videojuegosUpdateDto.getGenero() : videojuegos.getGenero(),
-                videojuegosUpdateDto.getPlataforma() != null ? videojuegosUpdateDto.getPlataforma() : videojuegos.getPlataforma(),
-                videojuegosUpdateDto.getEdad() != null ? videojuegosUpdateDto.getEdad() : videojuegos.getEdad()
-        );
+        return VideoJuegos.builder()
+                .id(videojuegos.getId())
+                .nombre(videojuegosUpdateDto.getNombre() != null ? videojuegosUpdateDto.getNombre() : videojuegos.getNombre())
+                .precio(videojuegosUpdateDto.getPrecio() != null ? videojuegosUpdateDto.getPrecio() : videojuegos.getPrecio())
+                .genero(videojuegosUpdateDto.getGenero() != null ? videojuegosUpdateDto.getGenero() : videojuegos.getGenero())
+                .plataforma(videojuegosUpdateDto.getPlataforma() != null ? videojuegosUpdateDto.getPlataforma() : videojuegos.getPlataforma())
+                .edad(videojuegosUpdateDto.getEdad() != null ? videojuegosUpdateDto.getEdad() : videojuegos.getEdad())
+                .build();
+
     }
 
     public VideoJuegosResponseDto toVideoJuegosResponseDto(VideoJuegos videojuegos) {
         log.info("Entrando a VideoJuegosResponseDto para comprobar que entra en el mapper");
-        return new  VideoJuegosResponseDto(
-                videojuegos.getId(),
-                videojuegos.getNombre(),
-                videojuegos.getPrecio(),
-                videojuegos.getFecha_lanzamiento(),
-                videojuegos.getGenero(),
-                videojuegos.getPlataforma(),
-                videojuegos.getEdad()
-        );
+        return VideoJuegosResponseDto.builder()
+                .id(videojuegos.getId())
+                .nombre(videojuegos.getNombre())
+                .precio(videojuegos.getPrecio())
+                .fecha_lanzamiento(videojuegos.getFecha_lanzamiento())
+                .genero(videojuegos.getGenero())
+                .plataforma(videojuegos.getPlataforma())
+                .edad(videojuegos.getEdad())
+                .build();
+
     }
 
-    public List<VideoJuegosResponseDto> toVideoJuegosResponseDto(List<VideoJuegos> videojuegos) {
+    public List<VideoJuegosResponseDto> toVideoJuegosResponseDtoList(List<VideoJuegos> videojuegos) {
         return videojuegos.stream()
                 .map(this::toVideoJuegosResponseDto)
                 .toList();

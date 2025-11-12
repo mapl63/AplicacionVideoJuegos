@@ -1,21 +1,27 @@
 package com.example.aplicacionvideojuegos.videoJuegos.dto;
 
 import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class VideoJuegosResponseDto {
 
-    private final Long id;
+    private Long id;
 
-    private final String nombre;
-    private final Double precio;
-    private final LocalDate fecha_lanzamiento;
-    private final String genero;
+    private String nombre;
+    private Double precio;
+    private LocalDate fecha_lanzamiento;
+    private String genero;
 
-    private final VideoJuegos.Plataforma plataforma;
-    private final Integer edad;
+    private VideoJuegos.Plataforma plataforma;
+    private Integer edad;
 
 }

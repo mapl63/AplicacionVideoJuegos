@@ -5,25 +5,36 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Repository
 public class VideoJuegosRepositoryImpl implements VideoJuegosRepository {
     private final Map<Long, VideoJuegos> videojuegos = new LinkedHashMap<>(
             Map.of(
-                    1L, new VideoJuegos(1L, "GTA VI", 120.0, LocalDate.of(2026, 5, 26), "Acción", VideoJuegos.Plataforma.PS5, 18),
-                    2L, new VideoJuegos(2L, "The Witcher 4", 89.99, LocalDate.of(2027, 7, 24), "RPG", VideoJuegos.Plataforma.PS5, 18),
-                    3L, new VideoJuegos(3L, "Counter-Strike", 39.99, LocalDate.of(2012, 9, 21), "Shooter", VideoJuegos.Plataforma.PC, 16),
-                    4L, new VideoJuegos(4L, "Minecraft", 29.99, LocalDate.of(2011, 11, 18), "Sandbox", VideoJuegos.Plataforma.PC, 7),
-                    5L, new VideoJuegos(5L, "The Legend of Zelda: Tears of the Kingdom", 59.99, LocalDate.of(2023, 5, 12), "Aventura", VideoJuegos.Plataforma.NINTENDO, 12),
-                    6L, new VideoJuegos(6L, "FC 26", 99.99, LocalDate.of(2025, 9, 21), "Deportes", VideoJuegos.Plataforma.PS5, 3),
-                    7L, new VideoJuegos(7L, "Call of Duty: Modern Warfare II", 59.99, LocalDate.of(2022, 10, 28), "Shooter", VideoJuegos.Plataforma.XBOXONE, 18)
-            )
+                    1L, VideoJuegos.builder()
+                            .id(1L)
+                            .nombre("GTA VI")
+                            .precio(120.0)
+                            .fecha_lanzamiento(LocalDate.of(2026, 5, 26))
+                            .genero("Acción")
+                            .plataforma(VideoJuegos.Plataforma.PS5)
+                            .edad(18)
+                            .build(),
+
+                    2L, VideoJuegos.builder()
+                            .id(2L)
+                            .nombre("The Witcher 4")
+                            .precio(89.99)
+                            .fecha_lanzamiento(LocalDate.of(2027, 7, 24))
+                            .genero("RPG")
+                            .plataforma(VideoJuegos.Plataforma.PS5)
+                            .edad(18)
+                            .build()
+
+                    )
     );
+
 
 
     @Override
@@ -31,6 +42,7 @@ public class VideoJuegosRepositoryImpl implements VideoJuegosRepository {
         log.info("Buscando todos los videoJuegos");
         return videojuegos.values()
                 .stream()
+                //.sorted(Comparator.comparing(VideoJuegos::getId))
                 .toList();
     }
 
@@ -102,12 +114,20 @@ public class VideoJuegosRepositoryImpl implements VideoJuegosRepository {
 
     @Override
     public VideoJuegos save(VideoJuegos videojuego) {
-        log.info("Guardando videojuegos: "  +  videojuegos);
+        // Si el ID es null, asignar uno automáticamente
+        if (videojuego.getId() == null) {
+            // Generamos el siguiente ID
+            Long nextId = videojuegos.keySet().stream()
+                    .max(Long::compare)
+                    .orElse(0L) + 1;
+            videojuego.setId(nextId);
+        }
+
+        log.info("Guardando videojuego con ID: " + videojuego.getId());
 
         videojuegos.put(videojuego.getId(), videojuego);
         return videojuego;
     }
-
     @Override
     public Long nextId() {
         log.debug("Obteniendo siguiente id de VideoJuegos");

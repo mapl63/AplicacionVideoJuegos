@@ -1,11 +1,14 @@
 package com.example.aplicacionvideojuegos.videoJuegos.dto;
 
 import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
+import com.example.aplicacionvideojuegos.videoJuegos.validators.ValidPlataforma;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 
+@Builder
 @Data
 public class VideoJuegosCreateDto {
 
@@ -15,13 +18,12 @@ public class VideoJuegosCreateDto {
     @Positive(message = "El precio no puede ser negativo ni 0")
     private final Double precio;
 
-    @PastOrPresent(message = "La fecha de lanzamiento debe ser anterior a la fecha actual")
     private final LocalDate fecha_lanzamiento;
 
-    @NotNull(message = "El genero no puede ser nulo")
+    @NotBlank(message = "El genero no puede estar vacío")
     private final String genero;
 
-    @NotNull(message = "La plataforma no puede ser nula")
+    @ValidPlataforma
     private final VideoJuegos.Plataforma plataforma;
 
     @PositiveOrZero(message = "La edad no puede ser negativa.")
