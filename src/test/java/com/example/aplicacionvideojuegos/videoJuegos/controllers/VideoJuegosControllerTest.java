@@ -23,7 +23,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.Mockito.*;
 
 @Slf4j
-@SpringBootTest()
+@SpringBootTest
 @AutoConfigureMockMvc
 class VideoJuegosControllerTest {
 
@@ -31,6 +31,7 @@ class VideoJuegosControllerTest {
 
     private final VideoJuegosResponseDto videoJuegosResponse1 = VideoJuegosResponseDto.builder()
             .id(1L)
+            .cliente("juan")
             .nombre("GTA VI")
             .precio(120.0)
             .fecha_lanzamiento(LocalDate.of(2026, 5, 26))
@@ -41,6 +42,7 @@ class VideoJuegosControllerTest {
 
     private final VideoJuegosResponseDto videoJuegosResponse2 = VideoJuegosResponseDto.builder()
             .id(2L)
+            .cliente("maria")
             .nombre("The Witcher 4")
             .precio(89.99)
             .fecha_lanzamiento(LocalDate.of(2027, 7, 24))
@@ -61,7 +63,7 @@ class VideoJuegosControllerTest {
         var videoJuegosResponses = List.of(videoJuegosResponse1, videoJuegosResponse2);
         when (
                 videoJuegoService
-                .findAll(null, null,null))
+                .findAll(null, null))
                 .thenReturn(videoJuegosResponses
             );
 
@@ -80,7 +82,7 @@ class VideoJuegosControllerTest {
                             .convertTo(VideoJuegosResponseDto.class).isEqualTo(videoJuegosResponse2);
                 });
 
-        verify(videoJuegoService, times(1)).findAll(null, null, null);
+        verify(videoJuegoService, times(1)).findAll(null, null);
 
     }
 
@@ -90,11 +92,10 @@ class VideoJuegosControllerTest {
         var videoJuegosResponses = List.of(videoJuegosResponse2);
         String queryString = "?nombre=" + videoJuegosResponse2.getNombre();
 
-        when (
-                videoJuegoService
-                        .findAll(anyString(), isNull(),isNull()))
-                .thenReturn(videoJuegosResponses
-                );
+        when (videoJuegoService
+                .findAll(anyString(), isNull()))
+                .thenReturn(videoJuegosResponses);
+
         var resultado = mockMvcTester.get()
                 .uri(ENDPOINT + queryString)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -108,21 +109,18 @@ class VideoJuegosControllerTest {
                             .convertTo(VideoJuegosResponseDto.class).isEqualTo(videoJuegosResponse2);
                 });
 
-        verify(videoJuegoService, times(1)).findAll(anyString(), isNull(),isNull());
+        verify(videoJuegoService, times(1)).findAll(anyString(), isNull());
 
     }
 
     @Test
-    void getAllByGenero() {
-        log.info("obtener todos los videojuegos filtrando por genero");
+    void getAllByCliente(){
+        log.info("obtener todos los videojuegos filtrando por cliente");
         var videoJuegosResponses = List.of(videoJuegosResponse1);
-        String queryString = "?genero=" + videoJuegosResponse1.getGenero();
-
-        when (
-                videoJuegoService
-                        .findAll(isNull(), anyString(),isNull()))
-                .thenReturn(videoJuegosResponses
-                );
+        String queryString = "?cliente=" + videoJuegosResponse1.getCliente();
+        when (videoJuegoService
+                .findAll(isNull(), anyString()))
+                .thenReturn(videoJuegosResponses);
 
         var resultado = mockMvcTester.get()
                 .uri(ENDPOINT + queryString)
@@ -135,83 +133,22 @@ class VideoJuegosControllerTest {
                     assertThat(json).extractingPath("$.length()").isEqualTo(videoJuegosResponses.size());
                     assertThat(json).extractingPath("$[0]")
                             .convertTo(VideoJuegosResponseDto.class).isEqualTo(videoJuegosResponse1);
+
                 });
 
-        verify(videoJuegoService, times(1)).findAll(isNull(), anyString(),isNull());
-
+        verify(videoJuegoService, only()).findAll(isNull(), anyString());
     }
 
     @Test
-    void getAllByPlataforma() {
-        log.info("obtener todos los videojuegos filtrando por plataforma");
-        var videoJuegosResponses = List.of(videoJuegosResponse1, videoJuegosResponse2);
-        String queryString = "?plataforma=" + videoJuegosResponse1.getPlataforma();
-
-        when (
-                videoJuegoService
-                        .findAll(isNull(), isNull(),any(VideoJuegos.Plataforma.class)))
-                .thenReturn(videoJuegosResponses
-                );
-
-        var resultado = mockMvcTester.get()
-                .uri(ENDPOINT + queryString)
-                .contentType(MediaType.APPLICATION_JSON)
-                .exchange();
-
-        assertThat(resultado)
-                .hasStatusOk()
-                .bodyJson().satisfies(json -> {
-                    assertThat(json).extractingPath("$.length()").isEqualTo(videoJuegosResponses.size());
-                    assertThat(json).extractingPath("$[0]")
-                            .convertTo(VideoJuegosResponseDto.class).isEqualTo(videoJuegosResponse1);
-                    assertThat(json).extractingPath("$[1]")
-                            .convertTo(VideoJuegosResponseDto.class).isEqualTo(videoJuegosResponse2);
-                });
-
-        verify(videoJuegoService, times(1)).findAll(isNull(), isNull(),any(VideoJuegos.Plataforma.class));
-    }
-
-    @Test
-    void getAllByNombreAndGenero() {
-        log.info("obtener todos los videojuegos filtrando por nombre y genero");
-        var videoJuegosResponses = List.of(videoJuegosResponse2);
-        String queryString = "?nombre=" + videoJuegosResponse2.getNombre() +
-                "&genero=" + videoJuegosResponse2.getGenero();
-
-        when (
-                videoJuegoService
-                        .findAll(anyString(), anyString(),isNull()))
-                .thenReturn(videoJuegosResponses
-                );
-
-        var resultado = mockMvcTester.get()
-                .uri(ENDPOINT + queryString)
-                .contentType(MediaType.APPLICATION_JSON)
-                .exchange();
-
-        assertThat(resultado)
-                .hasStatusOk()
-                .bodyJson().satisfies(json -> {
-                    assertThat(json).extractingPath("$.length()").isEqualTo(videoJuegosResponses.size());
-                    assertThat(json).extractingPath("$[0]")
-                            .convertTo(VideoJuegosResponseDto.class).isEqualTo(videoJuegosResponse2);
-                });
-
-        verify(videoJuegoService, times(1)).findAll(anyString(), anyString(),isNull());
-    }
-
-    @Test
-    void getAllByNombreAndPlataforma() {
-        log.info("obtener todos los videojuegos filtrando por nombre y plataforma");
+    void getAllByNombreAndCliente(){
+        log.info("obtener todos los videojuegos filtrando por nombre y cliente");
         var videoJuegosResponses = List.of(videoJuegosResponse1);
         String queryString = "?nombre=" + videoJuegosResponse1.getNombre() +
-                "&plataforma=" + videoJuegosResponse1.getPlataforma();
+                "&cliente=" + videoJuegosResponse1.getCliente();
 
-        when (
-                videoJuegoService
-                        .findAll(anyString(), isNull(),any(VideoJuegos.Plataforma.class)))
-                .thenReturn(videoJuegosResponses
-                );
+        when (videoJuegoService
+                .findAll(anyString(), anyString()))
+                .thenReturn(videoJuegosResponses);
 
         var resultado = mockMvcTester.get()
                 .uri(ENDPOINT + queryString)
@@ -226,66 +163,14 @@ class VideoJuegosControllerTest {
                             .convertTo(VideoJuegosResponseDto.class).isEqualTo(videoJuegosResponse1);
                 });
 
-        verify(videoJuegoService, times(1)).findAll(anyString(), isNull(),any(VideoJuegos.Plataforma.class));
-    }
-
-    @Test
-    void getAllByGeneroAndPlataforma() {
-        log.info("obtener todos los videojuegos filtrando por genero y plataforma");
-        var videoJuegosResponses = List.of(videoJuegosResponse1);
-        String queryString = "?genero=" + videoJuegosResponse1.getGenero() +
-                "&plataforma=" + videoJuegosResponse1.getPlataforma();
-
-        when (
-                videoJuegoService
-                        .findAll(isNull(), anyString(),any(VideoJuegos.Plataforma.class)))
-                .thenReturn(videoJuegosResponses
-                );
-
-        var resultado = mockMvcTester.get()
-                .uri(ENDPOINT + queryString)
-                .contentType(MediaType.APPLICATION_JSON)
-                .exchange();
-
-        assertThat(resultado)
-                .hasStatusOk()
-                .bodyJson().satisfies(json -> {
-                    assertThat(json).extractingPath("$.length()").isEqualTo(videoJuegosResponses.size());
-                    assertThat(json).extractingPath("$[0]")
-                            .convertTo(VideoJuegosResponseDto.class).isEqualTo(videoJuegosResponse1);
-                });
-
-        verify(videoJuegoService, times(1)).findAll(isNull(), anyString(),any(VideoJuegos.Plataforma.class));
-    }
-
-    @Test
-    void getByIdConIdInvalido(){
-        log.info("obtener un videojuego por id pasando un id invalido");
-        Long id = 9L;
-
-        when(videoJuegoService.findById(anyLong()))
-                .thenThrow(new VideoJuegosNotFound(id));
-
-        var resultado = mockMvcTester.get()
-                .uri(ENDPOINT + "/" + id)
-                .contentType(MediaType.APPLICATION_JSON)
-                .exchange();
-
-        assertThat(resultado)
-                .hasStatus4xxClientError()
-                .hasFailed().failure()
-                .isInstanceOf(VideoJuegosNotFound.class)
-                .hasMessageContaining("no encontrada");
-
-        verify(videoJuegoService, only()).findById(anyLong());
-
+        verify(videoJuegoService, only()).findAll(anyString(), anyString());
     }
 
     @Test
     void getVideoJuegoByIdConIdValido() {
         log.info("obtener un videojuego por id pasando un id valido");
-        Long id = 1L;
 
+        Long id = videoJuegosResponse1.getId();
         when(videoJuegoService.findById(anyLong()))
                 .thenReturn(videoJuegosResponse1);
 
@@ -304,12 +189,33 @@ class VideoJuegosControllerTest {
     }
 
     @Test
+    void getByIdConIdInvalido(){
+        log.info("obtener un videojuego por id pasando un id invalido");
+        Long id = 9L;
+
+        when(videoJuegoService.findById(anyLong()))
+                .thenThrow(new VideoJuegosNotFound(id));
+
+        var resultado = mockMvcTester.get()
+                .uri(ENDPOINT + "/" + id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .exchange();
+
+        assertThat(resultado)
+                .hasStatus(HttpStatus.NOT_FOUND);
+
+        verify(videoJuegoService, only()).findById(anyLong());
+
+    }
+
+    @Test
     void create() {
         log.info("crear un nuevo videojuego");
 
         String requestBody = """
                 {
                     "nombre": "Elden Ring",
+                    "cliente": "carlos",
                     "precio": 59.99,
                     "fecha_lanzamiento": "2022-02-25",
                     "genero": "RPG",
@@ -320,6 +226,7 @@ class VideoJuegosControllerTest {
 
         var juegoSaved = VideoJuegosResponseDto.builder()
                 .id(3L)
+                .cliente("carlos")
                 .nombre("Elden Ring")
                 .precio(59.99)
                 .fecha_lanzamiento(LocalDate.of(2022, 2, 25))
@@ -353,6 +260,7 @@ class VideoJuegosControllerTest {
         String requestBody = """
                 {
                     "nombre": "",
+                    "cliente": "",
                     "precio": -10,
                     "fecha_lanzamiento": "2025-12-31",
                     "genero": "",
@@ -371,6 +279,7 @@ class VideoJuegosControllerTest {
                 .bodyJson()
                 .hasPathSatisfying("$.errores", errores -> {
                     assertThat(errores).hasFieldOrProperty("nombre");
+                    assertThat(errores).hasFieldOrProperty("cliente");
                     assertThat(errores).hasFieldOrProperty("precio");
                     assertThat(errores).hasFieldOrProperty("edad");
                     assertThat(errores).hasFieldOrProperty("genero");
@@ -383,10 +292,12 @@ class VideoJuegosControllerTest {
     @Test
     void update() {
         log.info("actualizar un videojuego existente");
+
         Long id = 1L;
         String requestBody = """
                 {
                     "nombre": "GTA VI",
+                    "cliente": "juan",
                     "precio": 130.0,
                     "fecha_lanzamiento": "2026-05-26",
                     "genero": "Acción",
@@ -397,6 +308,7 @@ class VideoJuegosControllerTest {
 
         var juegoUpdated = VideoJuegosResponseDto.builder()
                 .id(1L)
+                .cliente("juan")
                 .nombre("GTA VI")
                 .precio(130.0)
                 .fecha_lanzamiento(LocalDate.of(2026, 5, 26))
@@ -426,9 +338,11 @@ class VideoJuegosControllerTest {
     @Test
     void noUpdateConIdInvalidos() {
         log.info("No actualizar un videojuego con id invalido");
+
         Long id = 12L;
         String requestBody = """
                 {
+                    "cliente": "juan",
                     "nombre": "GTA VI",
                     "precio": 130.0,
                     "fecha_lanzamiento": "2026-05-26",
@@ -448,10 +362,7 @@ class VideoJuegosControllerTest {
                 .exchange();
 
         assertThat(resultado)
-                .hasStatus(HttpStatus.NOT_FOUND)
-                .hasFailed().failure()
-                .isInstanceOf(VideoJuegosNotFound.class)
-                .hasMessageContaining("no encontrada");
+                .hasStatus(HttpStatus.NOT_FOUND);
 
         verify(videoJuegoService, only()).update(anyLong(), any());
 
@@ -460,8 +371,8 @@ class VideoJuegosControllerTest {
     @Test
     void deleteConIdValido() {
         log.info("eliminar un videojuego con id valido");
-        Long id = 2L;
 
+        Long id = 2L;
         doNothing().when(videoJuegoService).deleteById(anyLong());
 
         var resultado = mockMvcTester.delete()
@@ -477,8 +388,8 @@ class VideoJuegosControllerTest {
     @Test
     void deleteConIdInvalido() {
         log.info("eliminar un videojuego con id invalido");
-        Long id = 15L;
 
+        Long id = 15L;
         doThrow(new VideoJuegosNotFound(id))
                 .when(videoJuegoService).deleteById(anyLong());
 
@@ -487,10 +398,7 @@ class VideoJuegosControllerTest {
                 .exchange();
 
         assertThat(resultado)
-                .hasStatus(HttpStatus.NOT_FOUND)
-                .hasFailed().failure()
-                .isInstanceOf(VideoJuegosNotFound.class)
-                .hasMessageContaining("no encontrada");
+                .hasStatus(HttpStatus.NOT_FOUND);
 
         verify(videoJuegoService, only()).deleteById(anyLong());
     }

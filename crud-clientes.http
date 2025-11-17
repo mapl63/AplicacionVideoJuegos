@@ -1,0 +1,28 @@
+### getAll
+GET http://localhost:3005/api/v1/clientes
+
+### gatById
+GET http://localhost:3005/api/v1/clientes/1
+
+### gatById (una que no existe)
+GET http://localhost:3005/api/v1/clientes/300
+
+### Nueva tarjeta
+POST http://localhost:3005/api/v1/clientes
+Content-Type: application/json
+
+{
+  "nombre": "marius"
+}
+
+### Actualiza tarjeta
+PUT http://localhost:3005/api/v1/clientes/4
+Content-Type: application/json
+
+{
+  "nombre": "ANA"
+}
+
+
+### Delete tarjeta
+DELETE http://localhost:3005/api/v1/clientes/6

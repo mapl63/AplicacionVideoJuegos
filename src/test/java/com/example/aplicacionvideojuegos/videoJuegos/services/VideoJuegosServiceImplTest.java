@@ -1,12 +1,14 @@
 package com.example.aplicacionvideojuegos.videoJuegos.services;
 
+import com.example.aplicacionvideojuegos.clientes.models.Cliente;
+import com.example.aplicacionvideojuegos.clientes.services.ClienteService;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosCreateDto;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosResponseDto;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosUpdateDto;
 import com.example.aplicacionvideojuegos.videoJuegos.exceptions.VideoJuegosNotFound;
 import com.example.aplicacionvideojuegos.videoJuegos.mappers.VideoJuegosMapper;
 import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
-import com.example.aplicacionvideojuegos.videoJuegos.repositories.VideoJuegosRepositoryImpl;
+import com.example.aplicacionvideojuegos.videoJuegos.repositories.VideoJuegosRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +17,9 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,8 +30,20 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class VideoJuegosServiceImplTest {
 
+    private final Cliente cliente1 = Cliente.builder()
+            .nombre("Juan")
+            .build();
+    private final Cliente cliente2 = Cliente.builder()
+            .nombre("Maria")
+            .build();
+
+    private final Cliente cliente3 = Cliente.builder()
+            .nombre("Pedro")
+            .build();
+
     private final VideoJuegos videoJuegos1 = VideoJuegos.builder()
             .id(1L)
+            .cliente(cliente1)
             .nombre("GTA VI")
             .precio(120.0)
             .fecha_lanzamiento(LocalDate.of(2026, 5, 26))
@@ -38,6 +54,7 @@ class VideoJuegosServiceImplTest {
 
     private final VideoJuegos videoJuegos2 = VideoJuegos.builder()
             .id(2L)
+            .cliente(cliente2)
             .nombre("The Witcher 4")
             .precio(89.99)
             .fecha_lanzamiento(LocalDate.of(2027, 7, 24))
@@ -49,7 +66,10 @@ class VideoJuegosServiceImplTest {
     private VideoJuegosResponseDto videoJuegosResponse1;
 
     @Mock
-    private VideoJuegosRepositoryImpl juegosRepository;
+    private VideoJuegosRepository juegosRepository;
+
+    @Mock
+    private ClienteService clienteService;
 
     @Spy
     private VideoJuegosMapper videoJuegosMapper;
@@ -73,7 +93,7 @@ class VideoJuegosServiceImplTest {
         List<VideoJuegosResponseDto> listaVideojuegosResponseDto = videoJuegosMapper.toVideoJuegosResponseDtoList(listaVideojuegos);
         when (juegosRepository.findAll()).thenReturn(listaVideojuegos);
 
-        List <VideoJuegosResponseDto> actualVideoJuegoResponses = juegosService.findAll(null,null,null);
+        List <VideoJuegosResponseDto> actualVideoJuegoResponses = juegosService.findAll(null,null);
 
         assertIterableEquals(listaVideojuegosResponseDto, actualVideoJuegoResponses);
 
@@ -81,115 +101,56 @@ class VideoJuegosServiceImplTest {
 
     }
 
+
+
     @Test
-    void findAll_devolverVideojuegos_porNombre_cuandoGeneroYPlataformaNoSonValidos() {
-        log.info("devolver Videojuegos por Nombre cuando Genero Y Plataforma No Son Validos");
-
+    void findAll_devolverTodasLasTarjetas_ConParamtroNombre() {
+        log.info("devolver Todas Las Tarjetas con parametro nombre");
         String nombre = "GTA VI";
-
         List <VideoJuegos> listaVideojuegos = List.of(videoJuegos1);
 
         List<VideoJuegosResponseDto> listaVideojuegosResponseDto = videoJuegosMapper.toVideoJuegosResponseDtoList(listaVideojuegos);
-        when (juegosRepository.findAllByNombre(nombre)).thenReturn(listaVideojuegos);
+        when (juegosRepository.findByNombre(nombre)).thenReturn(listaVideojuegos);
 
-        List <VideoJuegosResponseDto> actualVideoJuegoResponses = juegosService.findAll(nombre,null,null);
+        List <VideoJuegosResponseDto> actualVideoJuegoResponses = juegosService.findAll(nombre,null);
 
         assertIterableEquals(listaVideojuegosResponseDto, actualVideoJuegoResponses);
 
-        verify(juegosRepository, only()).findAllByNombre(nombre);
+        verify(juegosRepository, times(1)).findByNombre(nombre);
+    }
+
+    @Test
+    void findAll_devolverTodasLasTarjetas_ConParametroCliente(){
+        log.info("devolver Todas Las Tarjetas con parametro cliente");
+
+        String cliente = "juan";
+        List <VideoJuegos> listaVideojuegos = List.of(videoJuegos2);
+        List<VideoJuegosResponseDto> listaVideojuegosResponseDto = videoJuegosMapper.toVideoJuegosResponseDtoList(listaVideojuegos);
+        when (juegosRepository.findByClienteContainsIgnoreCase(cliente)).thenReturn(listaVideojuegos);
+
+        List <VideoJuegosResponseDto> actualVideoJuegoResponses = juegosService.findAll(null,cliente);
+
+        assertIterableEquals(listaVideojuegosResponseDto, actualVideoJuegoResponses);
+
+        verify(juegosRepository, times(1)).findByClienteContainsIgnoreCase(cliente);
 
     }
 
     @Test
-    void findAll_devolverVideojuegos_porGenero_cuandoNombreYPlataformaNoSonValidos() {
-        log.info("devolver Videojuegos por Genero cuando Nombre Y Plataforma No Son Validos");
+    void findAll_devolverTodasLasTarjetas_ConParametrosNombreYCliente(){
+        log.info("devolver Todas Las Tarjetas con parametros nombre y cliente");
 
-        String genero = "Acción";
-
-        List <VideoJuegos> listaVideojuegos = List.of(videoJuegos1);
-
+        String nombre = "The Witcher 4";
+        String cliente = "maria";
+        List <VideoJuegos> listaVideojuegos = List.of(videoJuegos2);
         List<VideoJuegosResponseDto> listaVideojuegosResponseDto = videoJuegosMapper.toVideoJuegosResponseDtoList(listaVideojuegos);
-        when (juegosRepository.findAllByGenero(genero)).thenReturn(listaVideojuegos);
+        when (juegosRepository.findByNombreAndClienteContainsIgnoreCase(nombre, cliente)).thenReturn(listaVideojuegos);
 
-        List <VideoJuegosResponseDto> actualVideoJuegoResponses = juegosService.findAll(null,genero,null);
+        List <VideoJuegosResponseDto> actualVideoJuegoResponses = juegosService.findAll(nombre,cliente);
 
         assertIterableEquals(listaVideojuegosResponseDto, actualVideoJuegoResponses);
 
-        verify(juegosRepository, only()).findAllByGenero(genero);
-    }
-
-    @Test
-    void findAll_devolverVideojuegos_porPlataforma_cuandoNombreYGeneroNoSonValidos() {
-        log.info("devolver Videojuegos por Plataforma cuando Nombre Y Genero No Son Validos");
-        VideoJuegos.Plataforma plataforma = VideoJuegos.Plataforma.PS5;
-
-        List <VideoJuegos> listaVideojuegos = Arrays.asList(videoJuegos1, videoJuegos2);
-
-        List<VideoJuegosResponseDto> listaVideojuegosResponseDto = videoJuegosMapper.toVideoJuegosResponseDtoList(listaVideojuegos);
-        when (juegosRepository.findAllByPlataforma(plataforma)).thenReturn(listaVideojuegos);
-
-        List <VideoJuegosResponseDto> actualVideoJuegoResponses = juegosService.findAll(null,null,plataforma);
-
-        assertIterableEquals(listaVideojuegosResponseDto, actualVideoJuegoResponses);
-
-        verify(juegosRepository, only()).findAllByPlataforma(plataforma);
-
-    }
-
-    @Test
-    void findAll_DevolerPorNombreYGenero_cuandoPlataformaNoEsValida() {
-        log.info("devolver Por Nombre Y Genero cuando Plataforma No Es Valida");
-        String nombre = "GTA VI";
-        String genero = "Acción";
-
-        List <VideoJuegos> listaVideojuegos = List.of(videoJuegos1);
-
-        List<VideoJuegosResponseDto> listaVideojuegosResponseDto = videoJuegosMapper.toVideoJuegosResponseDtoList(listaVideojuegos);
-        when (juegosRepository.findByNombreAndGenero(nombre, genero)).thenReturn(listaVideojuegos);
-
-        List <VideoJuegosResponseDto> actualVideoJuegoResponses = juegosService.findAll(nombre,genero,null);
-
-        assertIterableEquals(listaVideojuegosResponseDto, actualVideoJuegoResponses);
-
-        verify(juegosRepository, only()).findByNombreAndGenero(nombre, genero);
-
-    }
-
-    @Test
-    void findAll_DevolerPorNombreYPlataforma_cuandoGeneroNoEsValida() {
-        log.info("devolver Por Nombre Y Plataforma cuando Genero No Es Valida");
-        String nombre = "GTA VI";
-        VideoJuegos.Plataforma plataforma = VideoJuegos.Plataforma.PS5;
-
-        List<VideoJuegos> listaVideojuegos = List.of(videoJuegos1);
-
-        List<VideoJuegosResponseDto> listaVideojuegosResponseDto = videoJuegosMapper.toVideoJuegosResponseDtoList(listaVideojuegos);
-        when(juegosRepository.findByNombreAndPlataforma(nombre, plataforma)).thenReturn(listaVideojuegos);
-
-        List<VideoJuegosResponseDto> actualVideoJuegoResponses = juegosService.findAll(nombre, null, plataforma);
-
-        assertIterableEquals(listaVideojuegosResponseDto, actualVideoJuegoResponses);
-
-        verify(juegosRepository, only()).findByNombreAndPlataforma(nombre, plataforma);
-
-    }
-
-    @Test
-    void findAll_DevolerPorGeneroYPlataforma_cuandoNombreNoEsValida() {
-        log.info("devolver Por Genero Y Plataforma cuando Nombre No Es Valida");
-        String genero = "RPG";
-        VideoJuegos.Plataforma plataforma = VideoJuegos.Plataforma.PS5;
-
-        List<VideoJuegos> listaVideojuegos = List.of(videoJuegos1);
-
-        List<VideoJuegosResponseDto> listaVideojuegosResponseDto = videoJuegosMapper.toVideoJuegosResponseDtoList(listaVideojuegos);
-        when(juegosRepository.findByGeneroAndPlataforma(genero, plataforma)).thenReturn(listaVideojuegos);
-
-        List<VideoJuegosResponseDto> actualVideoJuegoResponses = juegosService.findAll(null, genero, plataforma);
-
-        assertIterableEquals(listaVideojuegosResponseDto, actualVideoJuegoResponses);
-
-        verify(juegosRepository, only()).findByGeneroAndPlataforma(genero, plataforma);
+        verify(juegosRepository, times(1)).findByNombreAndClienteContainsIgnoreCase(nombre, cliente);
 
     }
 
@@ -231,15 +192,18 @@ class VideoJuegosServiceImplTest {
 
         VideoJuegosCreateDto videoJuegosCreateDto = VideoJuegosCreateDto.builder()
                 .nombre("FC 26")
+                .cliente("Pedro")
                 .precio(100.0)
                 .fecha_lanzamiento(LocalDate.of(2026, 9, 19))
                 .genero("Deportes")
                 .plataforma(VideoJuegos.Plataforma.PS5)
                 .edad(3)
                 .build();
+        when(clienteService.findByNombre("Pedro")).thenReturn(cliente3);
 
         VideoJuegos expectedVideoJuegos = VideoJuegos.builder()
                 .id(1L)
+                .cliente(cliente3)
                 .nombre("FC 26")
                 .precio(100.0)
                 .fecha_lanzamiento(LocalDate.of(2026, 9, 19))
@@ -250,15 +214,17 @@ class VideoJuegosServiceImplTest {
 
         VideoJuegosResponseDto expectedVideoJuegosResponseDto = videoJuegosMapper.toVideoJuegosResponseDto(expectedVideoJuegos);
 
-        when(juegosRepository.nextId()).thenReturn(1L);
-        when(juegosRepository.save(any(VideoJuegos.class))).thenReturn(expectedVideoJuegos);
+        when(juegosRepository
+                .save(any(VideoJuegos.class)))
+                .thenReturn(expectedVideoJuegos);
 
         VideoJuegosResponseDto actualVideoJuegosResponseDto = juegosService.save(videoJuegosCreateDto);
 
         assertEquals(expectedVideoJuegosResponseDto, actualVideoJuegosResponseDto);
 
-        verify(juegosRepository).nextId();
-        verify(juegosRepository).save(videoJuegosCaptor.capture());
+        verify(juegosRepository)
+                .save(videoJuegosCaptor
+                        .capture());
 
         VideoJuegos capturedVideoJuegos = videoJuegosCaptor.getValue();
         assertEquals(expectedVideoJuegos.getNombre(), capturedVideoJuegos.getNombre());

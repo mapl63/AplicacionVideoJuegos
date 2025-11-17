@@ -3,7 +3,6 @@ package com.example.aplicacionvideojuegos.videoJuegos.controllers;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosCreateDto;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosResponseDto;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosUpdateDto;
-import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
 import com.example.aplicacionvideojuegos.videoJuegos.services.VideoJuegoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,18 +21,18 @@ import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("api/${api.version}/videoJuegos")
+@RequestMapping("api/${API_VERSION:v1}/videoJuegos")
 @RestController
 
 public class VideoJuegosController {
+
     private final VideoJuegoService videoJuegoService;
 
     @GetMapping
     public ResponseEntity<List<VideoJuegosResponseDto>> getAllVideoJuegos(@RequestParam(required = false) String nombre,
-                                                               @RequestParam(required = false) String genero,
-                                                               @RequestParam(required = false) VideoJuegos.Plataforma plataforma) {
-        log.info("Buscando videoJuegos por el nombre {} y genero {} y plataforma {}", nombre, genero, plataforma);
-        return ResponseEntity.ok(videoJuegoService.findAll(nombre, genero, plataforma));
+                                                               @RequestParam(required = false) String cliente) {
+        log.info("Buscando videoJuegos por el nombre {} y cliente {}", nombre, cliente);
+        return ResponseEntity.ok(videoJuegoService.findAll(nombre, cliente));
     }
 
     @GetMapping("/{id}")
@@ -52,9 +51,17 @@ public class VideoJuegosController {
         }*/
         var saved =  videoJuegoService.save(videoJuegosCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-
-
     }
+
+    /*
+     * Actualiza una tarjeta
+     *
+     * @param id      de la tarjeta a actualizar
+     * @param tarjetaUpdateDto con los datos a actualizar
+     * @return TarjetaResponseDto actualizada
+     * @throws TarjetaNotFoundException si no existe la tarjeta (404)
+     * @throws TarjetaBadRequestException si la tarjeta no es correcta (400)
+     */
 
     @PutMapping("/{id}")
     public ResponseEntity<VideoJuegosResponseDto> update( @PathVariable Long id,@Valid @RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
@@ -70,12 +77,27 @@ public class VideoJuegosController {
         return ResponseEntity.ok(videoJuegoService.update(id, videoJuegosUpdateDto));
     }
 
+    /*
+     * Borra una tarjeta por su id
+     *
+     * @param id de la tarjeta a borrar
+     * @return ResponseEntity con status 204 No Content si se ha conseguido borradr
+     * @throws TarjetaNotFoundException si no existe la tarjeta (404)
+     */
+
     @DeleteMapping("/{id}")
     public ResponseEntity<VideoJuegosResponseDto> delete(@PathVariable Long id){
         log.info("Eliminando videojuegos por id {}", id);
         videoJuegoService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    /*
+     * Manejador de excepciones de Validación: 400 Bad Request
+     *
+     * @param ex excepción
+     * @return Mapa de errores de validación con el campo y el mensaje
+     */
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

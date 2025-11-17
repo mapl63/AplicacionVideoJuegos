@@ -16,12 +16,18 @@ public class VideoJuegosResponseDto {
 
     private Long id;
 
+    private String cliente;
+
     private String nombre;
+
     private Double precio;
+
     private LocalDate fecha_lanzamiento;
+
     private String genero;
 
     private VideoJuegos.Plataforma plataforma;
+
     private Integer edad;
 
 }

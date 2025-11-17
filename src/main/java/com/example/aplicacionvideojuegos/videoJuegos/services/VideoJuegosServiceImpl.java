@@ -1,5 +1,6 @@
 package com.example.aplicacionvideojuegos.videoJuegos.services;
 
+import com.example.aplicacionvideojuegos.clientes.services.ClienteService;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosCreateDto;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosResponseDto;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosUpdateDto;
@@ -25,47 +26,31 @@ public class VideoJuegosServiceImpl implements VideoJuegoService{
 
     private final VideoJuegosRepository videoJuegosRepository;
     private final VideoJuegosMapper videoJuegosMapper;
+    private final ClienteService clienteService;
 
     @Override
-    public List<VideoJuegosResponseDto> findAll(String nombre, String genero, VideoJuegos.Plataforma plataforma) {
+    public List<VideoJuegosResponseDto> findAll(String nombre, String cliente) {
         //Mostrar todos los juegos
-        if((nombre == null || nombre.isEmpty()) && (genero == null || genero.isEmpty()) && (plataforma == null)) {
-            log.info("Buscamos todos los videojuegos");
+        if((nombre == null || nombre.isEmpty()) && (cliente == null || cliente.isEmpty())){
+            log.info("Buscando todos los VideoJuegos");
             return videoJuegosMapper.toVideoJuegosResponseDtoList(videoJuegosRepository.findAll());
         }
 
-        //Mostrar juegos por nombre
-        if ((nombre != null && !nombre.isEmpty()) && (genero == null || genero.isEmpty()) &&  (plataforma == null)) {
-            log.info("Buscamos los videojuegos por nombre: " + nombre);
-            return videoJuegosMapper.toVideoJuegosResponseDtoList(videoJuegosRepository.findAllByNombre(nombre));
+        //Mostrar por nombre
+        if((nombre != null && !nombre.isEmpty()) && (cliente == null || cliente.isEmpty())){
+            log.info("Buscando VideoJuegos por nombre: {}", nombre);
+            return videoJuegosMapper.toVideoJuegosResponseDtoList(videoJuegosRepository.findByNombre(nombre));
         }
 
-        //Mostrar juegos por genero
-        if((genero != null && !genero.isEmpty()) && (nombre == null || nombre.isEmpty()) && (plataforma == null)) {
-            log.info("Buscamos todos los videojuegos por genero: " + genero);
-            return videoJuegosMapper.toVideoJuegosResponseDtoList(videoJuegosRepository.findAllByGenero(genero));
+        //Mostrar por cliente
+        if(nombre == null || nombre.isEmpty()){
+            log.info("Buscando VideoJuegos por cliente: {}", cliente);
+            return videoJuegosMapper.toVideoJuegosResponseDtoList(videoJuegosRepository.findByClienteContainsIgnoreCase(cliente));
         }
 
-        //Mostrar por plataforma
-        if((plataforma != null)&&(nombre == null || nombre.isEmpty()) && (genero == null || genero.isEmpty())) {
-            log.info("Buscamos los videojuegos por plataforma: " + plataforma);
-            return videoJuegosMapper.toVideoJuegosResponseDtoList(videoJuegosRepository.findAllByPlataforma(plataforma));
-        }
-
-        //Mostrar por nombre y plataforma
-        if((nombre != null && !nombre.isEmpty()) && (plataforma != null) && (genero == null || genero.isEmpty())) {
-            log.info("Buscamos los videojuegos por nombre: " + nombre +  " y por plataforma: " + plataforma);
-            return videoJuegosMapper.toVideoJuegosResponseDtoList(videoJuegosRepository.findByNombreAndPlataforma(nombre, plataforma));
-        }
-
-        //Mostrar por genero y plataforma
-        if ((genero != null && !genero.isEmpty()) && (plataforma != null) && (nombre == null || nombre.isEmpty())) {
-            log.info("Buscamos por genero" + genero + " y plataforma: " + plataforma);
-            return videoJuegosMapper.toVideoJuegosResponseDtoList(videoJuegosRepository.findByGeneroAndPlataforma(genero, plataforma));
-        }
-
-        log.info("Buscamos el videojuego por nombre: " + nombre + " por genero: " + genero);
-        return videoJuegosMapper.toVideoJuegosResponseDtoList(videoJuegosRepository.findByNombreAndGenero(nombre, genero));
+        //Mostrar por nombre y cliente
+        log.info("Buscando VideoJuegos por nombre: {} y cliente: {}", nombre, cliente);
+        return videoJuegosMapper.toVideoJuegosResponseDtoList(videoJuegosRepository.findByNombreAndClienteContainsIgnoreCase(nombre, cliente));
 
     }
 
@@ -84,9 +69,8 @@ public class VideoJuegosServiceImpl implements VideoJuegoService{
     public VideoJuegosResponseDto save(VideoJuegosCreateDto videoJuegosCreateDto) {
         log.info("Guardando nuevo VideoJuego: {}" ,  videoJuegosCreateDto);
 
-        Long id = videoJuegosRepository.nextId();
-
-        VideoJuegos videojuegoNuevo = videoJuegosMapper.toVideoJuegosCreated(id, videoJuegosCreateDto);
+        var cliente = clienteService.findByNombre(videoJuegosCreateDto.getCliente());
+        VideoJuegos videojuegoNuevo = videoJuegosMapper.toVideoJuegosCreated(videoJuegosCreateDto, cliente);
 
         return videoJuegosMapper.toVideoJuegosResponseDto(videoJuegosRepository.save(videojuegoNuevo));
     }
@@ -106,7 +90,7 @@ public class VideoJuegosServiceImpl implements VideoJuegoService{
     @CacheEvict(key = "#id")
     @Override
     public void deleteById(Long id) {
-        log.info("Eliminando el VideoJuego por id: {}" ,id);
+        log.debug("Eliminando el VideoJuego por id: {}" ,id);
 
         videoJuegosRepository.findById(id).orElseThrow(() -> new VideoJuegosNotFound(id));
 

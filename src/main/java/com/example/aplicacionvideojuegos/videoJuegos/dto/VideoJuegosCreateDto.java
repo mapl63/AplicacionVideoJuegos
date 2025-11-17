@@ -12,6 +12,9 @@ import java.time.LocalDate;
 @Data
 public class VideoJuegosCreateDto {
 
+    @NotBlank(message = "El cliente no puede estar vacío")
+    private final String cliente;
+
     @NotBlank(message = "El nombre no puede estar vacío")
     private final String nombre;
 

@@ -1,5 +1,6 @@
 package com.example.aplicacionvideojuegos.videoJuegos.mappers;
 
+import com.example.aplicacionvideojuegos.clientes.models.Cliente;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosCreateDto;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosResponseDto;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosUpdateDto;
@@ -12,9 +13,9 @@ import java.util.List;
 @Slf4j
 @Component
 public class VideoJuegosMapper {
-    public VideoJuegos toVideoJuegosCreated(Long id, VideoJuegosCreateDto videojuegosCreateDto) {
+    public VideoJuegos toVideoJuegosCreated(VideoJuegosCreateDto videojuegosCreateDto, Cliente cliente) {
         return VideoJuegos.builder()
-                .id(id)
+                .cliente(cliente)
                 .nombre(videojuegosCreateDto.getNombre())
                 .precio(videojuegosCreateDto.getPrecio())
                 .fecha_lanzamiento(videojuegosCreateDto.getFecha_lanzamiento())
@@ -27,6 +28,7 @@ public class VideoJuegosMapper {
     public VideoJuegos toVideoJuegosUpdate(VideoJuegosUpdateDto videojuegosUpdateDto, VideoJuegos videojuegos) {
         return VideoJuegos.builder()
                 .id(videojuegos.getId())
+                .cliente(videojuegos.getCliente())
                 .nombre(videojuegosUpdateDto.getNombre() != null ? videojuegosUpdateDto.getNombre() : videojuegos.getNombre())
                 .precio(videojuegosUpdateDto.getPrecio() != null ? videojuegosUpdateDto.getPrecio() : videojuegos.getPrecio())
                 .genero(videojuegosUpdateDto.getGenero() != null ? videojuegosUpdateDto.getGenero() : videojuegos.getGenero())
@@ -40,6 +42,7 @@ public class VideoJuegosMapper {
         log.info("Entrando a VideoJuegosResponseDto para comprobar que entra en el mapper");
         return VideoJuegosResponseDto.builder()
                 .id(videojuegos.getId())
+                .cliente(videojuegos.getCliente().getNombre())
                 .nombre(videojuegos.getNombre())
                 .precio(videojuegos.getPrecio())
                 .fecha_lanzamiento(videojuegos.getFecha_lanzamiento())
