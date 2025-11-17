@@ -39,8 +39,10 @@ public class Cliente {
     @Builder.Default
     private Boolean isDeleted = false;
 
-    @OneToMany(mappedBy = "cliente")
-    @JsonIgnoreProperties("cliente")
+    @OneToMany(mappedBy = "videoJuegos")
+    @JsonIgnoreProperties("videoJuegos")
     private List<VideoJuegos> videoJuegos;
+
+
 
 }

@@ -21,6 +21,9 @@ public class VideoJuegos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
 
     @Column(nullable = false, length = 55)
     private String nombre;
@@ -48,9 +51,5 @@ public class VideoJuegos {
     public enum Plataforma {
         PS4, PS5, PC, XBOXONE, NINTENDO
     }
-
-    @ManyToOne
-    @JoinColumn(name = "cliente_id")
-    private Cliente cliente;
 
 }

@@ -24,7 +24,7 @@ public class ClientesMapper {
                 .id(cliente.getId())
                 .nombre(dto.getNombre() != null ? dto.getNombre() : cliente.getNombre())
                 .fechaCreacion(cliente.getFechaCreacion())
-                .fechaActualizacion(cliente.getFechaActualizacion())
+                .fechaActualizacion(LocalDateTime.now())
                 .isDeleted(dto.getIsDeleted() != null ? dto.getIsDeleted() : cliente.getIsDeleted())
                 .build();
     }
