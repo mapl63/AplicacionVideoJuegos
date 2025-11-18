@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @Slf4j
+
 @DataJpaTest
 class ClienteRepositoryTest {
 
