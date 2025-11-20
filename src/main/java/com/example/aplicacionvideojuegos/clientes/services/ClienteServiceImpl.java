@@ -57,9 +57,13 @@ public class ClienteServiceImpl implements ClienteService {
     @CachePut
     public Cliente save(ClienteRequestDto clienteRequestDto) {
         log.info("Guardando cliente {}", clienteRequestDto);
-        return clienteRepository
-                .save(clientesMapper
-                        .toClienteCreated(clienteRequestDto));
+
+        clienteRepository.findByNombreEqualsIgnoreCase(clienteRequestDto.getNombre())
+                .ifPresent(cli -> {
+                    throw new ClienteConflictException("Ya existe un cliente con el nombre " + clienteRequestDto.getNombre());
+                });
+        return clienteRepository.save(clientesMapper.toClienteCreated(clienteRequestDto));
+
     }
 
     @Override
@@ -68,9 +72,13 @@ public class ClienteServiceImpl implements ClienteService {
         log.info("Actualizando cliente: {}", clienteRequestDto);
         Cliente clienteActual = findById(id);
 
-        return clienteRepository
-                .save(clientesMapper
-                        .toClienteUpdated(clienteRequestDto, clienteActual));
+        clienteRepository.findByNombreEqualsIgnoreCase(clienteRequestDto.getNombre())
+                .ifPresent(cli -> {
+                    if (!cli.getId().equals(id)) {
+                        throw new ClienteConflictException("Ya existe un cliente con el nombre " + clienteRequestDto.getNombre());
+                    }
+                });
+        return clienteRepository.save(clientesMapper.toClienteUpdated(clienteRequestDto, clienteActual));
     }
 
     @Override

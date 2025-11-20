@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ClienteNotFoundException extends ClienteException {
 
     public ClienteNotFoundException(Long id) {
-        super("Cliente con id " + id + " not encontrado");
+        super("Cliente con id " + id + " no encontrado");
     }
 
     public ClienteNotFoundException(String cliente) {

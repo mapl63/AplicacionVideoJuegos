@@ -12,10 +12,19 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Pruebas unitarias del {@link VideoJuegosMapper}.
+ */
 @Slf4j
 class VideoJuegosMapperTest {
 
+    /**
+     * Mapper real usado en los tests.
+     */
     private final VideoJuegosMapper videoJuegosMapper = new VideoJuegosMapper();
+    /**
+     * Cliente auxiliar para relacionar los videojuegos.
+     */
     private final Cliente cliente = Cliente.builder()
             .id(1L)
             .nombre("Cliente de Prueba")
@@ -27,6 +36,7 @@ class VideoJuegosMapperTest {
     void toVideoJuegosCreated() {
         log.info("Test del Mapper creando un videojuego");
 
+        // Arrange: DTO con la información necesaria para crear la entidad
         VideoJuegosCreateDto videojuegosCreateDto = VideoJuegosCreateDto.builder()
                 .cliente("Cliente de Prueba")
                 .nombre("Juego de Prueba")
@@ -37,8 +47,10 @@ class VideoJuegosMapperTest {
                 .edad(18)
                 .build();
 
+        // Act: convertimos el DTO en entidad
         var resultado = videoJuegosMapper.toVideoJuegosCreated(videojuegosCreateDto,cliente);
 
+        // Assert: cada campo debe coincidir
         assertAll(
                 () -> assertEquals(cliente, resultado.getCliente()),
                 () -> assertEquals(videojuegosCreateDto.getNombre(), resultado.getNombre()),
@@ -54,6 +66,7 @@ class VideoJuegosMapperTest {
     void toVideoJuegosUpdate() {
         log.info("Test del Mapper actualizando un videojuego");
 
+        // Arrange: DTO con los cambios, entidad actual a actualizar
         VideoJuegosUpdateDto videojuegosUpdateDto = VideoJuegosUpdateDto.builder()
                 .nombre("Juego Actualizado")
                 .precio(49.99)
@@ -73,8 +86,10 @@ class VideoJuegosMapperTest {
                 .edad(videojuegosUpdateDto.getEdad())
                 .build();
 
+        // Act: aplicamos los cambios sobre la entidad existente
         var resultado = videoJuegosMapper.toVideoJuegosUpdate(videojuegosUpdateDto, videojuegoActualizado);
 
+        // Assert: se actualizan los campos editables y se preserva el resto
         assertAll(
                 () -> assertEquals(videojuegoActualizado.getId(), resultado.getId()),
                 () -> assertEquals(videojuegoActualizado.getCliente().getNombre(), resultado.getCliente().getNombre()),
@@ -91,6 +106,7 @@ class VideoJuegosMapperTest {
     @Test
     void toVideoJuegosResponseDto() {
         log.info("Test del Mapper responseDTO de un videojuego");
+        // Arrange: entidad completa que debe transformarse a DTO
         VideoJuegos videojuego = VideoJuegos.builder()
                 .id(1L)
                 .cliente(cliente)
@@ -102,7 +118,9 @@ class VideoJuegosMapperTest {
                 .edad(18)
                 .build();
 
+        // Act: convertimos la entidad a DTO de respuesta
         var resultado = videoJuegosMapper.toVideoJuegosResponseDto(videojuego);
+        // Assert: cada campo coincide
         assertAll(
                 () -> assertEquals(videojuego.getId(), resultado.getId()),
                 () -> assertEquals(videojuego.getCliente().getNombre(), resultado.getCliente()),

@@ -7,59 +7,144 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.jdbc.Sql;
 
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Pruebas de integración de {@link ClienteRepository} usando {@link DataJpaTest}.
+ * Cada test se ejecuta con la base de datos en memoria inicializada mediante reset.sql.
+ */
 @Slf4j
-
+@Sql(value = {"/reset.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @DataJpaTest
 class ClienteRepositoryTest {
+
+    /**
+     * Cliente de referencia que se persiste antes de cada prueba.
+     */
+    private final Cliente cliente = Cliente.builder().nombre("Marius").build();
 
     @Autowired
     private ClienteRepository clienteRepository;
 
-    private Cliente cliente;
+    @Autowired
+    private TestEntityManager entityManager;
+
 
     @BeforeEach
     void setUp() {
-        cliente = Cliente.builder()
-                .nombre("Marius")
-                .isDeleted(false)
-                .build();
+        // Arrange: persistimos un cliente para que exista en la BD de pruebas
+        entityManager.persist(cliente);
+        entityManager.flush();
+    }
 
-        clienteRepository.save(cliente);
+    @Test
+    void findAll() {
+        log.info("buscamos todos los clientes");
+
+        // Act: consultamos todos los registros
+        List<Cliente> clientes = clienteRepository.findAll();
+
+        // Assert: la lista no es nula ni vacía
+        assertAll("findAll",
+                () -> assertNotNull(clientes),
+                () -> assertFalse(clientes.isEmpty())
+        );
+    }
+
+
+
+    @Test
+    void findByNombre() {
+        log.info("buscamos por nombre de cliente");
+        // Act: filtramos por nombre parcial
+        List<Cliente> clientes = clienteRepository.findByNombreContainingIgnoreCase("Marius");
+
+        // Assert: existe al menos un resultado y coincide el nombre
+        assertAll("findByNombre",
+                () -> assertNotNull(clientes),
+                () -> assertFalse(clientes.isEmpty()),
+                () -> assertEquals("Marius", clientes.getFirst().getNombre())
+        );
+
+    }
+
+    @Test
+    void findById() {
+        log.info("Buscando un cliente por id: ");
+        // Act: buscamos el cliente con ID 1
+        Cliente cliente = clienteRepository.findById(1L).orElse(null);
+
+        // Assert: el cliente existe y mantiene el nombre esperado
+        assertAll("findById",
+                ()-> assertNotNull(cliente),
+                () -> assertEquals("Marius", cliente.getNombre())
+                );
     }
 
 
     @Test
-    void findByNombreEqualsIgnoreCase() {
-        log.info("buscamos un cliente por nombre sin importar mayusculas o minusculas");
-        Cliente foundCliente = clienteRepository.findByNombreEqualsIgnoreCase("marius").orElse(null);
-        log.info("Cliente encontrado: {}", foundCliente);
-        assert foundCliente != null;
-        assert foundCliente.getNombre().equals("Marius");
+    void findByIdNotFound(){
+        log.info("Metodo para buscar un cliente que no existe");
+        // Act: obtenemos un ID que no está en la BD
+        Cliente cliente = clienteRepository.findById(100L).orElse(null);
+        // Assert: no se devuelve registro
+        assertNull(cliente);
 
     }
 
     @Test
-    void findByNombreEqualsIgnoreCaseAndIsDeletedFalse() {
+    void save() {
+        log.info("Guardando un nuevo cliente");
+        // Act: persistimos un nuevo cliente
+        Cliente cliente = clienteRepository.save(Cliente.builder().nombre("Pedro").build());
+
+        // Assert: se genera un registro con el nombre esperado
+        assertAll("save",
+                () -> assertNotNull(cliente),
+                () -> assertEquals("Pedro", cliente.getNombre())
+        );
     }
 
     @Test
-    void findByNombreContainingIgnoreCase() {
+    void update(){
+        log.info("Actualizando un cliente que ya existe");
+
+        // Arrange: obtenemos el cliente existente
+        var clienteExistente = clienteRepository.findById(1L).orElse(null);
+
+        // Act: guardamos la entidad con el nuevo nombre
+        Cliente clienteActualizar = Cliente.builder()
+                .id(clienteExistente.getId())
+                .nombre("Pedro").build();
+
+        Cliente clienteActualizado = clienteRepository.save(clienteActualizar);
+
+        // Assert: el nombre se actualiza manteniendo el registro
+        assertAll("update",
+                () -> assertNotNull(clienteExistente),
+                () -> assertEquals(clienteActualizar.getNombre(), clienteActualizado.getNombre())
+        );
     }
 
     @Test
-    void findByNombreContainingIgnoreCaseAndIsDeletedFalse() {
-    }
+    void delete(){
+        log.info("Eliminando un cliente que ya existe");
 
-    @Test
-    void findByIsDeleted() {
-    }
+        // Arrange: recuperamos el cliente a eliminar
+        var clienteBorrar = clienteRepository.findById(1L).orElse(null);
 
-    @Test
-    void updateIsDeleteToTrueById() {
-    }
+        // Act: se elimina y luego se vuelve a consultar para comprobarlo
+        clienteRepository.delete(clienteBorrar);
 
-    @Test
-    void existsVideoJuegoById() {
+        Cliente clienteBorrado = clienteRepository.findById(1L).orElse(null);
+
+        // Assert: el registro ya no existe
+        assertNull(clienteBorrado);
+
     }
 }
