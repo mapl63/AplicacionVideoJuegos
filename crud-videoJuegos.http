@@ -34,6 +34,7 @@ content-type: application/json
 
 {
   "nombre": "Horizon Forbidden West",
+  "cliente": "Juan Perez",
   "precio": 69.99,
   "fecha_lanzamiento": "2022-02-18",
   "genero": "Aventura",
@@ -44,11 +45,12 @@ content-type: application/json
 
 
 ### actualizando total con put
-PUT http://localhost:3005/api/v1/videoJuegos/7
+PUT http://localhost:3005/api/v1/videoJuegos/1
 content-type: application/json
 
 {
   "nombre": "Star Wars BattleFront",
+
   "precio": 79.99,
   "fecha_lanzamiento": "2019-03-13",
   "genero": "Rpg",

@@ -14,7 +14,9 @@ import java.util.*;
 @Component
 public class VideoJuegosMapper {
     public VideoJuegos toVideoJuegosCreated(VideoJuegosCreateDto videojuegosCreateDto, Cliente cliente) {
+        log.info("Creando VideoJuegos en el mapper");
         return VideoJuegos.builder()
+                .id(null)
                 .cliente(cliente)
                 .nombre(videojuegosCreateDto.getNombre())
                 .precio(videojuegosCreateDto.getPrecio())
@@ -31,6 +33,7 @@ public class VideoJuegosMapper {
                 .cliente(videojuegos.getCliente())
                 .nombre(videojuegosUpdateDto.getNombre() != null ? videojuegosUpdateDto.getNombre() : videojuegos.getNombre())
                 .precio(videojuegosUpdateDto.getPrecio() != null ? videojuegosUpdateDto.getPrecio() : videojuegos.getPrecio())
+                .fecha_lanzamiento(videojuegosUpdateDto.getFecha_lanzamiento() != null ? videojuegosUpdateDto.getFecha_lanzamiento() : videojuegos.getFecha_lanzamiento())
                 .genero(videojuegosUpdateDto.getGenero() != null ? videojuegosUpdateDto.getGenero() : videojuegos.getGenero())
                 .plataforma(videojuegosUpdateDto.getPlataforma() != null ? videojuegosUpdateDto.getPlataforma() : videojuegos.getPlataforma())
                 .edad(videojuegosUpdateDto.getEdad() != null ? videojuegosUpdateDto.getEdad() : videojuegos.getEdad())
