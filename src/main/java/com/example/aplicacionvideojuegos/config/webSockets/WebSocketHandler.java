@@ -34,7 +34,7 @@ public class WebSocketHandler extends TextWebSocketHandler  implements SubProtoc
 
         sessions.add(session);
 
-        TextMessage message = new TextMessage("Updates Web socket: " + entity + " - (App de VideoJuegos");
+        TextMessage message = new TextMessage("Updates Web socket: " + entity + " - (App de VideoJuegos)");
 
         log.info("Servidor enviá: {}", message);
 

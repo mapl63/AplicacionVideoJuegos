@@ -9,6 +9,10 @@ import com.example.aplicacionvideojuegos.videoJuegos.exceptions.VideoJuegosNotFo
 import com.example.aplicacionvideojuegos.videoJuegos.mappers.VideoJuegosMapper;
 import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
 import com.example.aplicacionvideojuegos.videoJuegos.repositories.VideoJuegosRepository;
+import com.example.aplicacionvideojuegos.config.webSockets.WebSocketConfig;
+import com.example.aplicacionvideojuegos.config.webSockets.WebSocketHandler;
+import com.example.aplicacionvideojuegos.webSockets.notifications.mappers.VideoJuegosNotificationMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +20,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +38,7 @@ import static org.mockito.Mockito.*;
  */
 @Slf4j
 @ExtendWith(MockitoExtension.class)
+
 class VideoJuegosServiceImplTest {
 
     /**
@@ -81,6 +88,7 @@ class VideoJuegosServiceImplTest {
     @Mock
     private ClienteService clienteService;
 
+
     @Spy
     private VideoJuegosMapper videoJuegosMapper;
 
@@ -90,10 +98,28 @@ class VideoJuegosServiceImplTest {
     @Captor
     private ArgumentCaptor<VideoJuegos> videoJuegosCaptor;
 
+    @Mock
+    private WebSocketConfig webSocketConfig;
+
+    @Mock
+    private VideoJuegosNotificationMapper videoJuegosNotificationMapper;
+
+    @Mock
+    private ObjectMapper objectMapper;
+
+    @Mock
+    private WebSocketHandler webSocketService;
+
+
     @BeforeEach
     void setUp() {
+
         videoJuegosResponse1 = videoJuegosMapper.toVideoJuegosResponseDto(videoJuegos1);
+
+        juegosService.setWebSocketService(webSocketService);
     }
+
+
 
     @Test
     void findAll_devolverTodasLasTarjetas_NoPasarNingunParametro() {
@@ -220,20 +246,21 @@ class VideoJuegosServiceImplTest {
     }
 
     @Test
-    void saveVideoJuegosConValidosParametros() {
+    void saveVideoJuegosConValidosParametros() throws IOException {
         log.info("Guardando Videojuego con parametros validos");
 
         // Arrange: DTO de creación y comportamientos del repositorio/servicios
         VideoJuegosCreateDto videoJuegosCreateDto = VideoJuegosCreateDto.builder()
-                .nombre("FC 26")
+
                 .cliente("Pedro")
+                .nombre("FC 26")
                 .precio(100.0)
                 .fecha_lanzamiento(LocalDate.of(2026, 9, 19))
-                .genero("Deportes")
+                .genero("DEPORTES")
                 .plataforma(VideoJuegos.Plataforma.PS5)
                 .edad(3)
                 .build();
-        when(clienteService.findByNombre("Pedro")).thenReturn(cliente3);
+
 
         VideoJuegos expectedVideoJuegos = VideoJuegos.builder()
                 .id(1L)
@@ -246,32 +273,30 @@ class VideoJuegosServiceImplTest {
                 .edad(3)
                 .build();
 
-        VideoJuegosResponseDto expectedVideoJuegosResponseDto = videoJuegosMapper.toVideoJuegosResponseDto(expectedVideoJuegos);
-
-        when(juegosRepository
-                .save(any(VideoJuegos.class)))
-                .thenReturn(expectedVideoJuegos);
+        VideoJuegosResponseDto expectedVideoJuegosResponse = videoJuegosMapper.toVideoJuegosResponseDto(expectedVideoJuegos);
+        when(clienteService.findByNombre(videoJuegosCreateDto.getCliente())).thenReturn(cliente3);
+        when(juegosRepository.save(any(VideoJuegos.class))).thenReturn(expectedVideoJuegos);
+        doNothing().when(webSocketService).sendMessage(any());
 
         // Act: invocamos el servicio para guardar el videojuego
-        VideoJuegosResponseDto actualVideoJuegosResponseDto = juegosService.save(videoJuegosCreateDto);
+        VideoJuegosResponseDto actualVideoJuegosResponse = juegosService.save(videoJuegosCreateDto);
 
         // Assert: el DTO devuelto es igual al esperado
-        assertEquals(expectedVideoJuegosResponseDto, actualVideoJuegosResponseDto);
+        assertEquals(expectedVideoJuegosResponse, actualVideoJuegosResponse);
 
         // Verify: capturamos la entidad persistida para revisar sus campos
-        verify(juegosRepository)
-                .save(videoJuegosCaptor
-                        .capture());
+        verify(juegosRepository).save(videoJuegosCaptor.capture());
 
         VideoJuegos capturedVideoJuegos = videoJuegosCaptor.getValue();
+
         assertEquals(expectedVideoJuegos.getNombre(), capturedVideoJuegos.getNombre());
     }
 
     @Test
-    void update_VideoJuego_ConIdValida() {
+    void update_VideoJuego_ConIdValida() throws IOException {
         log.info("Actualizando Videojuego con parametro valido");
 
-        Long id = 1L;
+        Long id = 2L;
 
         String nombre = "GTA VI - Edición Especial";
 
@@ -285,11 +310,10 @@ class VideoJuegosServiceImplTest {
         VideoJuegos videoJuegoActualizado = videoJuegosMapper.toVideoJuegosUpdate(videoJuegosUpdateDto, videoJuegos1);
         when(juegosRepository.save(any(VideoJuegos.class))).thenReturn(videoJuegoActualizado);
 
+        videoJuegosResponse1.setNombre(nombre);
+
         VideoJuegosResponseDto expectedVideoJuegosResponse = videoJuegosResponse1;
-
-        expectedVideoJuegosResponse.setNombre(nombre);
-
-
+        doNothing().when(webSocketService).sendMessage(any());
 
         // Act: actualizamos el videojuego
         VideoJuegosResponseDto actualVideoJuegosResponse = juegosService.update(id, videoJuegosUpdateDto);
@@ -333,19 +357,29 @@ class VideoJuegosServiceImplTest {
     }
 
     @Test
-    void deleteByIdConParametroValido() {
+    void deleteByIdConParametroValido() throws IOException {
+
         log.info("Eliminando Videojuego con parametro valido");
 
-        Long id = 1L;
+        long id = 7L;
 
-        // Arrange: el repositorio encuentra la entidad antes de borrarla
-        when(juegosRepository.findById(id)).thenReturn(Optional.of(videoJuegos1));
+        VideoJuegos videoJuegosAEliminar = VideoJuegos.builder()
+                .id(id)
+                .cliente(cliente1)
+                .nombre("GTA VI")
+                .precio(120.0)
+                .fecha_lanzamiento(LocalDate.of(2026, 5, 26))
+                .genero("Acción")
+                .plataforma(VideoJuegos.Plataforma.PS5)
+                .edad(18)
+                .build();
 
-        // Act & Assert: eliminar no debe lanzar excepciones
+        when(juegosRepository.findById(id)).thenReturn(Optional.of(videoJuegosAEliminar));
+        doNothing().when(webSocketService).sendMessage(any());
+
         assertThatCode(() -> juegosService.deleteById(id))
                 .doesNotThrowAnyException();
 
-        // Verify: se invoca a deleteById
         verify(juegosRepository).deleteById(id);
 
     }
@@ -360,7 +394,6 @@ class VideoJuegosServiceImplTest {
         when(juegosRepository.findById(id)).thenReturn(Optional.empty());
 
         // Act + Assert: se lanza la excepción esperada
-        var resultado = assertThrows(VideoJuegosNotFound.class, () -> juegosService.deleteById(id));
 
         assertThatThrownBy(() -> juegosService.deleteById(id))
                 .isInstanceOf(VideoJuegosNotFound.class)

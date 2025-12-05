@@ -72,7 +72,7 @@ content-type: application/json
 }
 
 ### borrando por id
-DELETE http://localhost:3005/api/v1/videoJuegos/8
+DELETE http://localhost:3005/api/v1/videoJuegos/1
 
 ###
 

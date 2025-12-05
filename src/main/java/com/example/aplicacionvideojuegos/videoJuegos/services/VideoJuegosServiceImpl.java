@@ -24,7 +24,6 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import javax.management.Notification;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,7 +40,6 @@ public class VideoJuegosServiceImpl implements VideoJuegoService, InitializingBe
     private final WebSocketConfig webSocketConfig;
     private final ObjectMapper objectMapper;
     private final VideoJuegosNotificationMapper videoJuegosNotificationMapper;
-    private final org.springframework.web.socket.WebSocketHandler webSocketHandler;
     private WebSocketHandler webSocketService;
 
     public void afterPropertiesSet() {
@@ -123,15 +121,15 @@ public class VideoJuegosServiceImpl implements VideoJuegoService, InitializingBe
     public void deleteById(Long id) {
         log.debug("Eliminando el VideoJuego por id: {}" ,id);
 
-        videoJuegosRepository.findById(id).orElseThrow(() -> new VideoJuegosNotFound(id));
+        VideoJuegos videoJuegos = videoJuegosRepository.findById(id).orElseThrow(() -> new VideoJuegosNotFound(id));
 
         videoJuegosRepository.deleteById(id);
 
-        onChange(Notificacion.Tipo.DELETE, VideoJuegos.builder().id(id).build());
+        onChange(Notificacion.Tipo.DELETE, videoJuegos);
     }
 
     void onChange(Notificacion.Tipo tipo, VideoJuegos data) {
-        log.debug("Servicio de productos onChange con tipo: {} y datos: {}", tipo, data);
+        log.debug("Servicio de productos onChange con tipo: {} y datos:  id={}, nombre = {}", tipo, data.getId(), data.getNombre());
 
         if (webSocketService == null){
             log.warn("No se ha podido enviar la notificación a los clientes ws, no se ha encontrado el servicio");
@@ -140,9 +138,9 @@ public class VideoJuegosServiceImpl implements VideoJuegoService, InitializingBe
 
         try {
             Notificacion<VideoJuegosNotificationResponse> notificacion = new Notificacion<>(
-              "VideoJuegos",
-                tipo,
-                videoJuegosNotificationMapper.toVideoJuegosNotificationDto(data),
+                    "VideoJuegos",
+                    tipo,
+                    videoJuegosNotificationMapper.toVideoJuegosNotificationDto(data),
                     LocalDateTime.now().toString()
             );
 

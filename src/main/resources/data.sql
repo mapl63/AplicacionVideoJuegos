@@ -17,16 +17,16 @@ create table TARJETAS (
 */
 
 INSERT INTO CLIENTES (nombre) VALUES ('Juan Perez'),
-                                   ('Maria Gomez'),
-                                   ('Carlos Sanchez'),
-                                   ('Ana Martinez'),
-                                   ('Luis Rodriguez');
+                                     ('Maria Gomez'),
+                                     ('Carlos Sanchez'),
+                                     ('Ana Martinez'),
+                                     ('Luis Rodriguez');
 
 
 
-INSERT INTO VIDEOJUEGOS (id,cliente_id, nombre, precio, fecha_lanzamiento, genero, plataforma, edad)
-    VALUES (1, 1, 'The Legend of Zelda: Breath of the Wild', 59.99, '2017-03-03', 'Aventura', 'NINTENDO', 12),
-           (2, 2, 'God of War', 49.99, '2018-04-20', 'Accion', 'PS4', 18),
-           (3, 3, 'Red Dead Redemption 2', 39.99, '2018-10-26', 'Accion/Aventura', 'XBOXONE', 18),
-           (4, 4, 'Minecraft', 26.95, '2011-11-18', 'Sandbox', 'PS5', 7),
-           (5, 5, 'Fortnite', 0.00, '2017-07-21', 'Battle Royale', 'PC', 12);
+INSERT INTO VIDEOJUEGOS (cliente_id, nombre, precio, fecha_lanzamiento, genero, plataforma, edad)
+VALUES (1, 'The Legend of Zelda: Breath of the Wild', 59.99, '2017-03-03', 'Aventura', 'NINTENDO', 12),
+       ( 2, 'God of War', 49.99, '2018-04-20', 'Accion', 'PS4', 18),
+       ( 3, 'Red Dead Redemption 2', 39.99, '2018-10-26', 'Accion/Aventura', 'XBOXONE', 18),
+       ( 4, 'Minecraft', 26.95, '2011-11-18', 'Sandbox', 'PS5', 7),
+       ( 5, 'Fortnite', 0.00, '2017-07-21', 'Battle Royale', 'PC', 12);
