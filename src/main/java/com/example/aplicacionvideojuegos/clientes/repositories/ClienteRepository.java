@@ -2,6 +2,7 @@ package com.example.aplicacionvideojuegos.clientes.repositories;
 
 import com.example.aplicacionvideojuegos.clientes.models.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -9,8 +10,10 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 import java.util.Optional;
 
+
+
 @Repository
-public interface ClienteRepository extends JpaRepository<Cliente, Long> {
+public interface ClienteRepository extends JpaRepository<Cliente, Long>, JpaSpecificationExecutor<Cliente> {
 
 
     Optional<Cliente> findByNombreEqualsIgnoreCase(String nombre);

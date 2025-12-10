@@ -1,5 +1,6 @@
 package com.example.aplicacionvideojuegos.videoJuegos.services;
 
+import com.example.aplicacionvideojuegos.clientes.models.Cliente;
 import com.example.aplicacionvideojuegos.clientes.services.ClienteService;
 import com.example.aplicacionvideojuegos.config.webSockets.WebSocketConfig;
 import com.example.aplicacionvideojuegos.config.webSockets.WebSocketHandler;
@@ -17,15 +18,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import jakarta.persistence.criteria.Join;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 @CacheConfig(cacheNames = {"videoJuegos"})
 @Slf4j
@@ -50,32 +55,32 @@ public class VideoJuegosServiceImpl implements VideoJuegoService, InitializingBe
         this.webSocketService = webSocketHandler;
     }
 
-
     @Override
-    public List<VideoJuegosResponseDto> findAll(String nombre, String cliente) {
-        //Mostrar todos los juegos
-        if((nombre == null || nombre.isEmpty()) && (cliente == null || cliente.isEmpty())){
-            log.info("Buscando todos los VideoJuegos");
-            return videoJuegosMapper.toVideoJuegosResponseDtoList(videoJuegosRepository.findAll());
-        }
+    public Page<VideoJuegosResponseDto> findAll(Optional<String> nombre, Optional<String> cliente, Optional<Boolean> isDeleted, Pageable pageable){
+        log.info("Buscando todos los VideoJuegos con nombre: {}, cliente: {}, isDeleted: {}" , nombre, cliente, isDeleted);
 
-        //Mostrar por nombre
-        if((nombre != null && !nombre.isEmpty()) && (cliente == null || cliente.isEmpty())){
-            log.info("Buscando VideoJuegos por nombre: {}", nombre);
-            return videoJuegosMapper.toVideoJuegosResponseDtoList(videoJuegosRepository.findByNombre(nombre));
-        }
+        Specification<VideoJuegos> specNombreVideoJuego = (root, query, criteriaBuilder) ->
+                nombre.map(n -> criteriaBuilder.like(criteriaBuilder.lower(root.get("nombre")), "%" + n.toLowerCase() + "%"))
+                        .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
 
-        //Mostrar por cliente
-        if(nombre == null || nombre.isEmpty()){
-            log.info("Buscando VideoJuegos por cliente: {}", cliente);
-            return videoJuegosMapper.toVideoJuegosResponseDtoList(videoJuegosRepository.findByClienteContainsIgnoreCase(cliente));
-        }
+        Specification<VideoJuegos> specClienteVideoJuego = (root, query, criteriaBuilder) ->
+                cliente.map(c -> {
+                    Join<VideoJuegos, Cliente> clienteJoin = root.join("cliente");
+                    return criteriaBuilder.like(criteriaBuilder.lower(clienteJoin.get("nombre")), "%" + c.toLowerCase() + "%");
+                }).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
 
-        //Mostrar por nombre y cliente
-        log.info("Buscando VideoJuegos por nombre: {} y cliente: {}", nombre, cliente);
-        return videoJuegosMapper.toVideoJuegosResponseDtoList(videoJuegosRepository.findByNombreAndClienteContainsIgnoreCase(nombre, cliente));
+        Specification<VideoJuegos> specIsDeleted = (root, query, criteriaBuilder) ->
+                isDeleted.map(d -> criteriaBuilder.equal(root.get("isDeleted"), d))
+                        .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+
+        Specification<VideoJuegos> criterio = Specification.allOf(specNombreVideoJuego, specClienteVideoJuego, specIsDeleted);
+
+        return videoJuegosRepository.findAll(criterio, pageable)
+                .map(videoJuegosMapper::toVideoJuegosResponseDto);
+
 
     }
+
 
     @Cacheable(key = "#id")
     @Override

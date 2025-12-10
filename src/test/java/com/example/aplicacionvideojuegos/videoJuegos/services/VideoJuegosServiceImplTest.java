@@ -9,6 +9,7 @@ import com.example.aplicacionvideojuegos.videoJuegos.exceptions.VideoJuegosNotFo
 import com.example.aplicacionvideojuegos.videoJuegos.mappers.VideoJuegosMapper;
 import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
 import com.example.aplicacionvideojuegos.videoJuegos.repositories.VideoJuegosRepository;
+
 import com.example.aplicacionvideojuegos.config.webSockets.WebSocketConfig;
 import com.example.aplicacionvideojuegos.config.webSockets.WebSocketHandler;
 import com.example.aplicacionvideojuegos.webSockets.notifications.mappers.VideoJuegosNotificationMapper;
@@ -20,12 +21,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
+
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -124,20 +129,26 @@ class VideoJuegosServiceImplTest {
     @Test
     void findAll_devolverTodasLasTarjetas_NoPasarNingunParametro() {
         log.info("devolver Todas Las Tarjetas sin pasar ningun parametro");
-        // Arrange: el repositorio devuelve ambas entidades
-        List <VideoJuegos> listaVideojuegos = Arrays.asList(videoJuegos1, videoJuegos2);
 
-        List<VideoJuegosResponseDto> listaVideojuegosResponseDto = videoJuegosMapper.toVideoJuegosResponseDtoList(listaVideojuegos);
-        when (juegosRepository.findAll()).thenReturn(listaVideojuegos);
+        List <VideoJuegos> expectedJuego = Arrays.asList(videoJuegos1, videoJuegos2);
 
-        // Act: invocamos el servicio sin filtros
-        List <VideoJuegosResponseDto> actualVideoJuegoResponses = juegosService.findAll(null,null);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
 
-        // Assert: la respuesta coincide con la conversión esperada
-        assertIterableEquals(listaVideojuegosResponseDto, actualVideoJuegoResponses);
+        Page<VideoJuegos> expectedPage = new PageImpl<>(expectedJuego);
+        when(juegosRepository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(expectedPage);
 
-        // Verify: solo se usa findAll del repositorio
-        verify(juegosRepository, times(1)).findAll();
+        Page<VideoJuegosResponseDto> actualPage =
+                juegosService.findAll(Optional.empty(), Optional.empty(),Optional.empty(), pageable);
+
+        assertAll("findAll_devolverTodasLasTarjetas_NoPasarNingunParametro",
+                () -> assertNotNull(actualPage),
+                () ->  assertFalse(actualPage.isEmpty()),
+                () -> assertTrue(actualPage.getTotalElements() > 0)
+        );
+
+        verify(juegosRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
+
 
     }
 
@@ -146,63 +157,96 @@ class VideoJuegosServiceImplTest {
     @Test
     void findAll_devolverTodasLasTarjetas_ConParamtroNombre() {
         log.info("devolver Todas Las Tarjetas con parametro nombre");
-        String nombre = "GTA VI";
-        // Arrange: solo se devuelve el videojuego con ese nombre
-        List <VideoJuegos> listaVideojuegos = List.of(videoJuegos1);
 
-        List<VideoJuegosResponseDto> listaVideojuegosResponseDto = videoJuegosMapper.toVideoJuegosResponseDtoList(listaVideojuegos);
-        when (juegosRepository.findByNombre(nombre)).thenReturn(listaVideojuegos);
+        Optional<String> nombre = Optional.of("GTA VI");
 
-        // Act: se consulta con el filtro de nombre
-        List <VideoJuegosResponseDto> actualVideoJuegoResponses = juegosService.findAll(nombre,null);
+        List <VideoJuegos> expectedJuegos = List.of(videoJuegos1);
 
-        // Assert: la respuesta coincide con la esperada
-        assertIterableEquals(listaVideojuegosResponseDto, actualVideoJuegoResponses);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
 
-        // Verify: se usa el método correcto del repositorio
-        verify(juegosRepository, times(1)).findByNombre(nombre);
+        Page<VideoJuegos> page = new PageImpl<>(expectedJuegos);
+        when(juegosRepository.findAll(
+                any(Specification.class),
+                any(Pageable.class)))
+                .thenReturn(page);
+
+        Page<VideoJuegosResponseDto> actualPage =
+                juegosService.findAll(nombre, Optional.empty(),Optional.empty(), pageable);
+
+        assertAll("findAll_devolverTodasLasTarjetas_ConParamtroNombre",
+                () -> assertNotNull(actualPage),
+                () ->  assertFalse(actualPage.isEmpty()),
+                () -> assertTrue(actualPage.getTotalElements() > 0)
+        );
+
+        verify(juegosRepository, only()).findAll(
+                any(Specification.class),
+                any(Pageable.class)
+        );
+
     }
 
     @Test
     void findAll_devolverTodasLasTarjetas_ConParametroCliente(){
         log.info("devolver Todas Las Tarjetas con parametro cliente");
 
-        String cliente = "juan";
-        // Arrange: el repositorio devuelve los videojuegos del cliente
-        List <VideoJuegos> listaVideojuegos = List.of(videoJuegos2);
-        List<VideoJuegosResponseDto> listaVideojuegosResponseDto = videoJuegosMapper.toVideoJuegosResponseDtoList(listaVideojuegos);
-        when (juegosRepository.findByClienteContainsIgnoreCase(cliente)).thenReturn(listaVideojuegos);
+        Optional<String> cliente = Optional.of("maria");
 
-        // Act: se invoca el servicio filtrando por cliente
-        List <VideoJuegosResponseDto> actualVideoJuegoResponses = juegosService.findAll(null,cliente);
+        List <VideoJuegos> expectedJuegos = List.of(videoJuegos2);
 
-        // Assert: la lista resultante coincide con la esperada
-        assertIterableEquals(listaVideojuegosResponseDto, actualVideoJuegoResponses);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
 
-        // Verify: solo se usa la consulta por cliente
-        verify(juegosRepository, times(1)).findByClienteContainsIgnoreCase(cliente);
+        Page<VideoJuegos> expectedPage = new PageImpl<>(List.of(videoJuegos2));
+        when(juegosRepository.findAll(
+                any(Specification.class),
+                any(Pageable.class)))
+                .thenReturn(expectedPage);
 
+        Page<VideoJuegosResponseDto> actualPage =
+                juegosService.findAll(Optional.empty(), cliente,Optional.empty(), pageable);
+
+        assertAll("findAll_devolverTodasLasTarjetas_ConParametroCliente",
+                () -> assertNotNull(actualPage),
+                () ->  assertFalse(actualPage.isEmpty()),
+                () -> assertTrue(actualPage.getTotalElements() > 0)
+        );
+
+        verify(juegosRepository, only()).findAll(
+                any(Specification.class),
+                any(Pageable.class)
+        );
     }
 
     @Test
     void findAll_devolverTodasLasTarjetas_ConParametrosNombreYCliente(){
         log.info("devolver Todas Las Tarjetas con parametros nombre y cliente");
 
-        String nombre = "The Witcher 4";
-        String cliente = "maria";
-        // Arrange: se espera obtener solo el videojuego que cumple ambos filtros
-        List <VideoJuegos> listaVideojuegos = List.of(videoJuegos2);
-        List<VideoJuegosResponseDto> listaVideojuegosResponseDto = videoJuegosMapper.toVideoJuegosResponseDtoList(listaVideojuegos);
-        when (juegosRepository.findByNombreAndClienteContainsIgnoreCase(nombre, cliente)).thenReturn(listaVideojuegos);
+        Optional<String> nombre = Optional.of("The Witcher 4");
+        Optional<String> cliente = Optional.of("maria");
 
-        // Act: invocamos el servicio con ambos parámetros
-        List <VideoJuegosResponseDto> actualVideoJuegoResponses = juegosService.findAll(nombre,cliente);
+         List <VideoJuegos> expectedJuegos = List.of(videoJuegos2);
 
-        // Assert: la lista devuelta coincide con la conversión esperada
-        assertIterableEquals(listaVideojuegosResponseDto, actualVideoJuegoResponses);
+         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
 
-        // Verify: se usa la consulta por nombre y cliente
-        verify(juegosRepository, times(1)).findByNombreAndClienteContainsIgnoreCase(nombre, cliente);
+        Page<VideoJuegos> expectedPage = new PageImpl<>(List.of(videoJuegos2));
+        when(juegosRepository.findAll(
+                any(Specification.class),
+                any(Pageable.class)))
+                .thenReturn(expectedPage);
+
+        Page<VideoJuegosResponseDto> actualPage =
+                juegosService.findAll(nombre, cliente,Optional.empty(), pageable);
+
+        assertAll("findAll_devolverTodasLasTarjetas_ConParametrosNombreYCliente",
+                () -> assertNotNull(actualPage),
+                () ->  assertFalse(actualPage.isEmpty()),
+                () -> assertTrue(actualPage.getTotalElements() > 0)
+        );
+
+        verify(juegosRepository, only()).findAll(
+                any(Specification.class),
+                any(Pageable.class)
+        );
 
     }
 

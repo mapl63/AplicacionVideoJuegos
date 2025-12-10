@@ -6,6 +6,7 @@ import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosResponseDto;
 import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosUpdateDto;
 import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -60,5 +61,9 @@ public class VideoJuegosMapper {
         return videojuegos.stream()
                 .map(this::toVideoJuegosResponseDto)
                 .toList();
+    }
+
+    public Page<VideoJuegosResponseDto> toResponseDtoPage(Page<VideoJuegos> videoJuegos){
+        return videoJuegos.map(this::toVideoJuegosResponseDto);
     }
 }

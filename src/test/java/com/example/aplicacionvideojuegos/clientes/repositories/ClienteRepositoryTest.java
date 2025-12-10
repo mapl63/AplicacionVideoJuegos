@@ -14,18 +14,13 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Pruebas de integración de {@link ClienteRepository} usando {@link DataJpaTest}.
- * Cada test se ejecuta con la base de datos en memoria inicializada mediante reset.sql.
- */
+
 @Slf4j
 @Sql(value = {"/reset.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @DataJpaTest
 class ClienteRepositoryTest {
 
-    /**
-     * Cliente de referencia que se persiste antes de cada prueba.
-     */
+
     private final Cliente cliente = Cliente.builder().nombre("Marius").build();
 
     @Autowired

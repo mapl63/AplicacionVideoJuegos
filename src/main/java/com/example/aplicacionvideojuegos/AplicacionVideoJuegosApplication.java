@@ -7,7 +7,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AplicacionVideoJuegosApplication {
 
     public static void main(String[] args) {
+
         SpringApplication.run(AplicacionVideoJuegosApplication.class, args);
+
+
     }
+
 
 }

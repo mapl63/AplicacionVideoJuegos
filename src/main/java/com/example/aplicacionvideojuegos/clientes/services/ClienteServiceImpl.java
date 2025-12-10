@@ -7,6 +7,7 @@ import com.example.aplicacionvideojuegos.clientes.exceptions.ClienteNotFoundExce
 import com.example.aplicacionvideojuegos.clientes.mappers.ClientesMapper;
 import com.example.aplicacionvideojuegos.clientes.models.Cliente;
 import com.example.aplicacionvideojuegos.clientes.repositories.ClienteRepository;
+import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +15,12 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,13 +32,20 @@ public class ClienteServiceImpl implements ClienteService {
     private final ClientesMapper clientesMapper;
 
     @Override
-    public List<Cliente> findAll(String nombre) {
-        log.info("Buscando clientes por nombre {}", nombre);
-        if (nombre == null || nombre.isEmpty()) {
-            return clienteRepository.findAll();
-        } else {
-            return clienteRepository.findByNombreContainingIgnoreCase(nombre);
-        }
+    public Page<Cliente> findAll( Optional<String> nombre, Optional<Boolean> isDeleted, Pageable pageable){
+        log.info("Buscando clientes por nombre {}, isDeleted {}", nombre, isDeleted);
+
+        Specification<Cliente> specNombreCliente = (root, query, criteriaBuilder) ->
+                nombre.map(n -> criteriaBuilder.like(criteriaBuilder.lower(root.get("nombre")), "%" + n.toLowerCase() + "%"))
+                .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+
+        Specification<Cliente> specIsDeleted = (root, query, criteriaBuilder) ->
+                isDeleted.map(d -> criteriaBuilder.equal(root.get("isDeleted"), d))
+                        .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+
+        Specification<Cliente> criterio = Specification.allOf(specNombreCliente, specIsDeleted);
+        return clienteRepository.findAll(criterio, pageable);
+
     }
 
     @Override
@@ -54,7 +65,7 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    @CachePut
+    @CachePut(key = "#result.id")
     public Cliente save(ClienteRequestDto clienteRequestDto) {
         log.info("Guardando cliente {}", clienteRequestDto);
 
@@ -67,7 +78,7 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    @CachePut
+    @CachePut(key = "#id")
     public Cliente update(Long id, ClienteRequestDto clienteRequestDto) {
         log.info("Actualizando cliente: {}", clienteRequestDto);
         Cliente clienteActual = findById(id);
@@ -82,7 +93,7 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    @CacheEvict
+    @CacheEvict(key = "#id")
     @Transactional
     public void deleteById(Long id) {
         log.info("Eliminando cliente por id {}", id);

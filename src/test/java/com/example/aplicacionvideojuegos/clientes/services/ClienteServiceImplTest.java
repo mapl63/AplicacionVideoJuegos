@@ -2,6 +2,7 @@ package com.example.aplicacionvideojuegos.clientes.services;
 
 import com.example.aplicacionvideojuegos.clientes.dto.ClienteRequestDto;
 import com.example.aplicacionvideojuegos.clientes.exceptions.ClienteConflictException;
+import com.example.aplicacionvideojuegos.clientes.mappers.ClientesMapper;
 import com.example.aplicacionvideojuegos.clientes.models.Cliente;
 import com.example.aplicacionvideojuegos.clientes.repositories.ClienteRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,60 +24,52 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Suite de pruebas unitarias para {@link ClienteServiceImpl}.
- * Se apoya en Mockito para aislar el repositorio y comprobar
- * el comportamiento del servicio sin tocar la base de datos.
- */
+
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 class ClienteServiceImplTest {
 
-    /**
-     * Cliente modelo reutilizado en la mayoría de tests.
-     */
+
     private final Cliente cliente = Cliente.builder()
                                             .id(1L)
                                             .nombre("Jose")
                                             .build();
 
-    /**
-     * DTO que simula la petición de creación/actualización.
-     */
+
     private final ClienteRequestDto clienteDto = ClienteRequestDto.builder()
                                                                     .nombre("Jose")
                                                                     .build();
 
-    /**
-     * Repositorio simulado con Mockito; evita acceder a datos reales.
-     */
+
     @Mock
     private ClienteRepository clienteRepository;
 
-    /**
-     * Servicio bajo prueba. Mockito inyecta los mocks declarados arriba.
-     */
+
     @InjectMocks
     private ClienteServiceImpl clienteService;
+
+    @Spy
+    private ClientesMapper clientesMapper;
 
     @Test
     void findAll() {
         log.info("metodo para comprobar que encuentre a todos los clientes");
 
-        // Arrange: simulamos que el repositorio devuelve un cliente
-        when(clienteRepository.findAll()).thenReturn(List.of(cliente));
+        var pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
 
-        // Act: invocamos al servicio
-        var resultado = clienteService.findAll(null);
+        var page = new PageImpl<>(List.of(cliente));
 
-        // Assert: validamos que la lista no sea nula ni vacía
+        when(clienteRepository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(page);
+
+        var resultado = clienteService.findAll(Optional.empty(),Optional.empty(), pageable);
+
         assertAll("findAll",
             () -> assertNotNull(resultado),
             () -> assertFalse(resultado.isEmpty())
         );
 
-        // Verify: nos aseguramos de que se llamó al repositorio solo una vez
-        verify(clienteRepository, times(1)).findAll();
+        verify(clienteRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
 
     }
 
@@ -118,20 +117,16 @@ class ClienteServiceImplTest {
     public void testSave(){
         log.info("metodo para comprobar que guarde un cliente");
 
-        // Arrange: el nombre no existe y el repositorio guardará el cliente
         when(clienteRepository.findByNombreEqualsIgnoreCase(anyString())).thenReturn(Optional.empty());
         when(clienteRepository.save(any(Cliente.class))).thenReturn(cliente);
 
-        // Act: guardamos un cliente desde el servicio
         clienteService.save(clienteDto);
 
-        // Assert: reutilizamos el objeto local para asegurarnos de que contiene datos
         assertAll("save",
             () -> assertNotNull(cliente),
             () -> assertEquals("Jose", cliente.getNombre())
         );
 
-        // Verify: comprobamos que se validó el nombre y luego se guardó
         verify(clienteRepository, times(1)).findByNombreEqualsIgnoreCase(anyString());
         verify(clienteRepository, times(1)).save(any(Cliente.class));
     }
@@ -141,17 +136,15 @@ class ClienteServiceImplTest {
 
         log.info("metodo para comprobar que no guarde un cliente ya existente");
 
-        // Arrange: el repositorio devuelve un cliente existente para ese nombre
         when(clienteRepository.findByNombreEqualsIgnoreCase(anyString())).thenReturn(Optional.of(cliente));
 
-        // Act + Assert: se espera una excepción de conflicto
+
         var resultado = assertThrows(ClienteConflictException.class,
                 () -> clienteService.save(clienteDto));
 
-        // Assert: validamos el mensaje de error
         assertAll("saveConflict",
             () -> assertNotNull(resultado),
-            () -> assertEquals("Ya existe un cliente con el nombre: Jose", resultado.getMessage())
+            () -> assertEquals("Ya existe un cliente con el nombre Jose", resultado.getMessage())
         );
 
 
@@ -164,21 +157,21 @@ class ClienteServiceImplTest {
     public void testUpdate(){
         log.info("metodo para comprobar que actualice un cliente");
 
-        // Arrange: existe el cliente y el nombre no genera conflicto
+
         when(clienteRepository.findById(anyLong())).thenReturn(Optional.of(cliente));
         when(clienteRepository.findByNombreEqualsIgnoreCase(anyString())).thenReturn(Optional.of(cliente));
         when(clienteRepository.save(any(Cliente.class))).thenReturn(cliente);
 
-        // Act: se actualiza el cliente
+
         var resultado = clienteService.update(1L, clienteDto);
 
-        // Assert: el resultado no es nulo y mantiene el nombre esperado
+
         assertAll("update",
             () -> assertNotNull(resultado),
             () -> assertEquals("Jose", resultado.getNombre())
         );
 
-        // Verify: se consulta por ID, por nombre y finalmente se guarda
+
         verify(clienteRepository, times(1)).findById(anyLong());
         verify(clienteRepository, times(1)).findByNombreEqualsIgnoreCase(anyString());
         verify(clienteRepository, times(1)).save(any(Cliente.class));
@@ -188,24 +181,18 @@ class ClienteServiceImplTest {
     public void testUpdateConflict(){
         log.info("metodo para comprobar que no actualice un cliente ya existente");
 
-
-        // Arrange: el repositorio indica que ya existe otro cliente con ese nombre
         when(clienteRepository.findById(anyLong())).thenReturn(Optional.of(cliente));
         when(clienteRepository.findByNombreEqualsIgnoreCase(anyString())).thenReturn(Optional.of(cliente));
 
-
-
-        // Act + Assert: la actualización debe lanzar conflicto
         var resultado = assertThrows(ClienteConflictException.class,
                 () -> clienteService.update(2L, clienteDto));
 
-        // Assert: se comprueba el mensaje de error
+
         assertAll("updateConflict",
             () -> assertNotNull(resultado),
-            () -> assertEquals("Ya existe un cliente con el nombre: Jose", resultado.getMessage())
+            () -> assertEquals("Ya existe un cliente con el nombre Jose", resultado.getMessage())
         );
 
-        // Verify: no se llega a guardar cuando hay conflicto
         verify(clienteRepository, times(1)).findById(anyLong());
         verify(clienteRepository, times(1)).findByNombreEqualsIgnoreCase(anyString());
         verify(clienteRepository, times(0)).save(any(Cliente.class));

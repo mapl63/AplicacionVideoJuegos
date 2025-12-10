@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -18,28 +21,21 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.Mockito.*;
 
-/**
- * Pruebas de integración del controlador REST de videojuegos.
- * Usa {@link MockMvcTester} para simular las peticiones HTTP y Mockito para
- * definir la capa de servicio.
- */
+
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
 class VideoJuegosControllerTest {
 
-    /**
-     * Endpoint base del recurso videojuegos.
-     */
+
     private final String ENDPOINT = "/api/v1/videoJuegos";
 
-    /**
-     * Respuesta de ejemplo asociada al primer videojuego.
-     */
+
     private final VideoJuegosResponseDto videoJuegosResponse1 = VideoJuegosResponseDto.builder()
             .id(1L)
             .cliente("juan")
@@ -51,9 +47,7 @@ class VideoJuegosControllerTest {
             .edad(18)
             .build();
 
-    /**
-     * Respuesta de ejemplo asociada al segundo videojuego.
-     */
+
     private final VideoJuegosResponseDto videoJuegosResponse2 = VideoJuegosResponseDto.builder()
             .id(2L)
             .cliente("maria")
@@ -65,15 +59,11 @@ class VideoJuegosControllerTest {
             .edad(18)
             .build();
 
-    /**
-     * Tester HTTP inyectado por Spring.
-     */
+
     @Autowired
     private MockMvcTester mockMvcTester;
 
-    /**
-     * Servicio mockeado para aislar el controlador.
-     */
+
     @MockitoBean
     private VideoJuegoService videoJuegoService;
 
@@ -82,44 +72,51 @@ class VideoJuegosControllerTest {
         log.info("obtener todos los videojuegos sin pasar ningun parametro de busqueda");
         // Arrange: el servicio devuelve los dos videojuegos de ejemplo
         var videoJuegosResponses = List.of(videoJuegosResponse1, videoJuegosResponse2);
-        when (
-                videoJuegoService
-                .findAll(null, null))
-                .thenReturn(videoJuegosResponses
-            );
 
-        // Act: petición GET sin filtros
-        var resultado = mockMvcTester.get()
+        var pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+
+        var page = new PageImpl<>(videoJuegosResponses);
+
+        when(videoJuegoService.findAll(Optional.empty(), Optional.empty(), Optional.empty(), pageable))
+                .thenReturn(page);
+
+        var result = mockMvcTester.get()
                 .uri(ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .exchange();
 
-        // Assert: respuesta 200 con la lista exacta
-        assertThat(resultado)
-                .hasStatusOk()
-                .bodyJson().satisfies(json -> {
-                    assertThat(json).extractingPath("$.length()").isEqualTo(videoJuegosResponses.size());
-                    assertThat(json).extractingPath("$[0]")
+        assertThat(result)
+            .hasStatusOk()
+            .bodyJson().satisfies(json -> {
+                    assertThat(json).extractingPath("$.content.length()").isEqualTo(videoJuegosResponses.size());
+                    assertThat(json).extractingPath("$.content[0]")
                             .convertTo(VideoJuegosResponseDto.class).isEqualTo(videoJuegosResponse1);
-                    assertThat(json).extractingPath("$[1]")
+                    assertThat(json).extractingPath("$.content[1]")
                             .convertTo(VideoJuegosResponseDto.class).isEqualTo(videoJuegosResponse2);
-                });
+            });
 
-        // Verify: el servicio solo se consulta una vez sin filtros
-        verify(videoJuegoService, times(1)).findAll(null, null);
+        verify(videoJuegoService, times(1))
+            .findAll(Optional.empty(), Optional.empty(), Optional.empty(), pageable);
 
     }
 
     @Test
     void getAllByNombre() {
         log.info("obtener todos los videojuegos filtrando por nombre");
-        // Arrange: el servicio devuelve solo el videojuego con el nombre solicitado
+
         var videoJuegosResponses = List.of(videoJuegosResponse2);
+
         String queryString = "?nombre=" + videoJuegosResponse2.getNombre();
 
+        Optional<String> nombre = Optional.of(videoJuegosResponse2.getNombre());
+
+        var pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+
+        var page = new PageImpl<>(videoJuegosResponses);
+
         when (videoJuegoService
-                .findAll(anyString(), isNull()))
-                .thenReturn(videoJuegosResponses);
+                .findAll(nombre, Optional.empty(), Optional.empty(), pageable))
+                .thenReturn(page);
 
         // Act: GET con el parámetro nombre
         var resultado = mockMvcTester.get()
@@ -131,25 +128,33 @@ class VideoJuegosControllerTest {
         assertThat(resultado)
                 .hasStatusOk()
                 .bodyJson().satisfies(json -> {
-                    assertThat(json).extractingPath("$.length()").isEqualTo(videoJuegosResponses.size());
-                    assertThat(json).extractingPath("$[0]")
+                    assertThat(json).extractingPath("$.content.length()").isEqualTo(videoJuegosResponses.size());
+                    assertThat(json).extractingPath("$.content[0]")
                             .convertTo(VideoJuegosResponseDto.class).isEqualTo(videoJuegosResponse2);
                 });
 
         // Verify: el servicio se invoca con el nombre y cliente nulo
-        verify(videoJuegoService, times(1)).findAll(anyString(), isNull());
+        verify(videoJuegoService, times(1)).findAll(nombre, Optional.empty(), Optional.empty(), pageable);
 
     }
 
     @Test
     void getAllByCliente(){
         log.info("obtener todos los videojuegos filtrando por cliente");
-        // Arrange: el filtro por cliente debe devolver solo el primer videojuego
+
         var videoJuegosResponses = List.of(videoJuegosResponse1);
+
         String queryString = "?cliente=" + videoJuegosResponse1.getCliente();
+
+        Optional<String> cliente = Optional.of(videoJuegosResponse1.getCliente());
+
+        var pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+
+        var page = new PageImpl<>(videoJuegosResponses);
+
         when (videoJuegoService
-                .findAll(isNull(), anyString()))
-                .thenReturn(videoJuegosResponses);
+                .findAll(Optional.empty(), cliente, Optional.empty(), pageable))
+                .thenReturn(page);
 
         // Act: GET con parámetro cliente
         var resultado = mockMvcTester.get()
@@ -161,45 +166,52 @@ class VideoJuegosControllerTest {
         assertThat(resultado)
                 .hasStatusOk()
                 .bodyJson().satisfies(json -> {
-                    assertThat(json).extractingPath("$.length()").isEqualTo(videoJuegosResponses.size());
-                    assertThat(json).extractingPath("$[0]")
+                    assertThat(json).extractingPath("$.content.length()").isEqualTo(videoJuegosResponses.size());
+                    assertThat(json).extractingPath("$.content[0]")
                             .convertTo(VideoJuegosResponseDto.class).isEqualTo(videoJuegosResponse1);
 
                 });
 
-        // Verify: se invoca al servicio con nombre nulo y cliente informado
-        verify(videoJuegoService, only()).findAll(isNull(), anyString());
+
+        verify(videoJuegoService, only()).findAll(Optional.empty(), cliente, Optional.empty(), pageable);
     }
 
     @Test
     void getAllByNombreAndCliente(){
         log.info("obtener todos los videojuegos filtrando por nombre y cliente");
-        // Arrange: la búsqueda combinada debe devolver una única coincidencia
+
         var videoJuegosResponses = List.of(videoJuegosResponse1);
+
         String queryString = "?nombre=" + videoJuegosResponse1.getNombre() +
                 "&cliente=" + videoJuegosResponse1.getCliente();
 
-        when (videoJuegoService
-                .findAll(anyString(), anyString()))
-                .thenReturn(videoJuegosResponses);
+        Optional<String> nombre = Optional.of(videoJuegosResponse1.getNombre());
+        Optional<String> cliente = Optional.of(videoJuegosResponse1.getCliente());
 
-        // Act: GET con ambos query params
+        var pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+        var page = new PageImpl<>(videoJuegosResponses);
+
+        when (videoJuegoService
+                .findAll(nombre, cliente, Optional.empty(), pageable))
+                .thenReturn(page);
+
+
         var resultado = mockMvcTester.get()
                 .uri(ENDPOINT + queryString)
                 .contentType(MediaType.APPLICATION_JSON)
                 .exchange();
 
-        // Assert: la respuesta contiene la lista esperada
+
         assertThat(resultado)
                 .hasStatusOk()
                 .bodyJson().satisfies(json -> {
-                    assertThat(json).extractingPath("$.length()").isEqualTo(videoJuegosResponses.size());
-                    assertThat(json).extractingPath("$[0]")
+                    assertThat(json).extractingPath("$.content.length()").isEqualTo(videoJuegosResponses.size());
+                    assertThat(json).extractingPath("$.content[0]")
                             .convertTo(VideoJuegosResponseDto.class).isEqualTo(videoJuegosResponse1);
                 });
 
-        // Verify: solo se hace una llamada al servicio con ambos filtros
-        verify(videoJuegoService, only()).findAll(anyString(), anyString());
+
+        verify(videoJuegoService, only()).findAll(nombre, cliente, Optional.empty(), pageable);
     }
 
     @Test
@@ -207,47 +219,43 @@ class VideoJuegosControllerTest {
         log.info("obtener un videojuego por id pasando un id valido");
 
         Long id = videoJuegosResponse1.getId();
-        // Arrange: el servicio devuelve la respuesta asociada al ID
         when(videoJuegoService.findById(anyLong()))
                 .thenReturn(videoJuegosResponse1);
 
-        // Act: ejecutamos GET /{id}
+
         var resultado = mockMvcTester.get()
                 .uri(ENDPOINT + "/" + id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .exchange();
 
-        // Assert: se obtiene 200 y el cuerpo esperado
         assertThat(resultado)
                 .hasStatusOk()
                 .bodyJson()
                 .convertTo(VideoJuegosResponseDto.class)
                 .isEqualTo(videoJuegosResponse1);
 
-        // Verify: el servicio se invoca una sola vez
         verify(videoJuegoService, only()).findById(anyLong());
     }
 
     @Test
     void getByIdConIdInvalido(){
         log.info("obtener un videojuego por id pasando un id invalido");
-        Long id = 9L;
 
-        // Arrange: el servicio lanza VideoJuegosNotFound para el ID indicado
+        Long id = 9L;
         when(videoJuegoService.findById(anyLong()))
                 .thenThrow(new VideoJuegosNotFound(id));
 
-        // Act: GET con un ID inexistente
         var resultado = mockMvcTester.get()
                 .uri(ENDPOINT + "/" + id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .exchange();
 
-        // Assert: el controlador responde 404
         assertThat(resultado)
-                .hasStatus(HttpStatus.NOT_FOUND);
+                .hasStatus4xxClientError()
+                .hasFailed().failure()
+                .isInstanceOf(VideoJuegosNotFound.class)
+                .hasMessageContaining("no encontrada");
 
-        // Verify: el servicio se invoca una sola vez con el ID
         verify(videoJuegoService, only()).findById(anyLong());
 
     }
@@ -279,11 +287,10 @@ class VideoJuegosControllerTest {
                 .edad(18)
                 .build();
 
-        // Arrange: el servicio devuelve la respuesta del videojuego creado
+
         when(videoJuegoService.save(any(VideoJuegosCreateDto.class)))
                 .thenReturn(juegoSaved);
 
-        // Act: petición POST creando el videojuego
         var resultado = mockMvcTester.post()
                 .uri(ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -323,7 +330,6 @@ class VideoJuegosControllerTest {
                 .content(requestBody)
                 .exchange();
 
-        // Assert: se obtiene un 400 con detalle de errores de validación
         assertThat(resultado)
                 .hasStatus(HttpStatus.BAD_REQUEST)
                 .bodyJson()
@@ -335,7 +341,6 @@ class VideoJuegosControllerTest {
                     assertThat(errores).hasFieldOrProperty("genero");
                 });
 
-        // Verify: el servicio no se llama cuando la petición es inválida
         verify(videoJuegoService, never()).save(any(VideoJuegosCreateDto.class));
 
     }
@@ -432,7 +437,6 @@ class VideoJuegosControllerTest {
         log.info("eliminar un videojuego con id valido");
 
         Long id = 2L;
-        // Arrange: la capa de servicio no lanza errores al borrar
         doNothing().when(videoJuegoService).deleteById(anyLong());
 
         // Act: enviamos DELETE /{id}
@@ -440,11 +444,9 @@ class VideoJuegosControllerTest {
                 .uri(ENDPOINT + "/" + id)
                 .exchange();
 
-        // Assert: se recibe 204 No Content
         assertThat(resultado)
                 .hasStatus(HttpStatus.NO_CONTENT);
 
-        // Verify: solo se invoca una vez al servicio
         verify(videoJuegoService, only()).deleteById(anyLong());
     }
 
@@ -453,20 +455,16 @@ class VideoJuegosControllerTest {
         log.info("eliminar un videojuego con id invalido");
 
         Long id = 15L;
-        // Arrange: eliminar con ese ID lanza VideoJuegosNotFound
         doThrow(new VideoJuegosNotFound(id))
                 .when(videoJuegoService).deleteById(anyLong());
 
-        // Act: petición DELETE con ID inexistente
         var resultado = mockMvcTester.delete()
                 .uri(ENDPOINT + "/" + id)
                 .exchange();
 
-        // Assert: el controlador devuelve 404
         assertThat(resultado)
                 .hasStatus(HttpStatus.NOT_FOUND);
 
-        // Verify: se invoca una única vez al servicio
         verify(videoJuegoService, only()).deleteById(anyLong());
     }
 

@@ -10,56 +10,46 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-/**
- * Pruebas de integración del controlador REST de clientes.
- * Se utiliza {@link MockMvcTester} para lanzar peticiones HTTP simuladas
- * y Mockito para definir el comportamiento de la capa de servicio.
- */
+
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
 class ClienteRestControllerTest {
 
-    /**
-     * Endpoint base del recurso clientes.
-     */
+
     private final String ENDPOINT = "/api/v1/clientes";
 
-    /**
-     * Cliente de ejemplo reutilizado en los tests.
-     */
+
     private final Cliente cliente1 = Cliente.builder()
             .id(1L)
             .nombre("Marius")
             .build();
 
-    /**
-     * Segundo cliente auxiliar para escenarios con múltiples respuestas.
-     */
+
     private final Cliente cliente2 = Cliente.builder()
             .id(2L)
             .nombre("Ana")
             .build();
 
-    /**
-     * Tester de MockMvc inyectado por Spring Boot.
-     */
-    @Autowired
-    private MockMvcTester mockMvcTester; // Asegúrate de que esto esté bien configurado
 
-    /**
-     * Servicio mockeado para aislar la capa web.
-     */
+    @Autowired
+    private MockMvcTester mockMvcTester;
+
+
     @MockitoBean
     private ClienteService clienteService;
 
@@ -67,34 +57,38 @@ class ClienteRestControllerTest {
     void getAll() {
         log.info("Devolviendo todos los clientes");
 
-        // Arrange: prepara los clientes y configura el mock
-        var clientes = List.of(cliente1, cliente2);
-        when(clienteService.findAll(null)).thenReturn(clientes);
 
-        // Act: simula la petición HTTP GET al endpoint
+        var clientes = List.of(cliente1, cliente2);
+
+        var pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+
+        var page = new PageImpl<>(clientes);
+
+        when(clienteService.findAll(Optional.empty(),Optional.empty(), pageable))
+                .thenReturn(page);
+
         var resultado = mockMvcTester.get()
                 .uri(ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .exchange();
 
-        // Assert: verifica el contenido de la respuesta
-        assertThat(resultado)
-                .hasStatusOk()  // Verifica que la respuesta tenga el código de estado "OK" (código 200)
-                .bodyJson().satisfies(json -> {
-                    // Verifica que el número de elementos en el JSON sea igual a la cantidad de clientes mockeados
-                    assertThat(json).extractingPath("$.length()").isEqualTo(clientes.size());
 
-                    // Verifica que el primer cliente en la lista JSON sea igual a cliente1
-                    assertThat(json).extractingPath("$[0]")
+        assertThat(resultado)
+                .hasStatusOk()
+                .bodyJson().satisfies(json -> {
+                    assertThat(json).extractingPath(".content.length()").isEqualTo(clientes.size());
+
+
+                    assertThat(json).extractingPath("$.content[0]")
                             .convertTo(Cliente.class).usingRecursiveComparison().isEqualTo(cliente1);
 
-                    // Verifica que el segundo cliente en la lista JSON sea igual a cliente2
-                    assertThat(json).extractingPath("$[1]")
+
+                    assertThat(json).extractingPath("$.content[1]")
                             .convertTo(Cliente.class).usingRecursiveComparison().isEqualTo(cliente2);
                 });
 
-        // Verify: asegura que el servicio fue llamado exactamente una vez con el argumento null
-        verify(clienteService, times(1)).findAll(null);
+
+        verify(clienteService, times(1)).findAll(Optional.empty(),Optional.empty(), pageable);
     }
 
     @Test
@@ -103,9 +97,15 @@ class ClienteRestControllerTest {
         // Arrange: el servicio devolverá solo el cliente filtrado por nombre
         var clientes = List.of(cliente2);
         String queryString = "?nombre=" + cliente2.getNombre();
-        when(clienteService.findAll(anyString())).thenReturn(clientes);
+        Optional<String> nombre = Optional.of(cliente2.getNombre());
 
-        // Act: lanzamos la petición GET con el parámetro de búsqueda
+        var pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+
+        var page = new PageImpl<>(clientes);
+
+        when(clienteService.findAll(nombre, Optional.empty(), pageable))
+                .thenReturn(page);
+
         var resultado = mockMvcTester.get()
                 .uri(ENDPOINT + queryString)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -115,14 +115,14 @@ class ClienteRestControllerTest {
         assertThat(resultado)
                 .hasStatusOk()
                 .bodyJson().satisfies(json -> {
-                    assertThat(json).extractingPath("$.length()").isEqualTo(clientes.size());
+                    assertThat(json).extractingPath("$.content.length()").isEqualTo(clientes.size());
 
-                    assertThat(json).extractingPath("$[0]")
+                    assertThat(json).extractingPath("$.content[0]")
                             .convertTo(Cliente.class).usingRecursiveComparison().isEqualTo(cliente2);
                 });
 
         // Verify: el servicio se invoca exactamente una vez con el filtro
-        verify(clienteService, times(1)).findAll(anyString());
+        verify(clienteService, times(1)).findAll(nombre, Optional.empty(), pageable);
 
     }
 
@@ -131,22 +131,22 @@ class ClienteRestControllerTest {
         log.info("Devolviendo un cliente por ID");
 
         Long id = cliente1.getId();
-        // Arrange: prepara el cliente y configura el mock
+
         when(clienteService.findById(id)).thenReturn(cliente1);
 
-        // Act: simula la petición HTTP GET al endpoint con ID
+
         var resultado = mockMvcTester.get()
                 .uri(ENDPOINT + "/" + id.toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .exchange();
 
-        // Assert: verifica el contenido de la respuesta
+
         assertThat(resultado)
-                .hasStatusOk()  // Verifica que la respuesta tenga el código de estado "OK" (código 200)
+                .hasStatusOk()
                 .bodyJson()
                 .convertTo(Cliente.class).usingRecursiveComparison().isEqualTo(cliente1);;
 
-        // Verify: asegura que el servicio fue llamado exactamente una vez con el ID 1L
+
         verify(clienteService, only()).findById(anyLong());
     }
 
@@ -158,20 +158,19 @@ class ClienteRestControllerTest {
         when(clienteService.findById(anyLong()))
                 .thenThrow(new ClienteNotFoundException(id));
 
-        // Act: ejecutamos la petición con un id inexistente
+
         var resultado = mockMvcTester.get()
                 .uri(ENDPOINT + "/" + id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .exchange();
 
-        // Assert: se devuelve un error 4xx con la excepción asociada
+
         assertThat(resultado)
                 .hasStatus4xxClientError()
                 .hasFailed().failure()
                 .isInstanceOf(ClienteNotFoundException.class)
                 .hasMessageContaining(" no encontrado");
 
-        // Verify: el servicio solo se consulta una vez
         verify(clienteService, only()).findById(anyLong());
     }
 
