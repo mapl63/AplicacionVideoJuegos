@@ -18,11 +18,8 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long>, JpaSpec
 
     Optional<Cliente> findByNombreEqualsIgnoreCase(String nombre);
 
-    Optional<Cliente> findByNombreEqualsIgnoreCaseAndIsDeletedFalse(String nombre);
-
     List<Cliente> findByNombreContainingIgnoreCase(String nombre);
 
-    List<Cliente> findByNombreContainingIgnoreCaseAndIsDeletedFalse(String nombre);
 
     List<Cliente> findByIsDeleted(Boolean isDeleted);
 

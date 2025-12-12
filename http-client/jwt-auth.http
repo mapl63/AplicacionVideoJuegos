@@ -1,0 +1,27 @@
+### Authorization by token, part 1. Retrieve and save token.
+
+### Proceso de Login
+###
+POST http://localhost:3005/api/v1/auth/signin
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "Admin1"
+}
+
+> {% client.global.set("auth_token", response.body.token); %}
+
+### Authorization by token, part 2. Use token to authorize.
+
+### Debería funcionar con rol USER
+GET http://localhost:3005/api/v1/users
+Authorization: Bearer {{auth_token}}
+
+### Debería funcionar con user
+GET http://localhost:3005/api/v1/users/me/videojuegos
+Authorization: Bearer {{auth_token}}
+
+### Debería fallar con user porque no tiene perfil adecuado
+DELETE http://localhost:3005/api/v1/me/profile
+Authorization: Bearer {{auth_token}}

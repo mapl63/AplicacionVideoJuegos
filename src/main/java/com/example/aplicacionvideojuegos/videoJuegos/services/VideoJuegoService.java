@@ -13,16 +13,19 @@ import java.util.Optional;
 
 public interface VideoJuegoService {
 
-    Page<VideoJuegosResponseDto> findAll(Optional<String> nombre, Optional<String> cliente, Optional<Boolean> isDeleted , Pageable pageable);
+    Page<VideoJuegosResponseDto> findAll(Optional<String> nombre,
+                                         Optional<String> cliente,
+                                         Optional<Boolean> isDeleted,
+                                         Pageable pageable);
 
     VideoJuegosResponseDto findById(Long id);
+
+    Page<VideoJuegosResponseDto> findByUsuarioId(Long id, Pageable pageable);
 
     VideoJuegosResponseDto save(VideoJuegosCreateDto  videoJuegosCreateDto);
 
     VideoJuegosResponseDto update(Long id, VideoJuegosUpdateDto videoJuegosUpdateDto);
 
     void deleteById(Long id);
-
-
 
 }

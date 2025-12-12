@@ -26,3 +26,12 @@ Content-Type: application/json
 
 ### Delete tarjeta
 DELETE http://localhost:3005/api/v1/clientes/6
+
+### Paginación y ordenación
+GET http://localhost:3005/api/v1/clientes?sortBy=nombre&direction=desc
+
+###
+GET http://localhost:3005/api/v1/clientes?sortBy=nombre&direction=desc&size=1
+
+###
+GET http://localhost:3005/api/v1/clientes?sortBy=nombre&direction=desc&size=1&page=0

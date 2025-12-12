@@ -48,10 +48,12 @@ public class VideoJuegosServiceImpl implements VideoJuegoService, InitializingBe
     private WebSocketHandler webSocketService;
 
     public void afterPropertiesSet() {
+
         this.webSocketService = this.webSocketConfig.webSocketVideoJuegosHandler();
     }
 
     public void setWebSocketService(WebSocketHandler webSocketHandler) {
+
         this.webSocketService = webSocketHandler;
     }
 
@@ -81,7 +83,6 @@ public class VideoJuegosServiceImpl implements VideoJuegoService, InitializingBe
 
     }
 
-
     @Cacheable(key = "#id")
     @Override
     public VideoJuegosResponseDto findById(Long id){
@@ -90,6 +91,13 @@ public class VideoJuegosServiceImpl implements VideoJuegoService, InitializingBe
         return videoJuegosMapper.toVideoJuegosResponseDto(videoJuegosRepository.findById(id)
                 .orElseThrow(() -> new VideoJuegosNotFound(id)));
 
+    }
+
+    @Override
+    public Page<VideoJuegosResponseDto> findByUsuarioId(Long id, Pageable pageable) {
+        log.info("Buscando todos los VideoJuegos del usuario con id: {}", id);
+        return videoJuegosRepository.findByUsuarioId(id, pageable)
+                .map(videoJuegosMapper::toVideoJuegosResponseDto);
     }
 
     @CachePut(key = "#result.id")

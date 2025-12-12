@@ -1,6 +1,7 @@
 package com.example.aplicacionvideojuegos.clientes.models;
 
 
+import com.example.aplicacionvideojuegos.users.models.User;
 import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -43,6 +44,8 @@ public class Cliente {
     @JsonIgnoreProperties("cliente")
     private List<VideoJuegos> videoJuegos;
 
-
+    @OneToOne(mappedBy = "cliente")
+    @JsonIgnoreProperties("cliente")
+    private User usuario;
 
 }

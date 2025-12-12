@@ -37,7 +37,7 @@ public class ClienteServiceImpl implements ClienteService {
 
         Specification<Cliente> specNombreCliente = (root, query, criteriaBuilder) ->
                 nombre.map(n -> criteriaBuilder.like(criteriaBuilder.lower(root.get("nombre")), "%" + n.toLowerCase() + "%"))
-                .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+                    .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
 
         Specification<Cliente> specIsDeleted = (root, query, criteriaBuilder) ->
                 isDeleted.map(d -> criteriaBuilder.equal(root.get("isDeleted"), d))

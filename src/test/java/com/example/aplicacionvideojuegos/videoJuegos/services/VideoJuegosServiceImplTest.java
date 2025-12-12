@@ -37,18 +37,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
-/**
- * Pruebas unitarias de {@link VideoJuegosServiceImpl} usando Mockito.
- * Se mockea el repositorio, el servicio de clientes y se espía el mapper real.
- */
+
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 
 class VideoJuegosServiceImplTest {
 
-    /**
-     * Clientes base utilizados en los escenarios de prueba.
-     */
+
     private final Cliente cliente1 = Cliente.builder()
             .nombre("Juan")
             .build();
@@ -60,9 +55,7 @@ class VideoJuegosServiceImplTest {
             .nombre("Pedro")
             .build();
 
-    /**
-     * Entidades de videojuegos que sirven como fixtures.
-     */
+
     private final VideoJuegos videoJuegos1 = VideoJuegos.builder()
             .id(1L)
             .cliente(cliente1)

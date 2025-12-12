@@ -1,32 +1,25 @@
-### GET request to example server
-GET https://examples.http-client.intellij.net/get
-    ?generated-in=IntelliJ IDEA
 
-###
 
 ### getVideoJuegosAll nos muestre todos
 GET http://localhost:3005/api/v1/videoJuegos
 
 ### getvideoJuegosAll por nombre
-GET http://localhost:3005/api/v1/videoJuegos?nombre=gta
+GET http://localhost:3005/api/v1/videoJuegos?nombre=Minecraft
 
-### getAll por plataforma
-GET http://localhost:3005/api/v1/videoJuegos?plataforma=PS5
+### getvideoJuegosAll por nombre y cliente
+GET http://localhost:3005/api/v1/videoJuegos?nombre=god&of&war&cliente=Maria
 
-### get all by genero
-GET http://localhost:3005/api/v1/videoJuegos?genero=shooter
+###
+GET http://localhost:3005/api/v1/videoJuegos?nombre=fortnite&cliente=luis
 
-### get all by nombre y genero
-GET http://localhost:3005/api/v1/videoJuegos?nombre=counter&genero=shooter
-
-### get all by nombre y plataforma
-GET http://localhost:3005/api/v1/videoJuegos?nombre=fc&plataforma=PS5
-
-### get all by genero  y plataforma
-GET http://localhost:3005/api/v1/videoJuegos?genero=shooter&plataforma=PC
+### getvideoJuegosAll por cliente
+GET http://localhost:3005/api/v1/videoJuegos?cliente=Juan
 
 ### get por id
-GET http://localhost:3005/api/v1/videoJuegos/5
+GET http://localhost:3005/api/v1/videoJuegos/3
+
+### get por id que no existe
+GET http://localhost:3005/api/v1/videoJuegos/9
 
 ### post creando un nuevo videojuego
 POST http://localhost:3005/api/v1/videoJuegos
@@ -102,3 +95,11 @@ content-type: application/json
   "edad": -1
 }
 
+### Paginación y ordenación
+GET http://localhost:3005/api/v1/videoJuegos?sortBy=cliente&direction=desc
+
+###
+GET http://localhost:3005/api/v1/videoJuegos?sortBy=cliente&direction=desc&size=1
+
+###
+GET http://localhost:3005/api/v1/videoJuegos?sortBy=cliente&direction=desc&size=1&page=0

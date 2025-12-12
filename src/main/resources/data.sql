@@ -16,12 +16,11 @@ create table TARJETAS (
 );
 */
 
-INSERT INTO CLIENTES (nombre) VALUES ('Juan Perez'),
-                                     ('Maria Gomez'),
-                                     ('Carlos Sanchez'),
+INSERT INTO CLIENTES (nombre) VALUES ('Juan'),
+                                     ('Maria'),
+                                     ('Carlos'),
                                      ('Ana Martinez'),
-                                     ('Luis Rodriguez');
-
+                                     ('Luis');
 
 
 INSERT INTO VIDEOJUEGOS (cliente_id, nombre, precio, fecha_lanzamiento, genero, plataforma, edad)
@@ -29,4 +28,34 @@ VALUES (1, 'The Legend of Zelda: Breath of the Wild', 59.99, '2017-03-03', 'Aven
        ( 2, 'God of War', 49.99, '2018-04-20', 'Accion', 'PS4', 18),
        ( 3, 'Red Dead Redemption 2', 39.99, '2018-10-26', 'Accion/Aventura', 'XBOXONE', 18),
        ( 4, 'Minecraft', 26.95, '2011-11-18', 'Sandbox', 'PS5', 7),
-       ( 5, 'Fortnite', 0.00, '2017-07-21', 'Battle Royale', 'PC', 12);
+       ( 5, 'Fortnite', 10.00, '2017-07-21', 'Battle Royale', 'PC', 12);
+
+
+
+INSERT INTO USUARIOS (nombre, apellidos, username, email, password)
+VALUES ('Juan', 'Perez', 'admin', 'admin@prueba.net',
+        '$2a$10$vPaqZvZkz6jhb7U7k/V/v.5vprfNdOnh4sxi/qpPRkYTzPmFlI9p2');
+
+insert into USER_ROLES (user_id, roles)
+values (1, 'USER'),
+       (1, 'ADMIN');
+
+
+insert into USUARIOS (nombre, apellidos, username, email, password, cliente_id)
+values ('Maria', 'Gomez', 'mariaGomez', 'usuario@prueba',
+        '$2a$10$7QJH6.H0k1b5oF6G8y8lUuJ8K1Fz9O1G8Y8lUuJ8K1Fz9O1G8Y8lUu', 2);
+
+insert into USER_ROLES (user_id, roles)
+values (2, 'USER');
+
+insert into USUARIOS (nombre, apellidos, username, email, password, cliente_id)
+values ('Test', 'Test Test', 'test', 'test@prueba.net',
+        '$2a$10$Pd1yyq2NowcsDf4Cpf/ZXObYFkcycswqHAqBndE1wWJvYwRxlb.Pu',3);
+
+insert into USER_ROLES (user_id, roles)
+values (3, 'USER');
+
+
+
+
+
