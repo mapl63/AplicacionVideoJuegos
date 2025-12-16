@@ -1,23 +1,26 @@
 
 ### getAll
 GET http://localhost:3005/api/v1/users
+Authorization: Bearer {{auth_token}}
 
 ### getById
 GET http://localhost:3005/api/v1/users/1
+Authorization: Bearer {{auth_token}}
 
 ### getById (uno que no existe)
 GET http://localhost:3005/api/v1/users/300
 
 ### Nuevo usuario (contraseña User1)
 POST http://localhost:3005/api/v1/users
+Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "nombre": "Marius",
-  "apellidos": "Marius User",
-  "username": "marius",
+  "nombre": "Carlos",
+  "apellidos": "Carlos User",
+  "username": "carlos",
   "password": "$2a$12$RUq2ScW1Kiizu5K4gKoK4OTz80.DWaruhdyfi2lZCB.KeuXTBh0S.",
-  "email": "marius@prueba.net",
+  "email": "carlos@prueba.net",
   "roles": [
     "USER"
   ]
@@ -25,6 +28,7 @@ Content-Type: application/json
 
 ### Actualiza videoJuego
 PUT http://localhost:3005/api/v1/users/5
+Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
@@ -40,4 +44,51 @@ Content-Type: application/json
 
 
 ### Delete tarjeta
-DELETE http://localhost:3005/api/v1/users/5
+DELETE http://localhost:3005/api/v1/users/1
+Authorization: Bearer {{auth_token}}
+
+
+###
+### Perfil del usuario autenticado
+###
+
+### Debería funcionar con rol USER
+GET http://localhost:3005/api/v1/users/me/profile
+Authorization: Bearer {{auth_token}}
+
+### ### Debería funcionar con rol USER
+GET http://localhost:3005/api/v1/users/me/videojuegos/1
+Authorization: Bearer {{auth_token}}
+
+### Debería funcionar con rol USER
+POST http://localhost:3005/api/v1/users/me/videojuegos
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "nombre": "Horizon Forbidden West",
+  "cliente": "Juan",
+  "precio": 69.99,
+  "fecha_lanzamiento": "2022-02-18",
+  "genero": "Aventura",
+  "plataforma": "PS5",
+  "edad": 18
+}
+
+### Debería funcionar con rol USER
+PUT http://localhost:3005/api/v1/users/me/videojuegos/1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "nombre": "Star Wars BattleFront",
+  "precio": 79.99,
+  "fecha_lanzamiento": "2019-03-13",
+  "genero": "Rpg",
+  "plataforma": "NINTENDO",
+  "edad": 7
+}
+
+### Debería funcionar con rol USER
+DELETE http://localhost:3005/api/v1/users/me/videojuegos/1
+Authorization: Bearer {{auth_token_user}}

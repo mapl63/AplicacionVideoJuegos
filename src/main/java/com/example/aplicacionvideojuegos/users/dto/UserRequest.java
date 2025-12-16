@@ -28,7 +28,7 @@ public class UserRequest {
     @NotBlank(message = "Username no puede estar vacío")
     private String username;
 
-    @Email(regexp = ".*@.*\\\\..*", message = "Email debe ser válido")
+    @Email(regexp = ".*@.*\\..*", message = "Email debe ser válido")
     @NotBlank(message = "Email no puede estar vacío")
     private String email;
 

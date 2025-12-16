@@ -43,7 +43,6 @@ content-type: application/json
 
 {
   "nombre": "Star Wars BattleFront",
-
   "precio": 79.99,
   "fecha_lanzamiento": "2019-03-13",
   "genero": "Rpg",
