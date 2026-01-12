@@ -26,10 +26,18 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Tag(name = "VideoJuegos", description = "Endpoint de VideoJuegos de nuestra API")
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("api/${API_VERSION:v1}/videoJuegos")
@@ -39,6 +47,23 @@ public class VideoJuegosController {
 
     private final VideoJuegoService videoJuegoService;
     private final PaginationLinksUtils paginationLinksUtils;
+
+
+
+    @Operation(summary = "Obtiene una lista paginada de todos los videojuegos", tags = {"videoJuegos"})
+    @Parameters({
+        @Parameter(name = "nombre", description = "Nombre del VideoJuego", example = ""),
+        @Parameter(name = "cliente", description = "Cliente del videoJuego", example = ""),
+        @Parameter(name = "isDeleted", description = "si está borrada o no", required = false),
+        @Parameter(name = "page", description = "Número de página", example = "0"),
+        @Parameter(name = "size", description = "Tamaño de la página", example = "10"),
+        @Parameter(name = "sortBy", description = "Campo de ordenación", example = "id"),
+        @Parameter(name = "direction", description = "Dirección de ordenación", example = "asc")
+    })
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Página de videoJuegos")
+
+    })
 
     @GetMapping
     public ResponseEntity<PageResponse<VideoJuegosResponseDto>> getAll(
@@ -66,12 +91,44 @@ public class VideoJuegosController {
                .body(PageResponse.of(pageResult, sortBy, direction));
     }
 
+    /*
+     * Obtiene un videojuego por su id
+     *
+     * @param id del videojuego a buscar
+     * @return VideoJuegosResponseDto del videojuego encontrado
+     * @throws VideoJuegosNotFoundException si no existe el videojuego (404)
+     */
+
+    @Operation(summary = "Obtiene un videojuego por su id", description = "obtiene un videoJuego por su id")
+    @Parameters({
+        @Parameter(name = "id", description = "Identificador único del videojuego", required = true, example = "1")
+    })
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Videojuego encontrado"),
+        @ApiResponse(responseCode = "404", description = "Videojuego no encontrado")
+    })
+
     @GetMapping("/{id}")
     public ResponseEntity<VideoJuegosResponseDto> getVideoJuegoById(@PathVariable Long id){
         log.info("Buscando videojuegos por id {}", id);
 
         return ResponseEntity.ok(videoJuegoService.findById(id));
     }
+
+    /*
+     * Crea un nuevo videojuego
+     *
+     * @param videoJuegosCreateDto con los datos del nuevo videojuego
+     * @return VideoJuegosResponseDto del videojuego creado
+     * @throws VideoJuegosBadRequestException si el videojuego no es correcto (400)
+     */
+
+    @Operation(summary = "Crea un nuevo videojuego", description = "Crea un nuevo videojuego")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "VideoJuego a crear", required = true)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Videojuego creado"),
+        @ApiResponse(responseCode = "400", description = "Videojuego no válido")
+    })
 
     @PostMapping()
     public ResponseEntity<VideoJuegosResponseDto> create(@Valid @RequestBody VideoJuegosCreateDto videoJuegosCreateDto){
@@ -94,12 +151,44 @@ public class VideoJuegosController {
      * @throws TarjetaBadRequestException si la tarjeta no es correcta (400)
      */
 
+    @Operation(summary = "Actualiza un videojuego por su id", description = "Actualiza un videojuego por su id")
+    @Parameters({
+        @Parameter(name = "id", description = "Identificador único del videojuego", required = true, example = "1")
+    })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Videojuego a actualizar", required = true)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Videojuego actualizado"),
+        @ApiResponse(responseCode = "400", description = "Videojuego no válido"),
+        @ApiResponse(responseCode = "404", description = "Videojuego no encontrado")
+    })
+
     @PutMapping("/{id}")
     public ResponseEntity<VideoJuegosResponseDto> update( @PathVariable Long id,@Valid @RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
         log.info("Actualizando videojuegos por id={} con videojuego={}",id, videoJuegosUpdateDto);
 
         return ResponseEntity.ok(videoJuegoService.update(id, videoJuegosUpdateDto));
     }
+
+    /*
+     * Actualiza parcialmente una tarjeta
+     *
+     * @param id      de la tarjeta a actualizar
+     * @param tarjetaUpdateDto con los datos a actualizar
+     * @return TarjetaResponseDto actualizada
+     * @throws TarjetaNotFoundException si no existe la tarjeta (404)
+     * @throws TarjetaBadRequestException si la tarjeta no es correcta (400)
+     */
+
+    @Operation(summary = "Actualiza parcialmente un videojuego por su id", description = "Actualiza parcialmente un videojuego por su id")
+    @Parameters({
+        @Parameter(name = "id", description = "Identificador único del videojuego", required = true, example = "1")
+    })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Videojuego a actualizar parcialmente", required = true)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Videojuego actualizado"),
+        @ApiResponse(responseCode = "400", description = "Videojuego no válido"),
+        @ApiResponse(responseCode = "404", description = "Videojuego no encontrado")
+    })
 
     @PatchMapping("/{id}")
     public ResponseEntity<VideoJuegosResponseDto> updatePartial(@PathVariable Long id,@Valid @RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
@@ -115,6 +204,14 @@ public class VideoJuegosController {
      * @return ResponseEntity con status 204 No Content si se ha conseguido borradr
      * @throws TarjetaNotFoundException si no existe la tarjeta (404)
      */
+    @Operation(summary = "Borra un videojuego por su id", description = "Borra un videojuego por su id")
+    @Parameters({
+        @Parameter(name = "id", description = "Identificador único del videojuego", required = true, example = "1")
+    })
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Videojuego borrado"),
+        @ApiResponse(responseCode = "404", description = "Videojuego no encontrado")
+    })
 
     @DeleteMapping("/{id}")
     public ResponseEntity<VideoJuegosResponseDto> delete(@PathVariable Long id){

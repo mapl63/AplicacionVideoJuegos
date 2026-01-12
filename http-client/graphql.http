@@ -1,0 +1,67 @@
+### Todos los videoJuegos
+GRAPHQL http://localhost:3005/graphql
+
+query {
+   videoJuegos {
+     id
+     nombre
+     precio
+     fecha_lanzamiento
+     genero
+     plataforma
+     edad
+     cliente {
+       id
+       nombre
+     }
+   }
+}
+
+
+### Tarjeta por Id
+GRAPHQL http://localhost:3005/graphql
+
+query {
+    videoJuegoById(id: "1") {
+        nombre
+        precio
+        fecha_lanzamiento
+        genero
+        plataforma
+        edad
+        cliente {
+            nombre
+        }
+    }
+}
+
+### Todos los titulares
+GRAPHQL http://localhost:3005/graphql
+
+query {
+    clienteById(id: "2") {
+        nombre
+        videoJuegos {
+            nombre
+            precio
+            fecha_lanzamiento
+            genero
+            plataforma
+            edad
+        }
+    }
+}
+
+
+### Solo datos principales de tarjetas y titulares
+GRAPHQL http://localhost:3005/graphql
+
+query {
+    videoJuegos {
+        nombre
+        plataforma
+        cliente {
+            nombre
+        }
+    }
+}

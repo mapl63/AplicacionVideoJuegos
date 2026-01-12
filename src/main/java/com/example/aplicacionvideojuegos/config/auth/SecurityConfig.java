@@ -9,6 +9,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +20,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+/*CORS*/
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -37,10 +45,11 @@ public class SecurityConfig {
     @Bean
     @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        String[] apiPaths = { "/api/**", "/error/**", "/ws/**" };
+        String[] apiPaths = { "/api/**", "/error/**", "/ws/**", "/graphql", "/graphiql", "/graphiql/**" };
         http
                 .securityMatcher(apiPaths)
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
                 .sessionManagement(
                         manager -> manager.sessionCreationPolicy(STATELESS))
 
@@ -48,6 +57,7 @@ public class SecurityConfig {
                         .requestMatchers("/error/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/api/" + apiVersion + "/**").permitAll()
+                        .requestMatchers("/graphql", "/graphiql","/graphiql/**").permitAll()
                         .anyRequest().authenticated())
 
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
@@ -56,6 +66,20 @@ public class SecurityConfig {
         // Devolvemos la configuración
         return http.build();
     }
+
+    // Este filtro permite el acceso a la documentación OpenAPI
+    @Bean
+    @Order(2)
+    public SecurityFilterChain openapiFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/swagger-ui/**")
+                .securityMatcher("/v3/api-docs/**")
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll());
+        return http.build();
+    }
+
+
     // Este filtro permite el acceso a la consola de H2. Quitar en producción
         @Bean
         @Order(2)
@@ -85,5 +109,16 @@ public class SecurityConfig {
         public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
                 throws Exception {
             return config.getAuthenticationManager();
+        }
+
+        @Bean
+        CorsConfigurationSource corsConfigurationSource() {
+            CorsConfiguration configuration = new CorsConfiguration();
+            configuration.applyPermitDefaultValues();
+            configuration.setAllowedOrigins(List.of("http://mifrontend.es"));
+            configuration.setAllowedMethods(List.of( "GET", "POST", "DELETE", "PUT", "PATCH"));
+            UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+            source.registerCorsConfiguration("/**",configuration);
+            return source;
         }
 }
