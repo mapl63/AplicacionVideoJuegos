@@ -1,7 +1,8 @@
 package com.example.aplicacionvideojuegos.clientes.mappers;
 
-import com.example.aplicacionvideojuegos.clientes.dto.ClienteRequestDto;
-import com.example.aplicacionvideojuegos.clientes.models.Cliente;
+import com.example.aplicacionvideojuegos.rest.clientes.dto.ClienteRequestDto;
+import com.example.aplicacionvideojuegos.rest.clientes.mappers.ClientesMapper;
+import com.example.aplicacionvideojuegos.rest.clientes.models.Cliente;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 

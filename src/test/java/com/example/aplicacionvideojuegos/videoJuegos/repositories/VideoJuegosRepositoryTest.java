@@ -1,8 +1,9 @@
 package com.example.aplicacionvideojuegos.videoJuegos.repositories;
 
-import com.example.aplicacionvideojuegos.clientes.models.Cliente;
-import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
+import com.example.aplicacionvideojuegos.rest.clientes.models.Cliente;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.models.VideoJuegos;
 
+import com.example.aplicacionvideojuegos.rest.videoJuegos.repositories.VideoJuegosRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

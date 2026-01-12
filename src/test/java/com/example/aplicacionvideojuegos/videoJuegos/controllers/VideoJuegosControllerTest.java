@@ -1,11 +1,11 @@
 package com.example.aplicacionvideojuegos.videoJuegos.controllers;
 
-import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosCreateDto;
-import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosResponseDto;
-import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosUpdateDto;
-import com.example.aplicacionvideojuegos.videoJuegos.exceptions.VideoJuegosNotFound;
-import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
-import com.example.aplicacionvideojuegos.videoJuegos.services.VideoJuegoService;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosCreateDto;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosResponseDto;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosUpdateDto;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.exceptions.VideoJuegosNotFound;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.models.VideoJuegos;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.services.VideoJuegoService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

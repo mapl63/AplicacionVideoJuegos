@@ -1,10 +1,10 @@
 package com.example.aplicacionvideojuegos.clientes.controllers;
 
-import com.example.aplicacionvideojuegos.clientes.dto.ClienteRequestDto;
-import com.example.aplicacionvideojuegos.clientes.exceptions.ClienteConflictException;
-import com.example.aplicacionvideojuegos.clientes.exceptions.ClienteNotFoundException;
-import com.example.aplicacionvideojuegos.clientes.models.Cliente;
-import com.example.aplicacionvideojuegos.clientes.services.ClienteService;
+import com.example.aplicacionvideojuegos.rest.clientes.dto.ClienteRequestDto;
+import com.example.aplicacionvideojuegos.rest.clientes.exceptions.ClienteConflictException;
+import com.example.aplicacionvideojuegos.rest.clientes.exceptions.ClienteNotFoundException;
+import com.example.aplicacionvideojuegos.rest.clientes.models.Cliente;
+import com.example.aplicacionvideojuegos.rest.clientes.services.ClienteService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

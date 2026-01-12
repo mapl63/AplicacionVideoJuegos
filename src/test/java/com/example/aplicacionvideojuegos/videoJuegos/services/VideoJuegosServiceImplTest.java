@@ -1,17 +1,18 @@
 package com.example.aplicacionvideojuegos.videoJuegos.services;
 
-import com.example.aplicacionvideojuegos.clientes.models.Cliente;
-import com.example.aplicacionvideojuegos.clientes.services.ClienteService;
-import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosCreateDto;
-import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosResponseDto;
-import com.example.aplicacionvideojuegos.videoJuegos.dto.VideoJuegosUpdateDto;
-import com.example.aplicacionvideojuegos.videoJuegos.exceptions.VideoJuegosNotFound;
-import com.example.aplicacionvideojuegos.videoJuegos.mappers.VideoJuegosMapper;
-import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
-import com.example.aplicacionvideojuegos.videoJuegos.repositories.VideoJuegosRepository;
+import com.example.aplicacionvideojuegos.rest.clientes.models.Cliente;
+import com.example.aplicacionvideojuegos.rest.clientes.services.ClienteService;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosCreateDto;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosResponseDto;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosUpdateDto;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.exceptions.VideoJuegosNotFound;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.mappers.VideoJuegosMapper;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.models.VideoJuegos;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.repositories.VideoJuegosRepository;
 
 import com.example.aplicacionvideojuegos.config.webSockets.WebSocketConfig;
 import com.example.aplicacionvideojuegos.config.webSockets.WebSocketHandler;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.services.VideoJuegosServiceImpl;
 import com.example.aplicacionvideojuegos.webSockets.notifications.mappers.VideoJuegosNotificationMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,6 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;

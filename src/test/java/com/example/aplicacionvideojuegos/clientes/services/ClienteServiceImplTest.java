@@ -1,10 +1,11 @@
 package com.example.aplicacionvideojuegos.clientes.services;
 
-import com.example.aplicacionvideojuegos.clientes.dto.ClienteRequestDto;
-import com.example.aplicacionvideojuegos.clientes.exceptions.ClienteConflictException;
-import com.example.aplicacionvideojuegos.clientes.mappers.ClientesMapper;
-import com.example.aplicacionvideojuegos.clientes.models.Cliente;
-import com.example.aplicacionvideojuegos.clientes.repositories.ClienteRepository;
+import com.example.aplicacionvideojuegos.rest.clientes.dto.ClienteRequestDto;
+import com.example.aplicacionvideojuegos.rest.clientes.exceptions.ClienteConflictException;
+import com.example.aplicacionvideojuegos.rest.clientes.mappers.ClientesMapper;
+import com.example.aplicacionvideojuegos.rest.clientes.models.Cliente;
+import com.example.aplicacionvideojuegos.rest.clientes.repositories.ClienteRepository;
+import com.example.aplicacionvideojuegos.rest.clientes.services.ClienteServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,6 +1,6 @@
 package com.example.aplicacionvideojuegos.webSockets.notifications.mappers;
 
-import com.example.aplicacionvideojuegos.videoJuegos.models.VideoJuegos;
+import com.example.aplicacionvideojuegos.rest.videoJuegos.models.VideoJuegos;
 import com.example.aplicacionvideojuegos.webSockets.notifications.dto.VideoJuegosNotificationResponse;
 import org.springframework.stereotype.Component;
 

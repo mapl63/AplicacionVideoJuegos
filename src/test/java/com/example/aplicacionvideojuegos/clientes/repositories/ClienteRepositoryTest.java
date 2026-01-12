@@ -1,7 +1,8 @@
 package com.example.aplicacionvideojuegos.clientes.repositories;
 
 
-import com.example.aplicacionvideojuegos.clientes.models.Cliente;
+import com.example.aplicacionvideojuegos.rest.clientes.models.Cliente;
+import com.example.aplicacionvideojuegos.rest.clientes.repositories.ClienteRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

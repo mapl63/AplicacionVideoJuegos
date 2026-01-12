@@ -1,7 +1,7 @@
 package com.example.aplicacionvideojuegos.config.auth;
 
-import com.example.aplicacionvideojuegos.auth.services.jwt.JwtService;
-import com.example.aplicacionvideojuegos.auth.services.users.AuthUsersService;
+import com.example.aplicacionvideojuegos.rest.auth.services.jwt.JwtService;
+import com.example.aplicacionvideojuegos.rest.auth.services.users.AuthUsersService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
