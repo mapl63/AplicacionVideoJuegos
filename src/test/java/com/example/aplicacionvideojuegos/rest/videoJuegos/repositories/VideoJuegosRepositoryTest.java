@@ -1,4 +1,4 @@
-package com.example.aplicacionvideojuegos.videoJuegos.repositories;
+package com.example.aplicacionvideojuegos.rest.videoJuegos.repositories;
 
 import com.example.aplicacionvideojuegos.rest.clientes.models.Cliente;
 import com.example.aplicacionvideojuegos.rest.videoJuegos.models.VideoJuegos;

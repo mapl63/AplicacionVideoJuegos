@@ -1,4 +1,4 @@
-package com.example.aplicacionvideojuegos.videoJuegos.controllers;
+package com.example.aplicacionvideojuegos.rest.videoJuegos.controllers;
 
 import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosCreateDto;
 import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosResponseDto;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
-class VideoJuegosControllerTest {
+class VideoJuegosRestControllerTest {
 
 
     private final String ENDPOINT = "/api/v1/videoJuegos";

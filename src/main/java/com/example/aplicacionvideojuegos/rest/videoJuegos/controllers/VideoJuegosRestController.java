@@ -43,7 +43,7 @@ import java.util.Optional;
 @RequestMapping("api/${API_VERSION:v1}/videoJuegos")
 @RestController
 
-public class VideoJuegosController {
+public class VideoJuegosRestController {
 
     private final VideoJuegoService videoJuegoService;
     private final PaginationLinksUtils paginationLinksUtils;

@@ -1,4 +1,4 @@
-package com.example.aplicacionvideojuegos.clientes.controllers;
+package com.example.aplicacionvideojuegos.rest.clientes.controllers;
 
 import com.example.aplicacionvideojuegos.rest.clientes.dto.ClienteRequestDto;
 import com.example.aplicacionvideojuegos.rest.clientes.exceptions.ClienteConflictException;
@@ -30,25 +30,20 @@ import static org.mockito.Mockito.*;
 @AutoConfigureMockMvc
 class ClienteRestControllerTest {
 
-
     private final String ENDPOINT = "/api/v1/clientes";
-
 
     private final Cliente cliente1 = Cliente.builder()
             .id(1L)
             .nombre("Marius")
             .build();
 
-
     private final Cliente cliente2 = Cliente.builder()
             .id(2L)
             .nombre("Ana")
             .build();
 
-
     @Autowired
     private MockMvcTester mockMvcTester;
-
 
     @MockitoBean
     private ClienteService clienteService;
@@ -56,7 +51,6 @@ class ClienteRestControllerTest {
     @Test
     void getAll() {
         log.info("Devolviendo todos los clientes");
-
 
         var clientes = List.of(cliente1, cliente2);
 
@@ -77,16 +71,11 @@ class ClienteRestControllerTest {
                 .hasStatusOk()
                 .bodyJson().satisfies(json -> {
                     assertThat(json).extractingPath(".content.length()").isEqualTo(clientes.size());
-
-
                     assertThat(json).extractingPath("$.content[0]")
                             .convertTo(Cliente.class).usingRecursiveComparison().isEqualTo(cliente1);
-
-
                     assertThat(json).extractingPath("$.content[1]")
                             .convertTo(Cliente.class).usingRecursiveComparison().isEqualTo(cliente2);
                 });
-
 
         verify(clienteService, times(1)).findAll(Optional.empty(),Optional.empty(), pageable);
     }

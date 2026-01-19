@@ -1,4 +1,4 @@
-package com.example.aplicacionvideojuegos.videoJuegos.services;
+package com.example.aplicacionvideojuegos.rest.videoJuegos.services;
 
 import com.example.aplicacionvideojuegos.rest.clientes.models.Cliente;
 import com.example.aplicacionvideojuegos.rest.clientes.services.ClienteService;

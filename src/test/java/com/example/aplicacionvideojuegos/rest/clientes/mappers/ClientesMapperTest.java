@@ -1,4 +1,4 @@
-package com.example.aplicacionvideojuegos.clientes.mappers;
+package com.example.aplicacionvideojuegos.rest.clientes.mappers;
 
 import com.example.aplicacionvideojuegos.rest.clientes.dto.ClienteRequestDto;
 import com.example.aplicacionvideojuegos.rest.clientes.mappers.ClientesMapper;

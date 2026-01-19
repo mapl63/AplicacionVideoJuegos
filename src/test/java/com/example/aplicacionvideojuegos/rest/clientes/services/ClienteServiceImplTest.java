@@ -1,4 +1,4 @@
-package com.example.aplicacionvideojuegos.clientes.services;
+package com.example.aplicacionvideojuegos.rest.clientes.services;
 
 import com.example.aplicacionvideojuegos.rest.clientes.dto.ClienteRequestDto;
 import com.example.aplicacionvideojuegos.rest.clientes.exceptions.ClienteConflictException;
