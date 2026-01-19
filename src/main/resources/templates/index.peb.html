@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-{% include "fragments/head" %}
 
-<body>
-{% include "fragments/navbar" %}
+{% extends "fragments/layout" %}
 
-<div class="container mb-5 mt-5">
+{% block body %}
 
-    <!-- Lista de VideoJuegos -->
     {% if page is empty %}
     <div class="alert alert-info text-center">
         <i class="bi bi-info-circle"></i> No se han encontrado videoJuegos
@@ -17,6 +12,7 @@
         <tr>
             <th>ID</th>
             <th>Nombre</th>
+            <th>Cliente</th>
             <th>Precio</th>
             <th>Fecha de Lanzamiento</th>
             <th>Genero</th>
@@ -27,7 +23,8 @@
         {% for videojuegos in page.content %}
         <tr>
             <td>{{ videojuegos.id }}</td>
-            <td style="width: 25%">{{ videojuegos.nombre }}</td>
+            <td>{{ videojuegos.nombre }}</td>
+            <td>{{ videojuegos.cliente }}</td>
             <td>{{ videojuegos.precio }} </td>
             <td>{{ videojuegos.fecha_lanzamiento }}</td>
             <td>{{ videojuegos.genero }}</td>
@@ -100,12 +97,5 @@
     {% endif %}
 
     {% endif %}
-</div>
 
-{% include "fragments/footer" %}
-
-<!-- Bootstrap 5.3 JS Bundle with Popper -->
-<script src="/webjars/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
+{% endblock %}

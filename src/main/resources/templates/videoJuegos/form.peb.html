@@ -1,0 +1,29 @@
+{% extends "fragments/layout" %}
+
+{% import "fragments/inputField" %}
+
+{% block body %}
+
+<h2>{% if videojuegos['new'] %}Nueva {% endif %} VideoJuego</h2>
+<form class="form-horizontal" id="add-videojuegos-form" method="post"
+      action="{% if videojuegos.id is not empty %}/videojuegos/edit{% else %}/videojuegos/new{% endif %}">
+    <div class="form-group has-feedback">
+        <input type="hidden" id="id" name="id" value="{{ videojuegos.id | default(0) }}">
+        {{ inputField("videojuegos", "Nombre", "nombre", "text", videojuegos.nombre, _context) }}
+        {{ inputField("videojuegos", "Cliente", "cliente", "text", videojuegos.cliente, _context) }}
+        {{ inputField("videojuegos", "Precio", "precio", "number", videojuegos.precio, _context) }}
+        {{ inputField("videojuegos", "Fecha de lanzamiento", "fecha_lanzamiento", "date", videojuegos.fecha_lanzamiento, _context) }}
+        {{ inputField("videojuegos", "Genero", "genero", "text", videojuegos.genero, _context) }}
+        {{ inputField("videojuegos", "Plataforma", "plataforma", "text", videojuegos.plataforma, _context) }}
+        {{ inputField("videojuegos", "Edad", "edad", "number", videojuegos.edad, _context) }}
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button
+                    class="btn btn-primary" type="submit">{{ videojuegos['new'] ? 'Añadir VideoJuego' : 'Actualizar VideoJuego' }}
+            </button>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
