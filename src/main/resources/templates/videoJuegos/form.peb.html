@@ -10,17 +10,19 @@
     <div class="form-group has-feedback">
         <input type="hidden" id="id" name="id" value="{{ videojuegos.id | default(0) }}">
         {{ inputField("videojuegos", "Nombre", "nombre", "text", videojuegos.nombre, _context) }}
-        {{ inputField("videojuegos", "Cliente", "cliente", "text", videojuegos.cliente, _context) }}
         {{ inputField("videojuegos", "Precio", "precio", "number", videojuegos.precio, _context) }}
         {{ inputField("videojuegos", "Fecha de lanzamiento", "fecha_lanzamiento", "date", videojuegos.fecha_lanzamiento, _context) }}
         {{ inputField("videojuegos", "Genero", "genero", "text", videojuegos.genero, _context) }}
         {{ inputField("videojuegos", "Plataforma", "plataforma", "text", videojuegos.plataforma, _context) }}
         {{ inputField("videojuegos", "Edad", "edad", "number", videojuegos.edad, _context) }}
+        {% if not modoEditar %}
+            {{ inputField("videojuegos", "Cliente", "cliente", "text", videojuegos.cliente, _context) }}
+        {% endif %}
     </div>
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <button
-                    class="btn btn-primary" type="submit">{{ videojuegos['new'] ? 'Añadir VideoJuego' : 'Actualizar VideoJuego' }}
+            <button class="btn btn-primary" type="submit">
+                {{ modoEditar ? 'Actualizar VideoJuego' : 'Añadir VideoJuego' }}
             </button>
         </div>
     </div>

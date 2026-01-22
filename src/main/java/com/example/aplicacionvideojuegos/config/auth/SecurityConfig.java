@@ -93,6 +93,29 @@ public class SecurityConfig {
             return http.build();
         }
 
+    // Este filtro permite el acceso a la consola de H2. Quitar en producción
+        @Bean
+        @Order(4)
+        public SecurityFilterChain formLoginFilterChain(HttpSecurity http) throws Exception {
+            http
+                    // Deshabilitamos CSRF
+                    .csrf(AbstractHttpConfigurer::disable)
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/public", "/public/", "/public/**").permitAll()  // ← AÑADIR SIN /**
+                            .requestMatchers("/", "/auth/**", "/webjars/**", "/css/**").permitAll()
+                            .anyRequest().authenticated())
+                    .formLogin(form -> form
+                            .loginPage("/auth/login")
+                            .defaultSuccessUrl("/public", true)  // ← SIN /index
+                            .loginProcessingUrl("/auth/login-post")
+                            .permitAll())
+                    .logout(logout -> logout
+                            .logoutUrl("/auth/logout")
+                            .logoutSuccessUrl("/public")  // ← SIN /index
+                            .permitAll());
+            return http.build();
+        }
+
         @Bean
         public PasswordEncoder passwordEncoder() {
             return new BCryptPasswordEncoder();

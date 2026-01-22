@@ -30,7 +30,11 @@
         <td>{{ videojuegos.genero }}</td>
         <td>{{ videojuegos.plataforma }}</td>
         <td>{{ videojuegos.edad }}</td>
-        <td><a href="/videojuegos/{{ videojuegos.id }}">Ver detalles</a></td>
+        <td>
+            <a href="/videojuegos/{{ videojuegos.id }}"><i class="bi bi-eye"></i></a>
+            <a href="/videojuegos/{{ videojuegos.id }}/edit"><i class="bi bi-pencil"></i></a>
+            <a href="videojuegos/{{ videojuegos.id }}/delete"><i class="bi bi-trash"></i></a>
+        </td>
     </tr>
     {% endfor %}
 </table>

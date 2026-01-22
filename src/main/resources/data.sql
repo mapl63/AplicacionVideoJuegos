@@ -32,13 +32,15 @@ VALUES (1, 'The Legend of Zelda: Breath of the Wild', 59.99, '2017-03-03', 'Aven
 
 
 
-INSERT INTO USUARIOS (nombre, apellidos, username, email, password)
+INSERT INTO USUARIOS (nombre, apellidos, username, email, password, cliente_id)
 VALUES ('Juan', 'Perez', 'admin', 'admin@prueba.net',
-        '$2a$10$vPaqZvZkz6jhb7U7k/V/v.5vprfNdOnh4sxi/qpPRkYTzPmFlI9p2');
+        '$2a$10$vPaqZvZkz6jhb7U7k/V/v.5vprfNdOnh4sxi/qpPRkYTzPmFlI9p2', 1);
 
 insert into USER_ROLES (user_id, roles)
 values (1, 'USER'),
        (1, 'ADMIN');
+
+
 
 
 insert into USUARIOS (nombre, apellidos, username, email, password, cliente_id)
@@ -54,6 +56,37 @@ values ('Test', 'Test Test', 'test', 'test@prueba.net',
 
 insert into USER_ROLES (user_id, roles)
 values (3, 'USER');
+
+
+
+-- =========================
+-- CLIENTE
+-- =========================
+insert into CLIENTES (nombre)
+values ('Marius');
+
+-- =========================
+-- USUARIO
+-- =========================
+insert into USUARIOS (nombre, apellidos, username, email, password, cliente_id)
+values (
+           'Marius',
+           'Puruguay',
+           'marius29',
+           'marius@prueba.com',
+           '$2a$10$TxZ6mmE0GTA3duo/aththOL1KjuNcU.GHnr2jV7mmpqHdrom2Egvu',
+           (select id from CLIENTES where nombre = 'Marius')
+       );
+
+-- =========================
+-- ROLES
+-- =========================
+insert into USER_ROLES (user_id, roles)
+values
+    ((select id from USUARIOS where username = 'marius29'), 'USER'),
+    ((select id from USUARIOS where username = 'marius29'),'ADMIN');
+
+
 
 
 
