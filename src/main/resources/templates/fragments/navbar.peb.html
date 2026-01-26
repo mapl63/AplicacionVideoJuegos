@@ -52,11 +52,44 @@
                         </a></li>
                     </ul>
                 </li>
+                {% if isAuthenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button">
+                        <i class="bi bi-person-circle"></i> {{ username | default('Usuario') }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        1 hour ago
+
+                        web_mvc: errata en userRoles en plantilla perfil
+                        <li><h6 class="dropdown-header">{{ userRoles | default('USER') }}</h6></li>
+                        2 days ago
+
+                        web: editorconfig y formateo de plantillas
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/app/perfil">
+                                <i class="bi bi-person"></i> Mi Perfil
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit()">
+                                <i class="bi bi-box-arrow-right"></i> {{ message('nav.logout') }}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="/auth/login">
                         <i class="bi bi-person"></i> {{ message('nav.login') }}
                     </a>
                 </li>
+                {% endif %}
             </ul>
         </div>
     </div>

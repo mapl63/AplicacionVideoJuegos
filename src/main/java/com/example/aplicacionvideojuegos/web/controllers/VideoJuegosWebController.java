@@ -115,7 +115,7 @@ public class VideoJuegosWebController {
     }
 
     @GetMapping("/{id}/delete")
-    public String borrarVideoJuego(@PathVariable Long id){
+    public String borrarVideoJuego(@PathVariable Long id) {
         videoJuegosService.deleteById(id);
         return "redirect:/videojuegos/lista";
     }

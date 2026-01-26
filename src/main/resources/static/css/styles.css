@@ -1,0 +1,24 @@
+/* Video de fondo */
+.bg-video video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+/* Imagen de fondo para visitantes */
+.bg-visitor {
+    background: url('../images/controller.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* Contenedores con transparencia */
+.transparent-container {
+    background-color: rgba(0, 0, 0, 0.75); /* Negro con 75% de opacidad */
+    color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+}

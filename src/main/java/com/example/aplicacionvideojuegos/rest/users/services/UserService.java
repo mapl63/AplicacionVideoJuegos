@@ -30,4 +30,8 @@ public interface UserService {
 
     List<User> findAllActiveUsers();
 
+    Optional<User> findByUsername(String username);
+
+    void save(User user);
+
 }

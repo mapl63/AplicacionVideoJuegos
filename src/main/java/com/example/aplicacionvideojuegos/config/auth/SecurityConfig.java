@@ -99,7 +99,7 @@ public class SecurityConfig {
         public SecurityFilterChain formLoginFilterChain(HttpSecurity http) throws Exception {
             http
                     // Deshabilitamos CSRF
-                    .csrf(AbstractHttpConfigurer::disable)
+                    //.csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers("/public", "/public/", "/public/**").permitAll()  // ← AÑADIR SIN /**
                             .requestMatchers("/", "/auth/**", "/webjars/**", "/css/**").permitAll()

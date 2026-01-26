@@ -20,6 +20,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -132,6 +133,15 @@ public class UsersServiceImpl implements UserService {
     public List<User> findAllActiveUsers(){
         log.info("Buscando todos los usuarios activos");
         return usersRepository.findAllByIsDeletedFalse();
+    }
+
+    public Optional<User> findByUsername(String username) {
+        log.info("Buscando usuario por username: {}", username);
+        return usersRepository.findByUsername(username);
+    }
+
+    public void save(User user){
+        usersRepository.save(user);
     }
 
 }

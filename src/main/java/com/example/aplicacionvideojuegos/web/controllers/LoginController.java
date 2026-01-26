@@ -15,6 +15,11 @@ public class LoginController {
 
     private final UserService usuarioServicio;
 
+    @GetMapping("/")
+    public String welcome() {
+        return "redirect:/public/";
+    }
+
     @GetMapping("/auth/login")
     public String login(Model model) {
         model.addAttribute("usuario", new User());

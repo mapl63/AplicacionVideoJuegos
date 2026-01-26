@@ -7,8 +7,8 @@
 <h2>{% if videojuegos['new'] %}Nueva {% endif %} VideoJuego</h2>
 <form class="form-horizontal" id="add-videojuegos-form" method="post"
       action="{% if videojuegos.id is not empty %}/videojuegos/edit{% else %}/videojuegos/new{% endif %}">
+    <input name=" {{ csrfParamName }} " type="hidden" id="id"value="{{ csrfToken}}">
     <div class="form-group has-feedback">
-        <input type="hidden" id="id" name="id" value="{{ videojuegos.id | default(0) }}">
         {{ inputField("videojuegos", "Nombre", "nombre", "text", videojuegos.nombre, _context) }}
         {{ inputField("videojuegos", "Precio", "precio", "number", videojuegos.precio, _context) }}
         {{ inputField("videojuegos", "Fecha de lanzamiento", "fecha_lanzamiento", "date", videojuegos.fecha_lanzamiento, _context) }}
