@@ -24,7 +24,7 @@
                 <tr>
                     <td>{{ videojuego.id }}</td>
                     <td>
-                        <a href="app/misvideojuegos/{{ videojuegos.id }}">
+                        <a href="app/misvideojuegos/{{ videojuego.id }}">
                             {{ videojuego.nombre }}
                         </a>
                     </td>
@@ -35,9 +35,9 @@
                     <td>{{ videojuego.plataforma }}</td>
                     <td>{{ videojuego.edad }}</td>
                     <td>
-                        <a href="/videojuegos/{{ videojuegos.id }}"><i class="bi bi-eye"></i></a>
-                        <a href="/videojuegos/{{ videojuegos.id }}/edit"><i class="bi bi-pencil"></i></a>
-                        <a href="videojuegos/{{ videojuegos.id }}/delete"><i class="bi bi-trash"></i></a>
+                        <a href="/videojuegos/{{ videojuego.id }}"><i class="bi bi-eye"></i></a>
+                        <a href="/videojuegos/{{ videojuego.id }}/edit"><i class="bi bi-pencil"></i></a>
+                        <a href="/videojuegos/{{ videojuego.id }}/delete"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
             {% endfor %}

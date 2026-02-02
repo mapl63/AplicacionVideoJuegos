@@ -4,20 +4,20 @@
 
     <body class="d-flex flex-column {% if isAuthenticated %}bg-video{% else %}bg-visitor{% endif %}">
 
-    {% if isAuthenticated %}
-    <video autoplay muted loop>
-        <source src="/video/rayos.mp4" type="video/mp4">
-    </video>
-    {% endif %}
+        {% if isAuthenticated %}
+            <video autoplay muted loop>
+                <source src="/video/rayos.mp4" type="video/mp4">
+            </video>
+        {% endif %}
 
-    {% include "fragments/navbar" %}
+        {% include "fragments/navbar" %}
 
-    <div class="container-fluid">
-        {% block body %}{% endblock %}
-    </div>
+            <div class="container-fluid">
+                {% block body %}{% endblock %}
+            </div>
 
-    {% include "fragments/footer" %}
+        {% include "fragments/footer" %}
 
-    <script src="{{ href('/webjars/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+            <script src="{{ href('/webjars/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     </body>
 </html>

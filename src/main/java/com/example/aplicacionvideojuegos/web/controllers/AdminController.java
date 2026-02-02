@@ -47,6 +47,18 @@ public class AdminController {
         return "admin/videojuegos/lista";
     }
 
+    @GetMapping("/videojuegos/filter")
+    public String videoJuegosFilter(Model model,
+                                    @RequestParam(required = false) Optional<String> nombre,
+                                    @RequestParam(name = "page", defaultValue = "0") int page,
+                                    @RequestParam(name = "size", defaultValue = "4") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+        Page<VideoJuegosResponseDto> videoJuegosPage = videoJuegoService.findAll(
+                nombre, Optional.empty(), Optional.empty(), pageable);
+        model.addAttribute("page", videoJuegosPage);
+        return "fragments/listaVideoJuegos";
+    }
+
     @GetMapping("/videojuegos/{id}")
     public String getById(@PathVariable Long id, Model model){
         VideoJuegos videoJuegos = videoJuegoService.buscarPorId(id).orElse(null);
@@ -55,6 +67,13 @@ public class AdminController {
     }
 
     @GetMapping("/videojuegos/new")
+    public String nuevoVideoJuegoForm(Model model){
+        model.addAttribute("videojuego", VideoJuegosCreateDto.builder().build());
+        model.addAttribute("modoEditar", false);
+        return "admin/videojuegos/form";
+    }
+
+    @PostMapping("/videojuegos/new")
     public String nuevoVideoJuegoSubmit(@Valid @ModelAttribute("videoJuego")VideoJuegosCreateDto juego,
                                         BindingResult bindingResult){
         log.info("Datos recibidos del formulario: {}", juego);
@@ -66,6 +85,8 @@ public class AdminController {
             return "redirect:/admin/videojuegos";
         }
     }
+
+
 
     @GetMapping("/videojuegos/{id}/edit")
     public String editarVideoJuegoForm(@PathVariable Long id, Model model){
@@ -130,7 +151,7 @@ public class AdminController {
     }
 
     @GetMapping("/videojuegos/{id}/delete/confirm")
-    public String showModalBorrar(@PathVariable Long id,
+    public String showModalBorrar(@PathVariable("id") Long id,
                                   HttpSession session,
                                   Model model){
         Optional<VideoJuegos> videoJuego = videoJuegoService.buscarPorId(id);

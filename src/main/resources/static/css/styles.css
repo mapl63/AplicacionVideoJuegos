@@ -43,3 +43,10 @@ body.bg-visitor {
     padding: 2rem;
     border-radius: 1rem;
 }
+
+#logoutLink {
+    cursor: pointer; /* fuerza el cursor de mano */
+    pointer-events: auto;
+    display: block;
+}
+

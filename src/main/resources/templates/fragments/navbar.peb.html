@@ -1,10 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
     <div class="container-fluid">
-        <!--
-        <a class="navbar-brand" href="/public">
-            <img alt="Logo" class="d-inline-block align-text-top" height="30" src="/images/logo.svg">
-        </a>
-        -->
         <button class="navbar-toggler" data-bs-target="#navbarNav" data-bs-toggle="collapse" type="button">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -15,11 +10,13 @@
                         <i class="bi bi-house-door"></i> {{ message('nav.home') }}
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/videojuegos/new">
-                        <i class="bi bi-controller"></i> {{ message('nav.new.videojuegos') }}
-                    </a>
-                </li>
+                {% if isAdmin %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/videojuegos/new">
+                            <i class="bi bi-controller"></i> {{ message('nav.new.videojuegos') }}
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
 
             <form action="/public" class="d-flex me-3" method="get" role="search">
@@ -77,8 +74,9 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit()">
-                                <i class="bi bi-box-arrow-right"></i> {{ message('nav.logout') }}
+                            <a class="dropdown-item" href="/logout" id="logoutLink">
+                                <i class="bi bi-box-arrow-right"></i>
+                                {{ message('nav.logout') }}
                             </a>
                         </li>
                     </ul>
