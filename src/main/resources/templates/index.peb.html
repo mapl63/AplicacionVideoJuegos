@@ -2,30 +2,30 @@
 
 {% block body %}
 
-{% if not isAuthenticated %}
-<style>
-    body {
-        background-image: url('/images/controller.jpg');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    }
-</style>
-{% endif %}
+    <div class="p-5 mb-4 rounded-4">
+        <div class="d-flex flex-column align-items-center text-center">
+            <h1 class="display-1 fw-bold">
+                Gestión de VideoJuegos
+            </h1>
 
-<div class="container">
-    <div class="p-5 mb-4 bg-dark bg-opacity-75 text-white rounded-4 text-center">
-        <h1 class="display-1 fw-bold text-center">Gestión de VideoJuegos</h1>
-        <p class="col-md-8 fs-4 text-center">Una aplicación de ejemplo de Spring MVC con Pebble</p>
+            <p class="fs-4 text-danger">
+                Una aplicación de ejemplo de Spring MVC con Pebble
+            </p>
 
-        {% if isAuthenticated %}
-        <h1 class="display-4 text-center">Saludos, {{ username | default('Usuario') }} </h1>
-        <a class="btn btn-primary btn-lg text-center" href="/videojuegos" role="button">Ver VideoJuegos</a>
-        {% else %}
-        <h1 class="display-4">Saludos, visitante</h1>
-        <a class="btn btn-primary btn-lg" href="/login" role="button">Iniciar Sesión</a>
-        {% endif %}
+            {% if isAuthenticated %}
+                <h1 class="display-4">
+                    Saludos, {{ username | default('Usuario') }}
+                </h1>
+                <a class="btn btn-primary btn-lg" href="/videojuegos" role="button">
+                    Ver VideoJuegos
+                </a>
+            {% else %}
+                <h1 class="display-4">Saludos, visitante</h1>
+                <a class="btn btn-primary btn-lg" href="/login" role="button">
+                    Iniciar Sesión
+                </a>
+            {% endif %}
+        </div>
     </div>
-</div>
 
 {% endblock %}

@@ -43,6 +43,20 @@ public class SecurityConfig {
     private String apiVersion;
 
     @Bean
+    @Order(0)
+    public SecurityFilterChain staticResourcesFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher(PathRequest.toStaticResources().atCommonLocations())
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .requestCache(AbstractHttpConfigurer::disable)
+                .securityContext(AbstractHttpConfigurer::disable)
+                .sessionManagement(AbstractHttpConfigurer::disable);
+
+        return http.build();
+    }
+
+
+    @Bean
     @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         String[] apiPaths = { "/api/**", "/error/**", "/ws/**", "/graphql", "/graphiql", "/graphiql/**" };
@@ -71,18 +85,19 @@ public class SecurityConfig {
     @Bean
     @Order(2)
     public SecurityFilterChain openapiFilterChain(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher("/swagger-ui/**")
-                .securityMatcher("/v3/api-docs/**")
+        String[] swaggerPaths = { "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html"};
+
+            http
+                .securityMatcher(swaggerPaths)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll());
+                        .requestMatchers(swaggerPaths).permitAll());
         return http.build();
     }
 
 
     // Este filtro permite el acceso a la consola de H2. Quitar en producción
         @Bean
-        @Order(2)
+        @Order(3)
         public SecurityFilterChain h2ConsoleFilterChain(HttpSecurity http) throws Exception {
             http
                     .securityMatcher(PathRequest.toH2Console())
@@ -102,7 +117,15 @@ public class SecurityConfig {
                     //.csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers("/public", "/public/", "/public/**").permitAll()  // ← AÑADIR SIN /**
-                            .requestMatchers("/", "/auth/**", "/webjars/**", "/css/**").permitAll()
+                            .requestMatchers(
+                                    "/",
+                                    "/auth/**",
+                                    "/webjars/**",
+                                    "/css/**",
+                                    "/images/**,",
+                                    "/video/**")
+                            .permitAll()
+                            .requestMatchers("/admin/**").hasRole("ADMIN")
                             .anyRequest().authenticated())
                     .formLogin(form -> form
                             .loginPage("/auth/login")

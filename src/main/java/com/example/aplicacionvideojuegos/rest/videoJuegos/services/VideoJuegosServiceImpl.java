@@ -30,6 +30,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @CacheConfig(cacheNames = {"videoJuegos"})
@@ -176,5 +177,17 @@ public class VideoJuegosServiceImpl implements VideoJuegoService, InitializingBe
         }catch (JsonProcessingException e){
             log.error("Error al convertir la notificación a JSON", e);
         }
+    }
+
+    @Override
+    public List<VideoJuegos> buscarPorUsuarioId(Long usuarioId) {
+        log.info("Buscando VideoJuegos por usuarioId: {}", usuarioId);
+        return videoJuegosRepository.findByUsuarioId(usuarioId);
+    }
+
+    @Override
+    public Optional<VideoJuegos> buscarPorId(Long id) {
+        log.info("Buscando VideoJuegos por id: {}", id);
+        return videoJuegosRepository.findById(id);
     }
 }

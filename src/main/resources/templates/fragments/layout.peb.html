@@ -8,20 +8,11 @@
     <video autoplay muted loop>
         <source src="/video/rayos.mp4" type="video/mp4">
     </video>
-    {% else %}
-    <style>
-        body {
-            background-image: url('/images/controller.jpg');
-            background-size: cover;
-            background-position: center;;
-            background-repeat: no-repeat;
-        }
-    </style>
     {% endif %}
 
     {% include "fragments/navbar" %}
 
-    <div class="container mb-5 mt-5">
+    <div class="container-fluid">
         {% block body %}{% endblock %}
     </div>
 

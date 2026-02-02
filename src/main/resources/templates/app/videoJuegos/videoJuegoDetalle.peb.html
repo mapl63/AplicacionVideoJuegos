@@ -1,0 +1,19 @@
+{% extends "fragments/layout" %}
+
+{% block body %}
+    {% if videoJuego is empty %}
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle"></i>
+            {{ message('label.videojuegos.empty') }}
+        </div>
+    {% else %}
+        <h2>
+            {{ message('label.videojuegos.detalle') }}
+            {{ videoJuego.id }}
+        </h2>
+        <ul>
+            <li> {{ message('label.videojuegos.nombre') }} : {{ videojuegos.nombre }} </li>
+            <li> {{ message('label.videojuegos.genero') }} : {{ videojuegos.genero }} </li>
+        </ul>
+    {% endif %}
+{% endblock%}

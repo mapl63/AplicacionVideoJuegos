@@ -1,0 +1,46 @@
+{% extends "fragments/layout" %}
+
+{% block body %}
+    <!-- Lista de Tarjetas -->
+    {% if page is empty %}
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle"></i>
+            No se han encontrado videojuegos.
+        </div>
+    {% else %}
+        <table class="table table-striped">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Cliente</th>
+                <th>Precio</th>
+                <th>Fecha de Lanzamiento</th>
+                <th>Genero</th>
+                <th>Plataforma</th>
+                <th>Edad</th>
+                <th></th>
+            </tr>
+            {% for videojuego in videojuegos %}
+                <tr>
+                    <td>{{ videojuego.id }}</td>
+                    <td>
+                        <a href="app/misvideojuegos/{{ videojuegos.id }}">
+                            {{ videojuego.nombre }}
+                        </a>
+                    </td>
+                    <td>{{ videojuego.cliente }}</td>
+                    <td>{{ videojuego.precio }} </td>
+                    <td>{{ videojuego.fecha_lanzamiento }}</td>
+                    <td>{{ videojuego.genero }}</td>
+                    <td>{{ videojuego.plataforma }}</td>
+                    <td>{{ videojuego.edad }}</td>
+                    <td>
+                        <a href="/videojuegos/{{ videojuegos.id }}"><i class="bi bi-eye"></i></a>
+                        <a href="/videojuegos/{{ videojuegos.id }}/edit"><i class="bi bi-pencil"></i></a>
+                        <a href="videojuegos/{{ videojuegos.id }}/delete"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endblock %}

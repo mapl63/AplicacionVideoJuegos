@@ -1,4 +1,17 @@
-/* Video de fondo */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+}
+
+main{
+    flex: 1 0 auto;
+}
+
 .bg-video video {
     position: fixed;
     top: 0;
@@ -10,10 +23,18 @@
 }
 
 /* Imagen de fondo para visitantes */
-.bg-visitor {
-    background: url('../images/controller.jpg') no-repeat center center fixed;
-    background-size: cover;
+html, body {
+    height: 100%;
 }
+
+body.bg-visitor {
+    background-image: url('/images/controller.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
 
 /* Contenedores con transparencia */
 .transparent-container {
