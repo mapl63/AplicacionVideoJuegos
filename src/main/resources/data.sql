@@ -44,8 +44,12 @@ values (1, 'USER'),
 
 
 insert into USUARIOS (nombre, apellidos, username, email, password, cliente_id)
-values ('Maria', 'Gomez', 'mariaGomez', 'usuario@prueba',
-        '$2a$10$7QJH6.H0k1b5oF6G8y8lUuJ8K1Fz9O1G8Y8lUuJ8K1Fz9O1G8Y8lUu', 2);
+values ('Maria',
+        'Gomez',
+        'mariaGomez',
+        'usuario@prueba',
+        '$2a$10$TxZ6mmE0GTA3duo/aththOL1KjuNcU.GHnr2jV7mmpqHdrom2Egvu',
+        2);
 
 insert into USER_ROLES (user_id, roles)
 values (2, 'USER');

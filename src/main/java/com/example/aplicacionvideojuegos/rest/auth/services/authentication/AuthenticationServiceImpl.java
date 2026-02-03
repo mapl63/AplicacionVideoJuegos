@@ -48,6 +48,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .apellidos(request.getApellidos())
                     .roles(Stream.of(Role.USER).collect(Collectors.toSet()))
                     .build();
+            log.info("Creando usuario: {}", user);
+
             try {
                 // Salvamos y devolvemos el token
                 var userStored = authUsersRepository.save(user);

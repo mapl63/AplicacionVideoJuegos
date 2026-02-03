@@ -50,3 +50,25 @@ body.bg-visitor {
     display: block;
 }
 
+.boton-personal{
+    --bs-btn-bg: black;
+    --bs-btn-border-color: red;
+    --bs-btn-color: white;
+
+    --bs-btn-hover-bg: red;
+    --bs-btn-hover-border-color: black;
+    --bs-btn-hover-color: black;
+}
+
+.titulo-index{
+    text-shadow: 0 0 10px white, 0 0 20px white;
+    color: white;
+    font-size: 8em;
+    transition: all 0.3s ease;
+}
+
+.titulo-index:hover{
+    color: red;
+    text-shadow: 0 0 15px red, 0 0 20px red;
+    transform: scale(1.2);
+}
