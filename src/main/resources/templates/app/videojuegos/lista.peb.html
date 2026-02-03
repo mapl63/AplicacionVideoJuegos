@@ -8,7 +8,7 @@
             No se han encontrado videojuegos.
         </div>
     {% else %}
-        <table class="table table-striped">
+        <table class="table table-striped" id="listaJuegos">
             <tr>
                 <th>ID</th>
                 <th>Nombre</th>
@@ -22,7 +22,7 @@
             </tr>
             {% for videojuego in videojuegos %}
                 <tr>
-                    <td>{{ videojuego.id }}</td>
+                    <td class="videoJuegoId">{{ videojuego.id }}</td>
                     <td>
                         <a href="app/misvideojuegos/{{ videojuego.id }}">
                             {{ videojuego.nombre }}
@@ -35,9 +35,16 @@
                     <td>{{ videojuego.plataforma }}</td>
                     <td>{{ videojuego.edad }}</td>
                     <td>
-                        <a href="/videojuegos/{{ videojuego.id }}"><i class="bi bi-eye"></i></a>
-                        <a href="/videojuegos/{{ videojuego.id }}/edit"><i class="bi bi-pencil"></i></a>
-                        <a href="/videojuegos/{{ videojuego.id }}/delete"><i class="bi bi-trash"></i></a>
+                        <a href="/videojuegos/{{ videojuego.id }}">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="/admin/videojuegos/{{ videojuego.id }}/edit">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="#"
+                            class="borrarVideoJuegoLink text-danger">
+                                <i class="bi bi-trash"></i>
+                        </a>
                     </td>
                 </tr>
             {% endfor %}

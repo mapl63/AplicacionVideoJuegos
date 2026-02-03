@@ -12,7 +12,7 @@
                 </li>
                 {% if isAdmin %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/videojuegos/new">
+                        <a class="nav-link" href="/admin/videojuegos/new">
                             <i class="bi bi-controller"></i> {{ message('nav.new.videojuegos') }}
                         </a>
                     </li>
@@ -55,13 +55,9 @@
                         <i class="bi bi-person-circle"></i> {{ username | default('Usuario') }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        1 hour ago
-
-                        web_mvc: errata en userRoles en plantilla perfil
-                        <li><h6 class="dropdown-header">{{ userRoles | default('USER') }}</h6></li>
-                        2 days ago
-
-                        web: editorconfig y formateo de plantillas
+                        <li>
+                            <h6 class="dropdown-header">{{ userRoles | default('USER') }}</h6>
+                        </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -74,7 +70,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <a class="dropdown-item" href="/logout" id="logoutLink">
+                            <a class="dropdown-item" href="#" id="logoutLink">
                                 <i class="bi bi-box-arrow-right"></i>
                                 {{ message('nav.logout') }}
                             </a>

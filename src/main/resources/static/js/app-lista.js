@@ -1,4 +1,6 @@
 
+console.log("✅ app-lista.js cargado");
+
 document.addEventListener('DOMContentLoaded', ()=> {
 
     const table = document.querySelector('#listaJuegos');

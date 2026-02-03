@@ -38,7 +38,7 @@ body.bg-visitor {
 
 /* Contenedores con transparencia */
 .transparent-container {
-    background-color: rgba(0, 0, 0, 0.75); /* Negro con 75% de opacidad */
+    background-color: rgba(76, 75, 75, 0.75); /* Negro con 75% de opacidad */
     color: white;
     padding: 2rem;
     border-radius: 1rem;

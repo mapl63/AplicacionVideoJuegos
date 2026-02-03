@@ -1,9 +1,9 @@
 <!doctype html>
 <html>
+
 {% include "fragments/head" %}
 
     <body class="d-flex flex-column {% if isAuthenticated %}bg-video{% else %}bg-visitor{% endif %}">
-
         {% if isAuthenticated %}
             <video autoplay muted loop>
                 <source src="/video/rayos.mp4" type="video/mp4">
@@ -18,6 +18,12 @@
 
         {% include "fragments/footer" %}
 
-            <script src="{{ href('/webjars/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+        <!-- JS GLOBAL DE LA APP -->
+        <script src="{{ href('/js/app.js') }}"></script>
+
+        <!-- Bootstrap -->
+        <script src="{{ href('/webjars/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+
+        {% block scripts %}{% endblock %}
     </body>
 </html>

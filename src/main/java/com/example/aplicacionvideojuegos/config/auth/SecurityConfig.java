@@ -42,18 +42,7 @@ public class SecurityConfig {
     @Value("${api.version}")
     private String apiVersion;
 
-    @Bean
-    @Order(0)
-    public SecurityFilterChain staticResourcesFilterChain(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher(PathRequest.toStaticResources().atCommonLocations())
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .requestCache(AbstractHttpConfigurer::disable)
-                .securityContext(AbstractHttpConfigurer::disable)
-                .sessionManagement(AbstractHttpConfigurer::disable);
 
-        return http.build();
-    }
 
 
     @Bean
@@ -122,7 +111,8 @@ public class SecurityConfig {
                                     "/auth/**",
                                     "/webjars/**",
                                     "/css/**",
-                                    "/images/**,",
+                                    "/js/**",
+                                    "/images/**",
                                     "/video/**")
                             .permitAll()
                             .requestMatchers("/admin/**").hasRole("ADMIN")

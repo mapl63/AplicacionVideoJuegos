@@ -1,5 +1,8 @@
 package com.example.aplicacionvideojuegos.web.controllers;
 
+import com.example.aplicacionvideojuegos.rest.videoJuegos.models.VideoJuegos.Plataforma;
+
+
 import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosCreateDto;
 import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosResponseDto;
 import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosUpdateDto;
@@ -68,17 +71,24 @@ public class AdminController {
 
     @GetMapping("/videojuegos/new")
     public String nuevoVideoJuegoForm(Model model){
-        model.addAttribute("videojuego", VideoJuegosCreateDto.builder().build());
+        model.addAttribute("videojuegos", VideoJuegosCreateDto.builder().build());
+
         model.addAttribute("modoEditar", false);
+
+        model.addAttribute("plataformas", Plataforma.values());
         return "admin/videojuegos/form";
     }
 
     @PostMapping("/videojuegos/new")
-    public String nuevoVideoJuegoSubmit(@Valid @ModelAttribute("videoJuego")VideoJuegosCreateDto juego,
-                                        BindingResult bindingResult){
+    public String nuevoVideoJuegoSubmit(@Valid @ModelAttribute("videojuegos") VideoJuegosCreateDto juego,
+                                        BindingResult bindingResult,
+                                        Model model){
         log.info("Datos recibidos del formulario: {}", juego);
+
         if(bindingResult.hasErrors()) {
             log.info("hay errores en la validación:");
+            model.addAttribute("plataformas", Plataforma.values());
+            model.addAttribute("modoEditar", false);
             return "admin/videojuegos/form";
         }else {
             videoJuegoService.save(juego);
@@ -92,7 +102,7 @@ public class AdminController {
     public String editarVideoJuegoForm(@PathVariable Long id, Model model){
         VideoJuegos videoJuegoEncontrado = videoJuegoService.buscarPorId(id).orElse(null);
         if(videoJuegoEncontrado == null){
-            return "redirect:/admin/videojuegos/new";
+            return "redirect:/admin/videojuegos";
         }else{
             VideoJuegosUpdateDto juego = VideoJuegosUpdateDto.builder()
                     .nombre(videoJuegoEncontrado.getNombre())
@@ -102,16 +112,18 @@ public class AdminController {
                     .plataforma(videoJuegoEncontrado.getPlataforma())
                     .edad(videoJuegoEncontrado.getEdad())
                     .build();
-            model.addAttribute("videoJuego", juego);
+            model.addAttribute("videojuego", juego);
             model.addAttribute("videoJuegoId", id);
             model.addAttribute("modoEditar", true);
+
+            model.addAttribute("plataformas", Plataforma.values());
             return "admin/videojuegos/form";
         }
     }
 
     @PostMapping("/videojuegos/{id}/edit")
     public String editarVideoJuegoSubmit(@PathVariable Long id,
-                                         @Valid @ModelAttribute("videoJuego")VideoJuegosUpdateDto juego,
+                                         @Valid @ModelAttribute("videojuego")VideoJuegosUpdateDto juego,
                                          BindingResult result,
                                          Model model,
                                             RedirectAttributes redirectAttributes){
@@ -120,13 +132,15 @@ public class AdminController {
                     "Ha ocurrido un error al actualizar el videojuego");
             model.addAttribute("videoJuegoId", id);
             model.addAttribute("modoEditar", true);
+            model.addAttribute("plataformas", Plataforma.values());
             return "admin/videojuegos/form";
         }
 
         videoJuegoService.update(id, juego);
         redirectAttributes.addFlashAttribute("success",
                 "Videojuego actualizado correctamente");
-        return "redirect:/admin/videojuegos/{id}";
+
+        return "redirect:/admin/videojuegos/" + id;
     }
 
     @PostMapping("/videojuegos/{id}/delete")
@@ -167,7 +181,7 @@ public class AdminController {
         String sessionKey = "deleteToken_" + id;
         session.setAttribute(sessionKey, token);
 
-        model.addAttribute("deleteUrl","/admin/videoJuegos" + id + "/delete");
+        model.addAttribute("deleteUrl","/admin/videojuegos/" + id + "/delete");
         model.addAttribute("deleteToken", token);
         model.addAttribute("deleteTitle", i18nService.getMessage("videojuegos.borrar.titulo"));
         model.addAttribute("deleteMessage", deleteMessage);

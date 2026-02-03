@@ -1,40 +1,47 @@
 {% extends "fragments/layout" %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <h1>
-                  <i class="bi bi-controller"></i>
-                  {{ message('label.videojuegos.detalle') }} {{ videojuegos.id }}
-              </h1>
-              <a href="/admin/videojuegos" class="btn btn-secondary">
-                  <i class="bi bi-arrow-left"></i>
-                  Volver
-              </a>
+    <div class="container mt-5">
+        <div class="transparent-container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1>
+                            <i class="bi bi-controller"></i>
+                            {{ message('label.videojuegos.detalle') }} {{ videojuego.id }}
+                        </h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    {% include "fragments/messages" %}
+                </div>
+            </div>
+
+            {% if videojuego is empty %}
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle"></i>
+                {{ message('label.videojuegos.empty') }}
+            </div>
+            {% else %}
+            <ul>
+                <li> {{ message('label.videojuegos.nombre') }} : {{ videojuego.nombre }} </li>
+                <li> {{ message('label.videojuegos.precio') }} : {{ videojuego.precio }} </li>
+                <li> {{ message('label.videojuegos.fecha_lanzamiento') }} : {{ videojuego.fecha_lanzamiento }} </li>
+                <li> {{ message('label.videojuegos.genero') }} : {{ videojuego.genero }} </li>
+                <li> {{ message('label.videojuegos.plataforma') }} : {{ videojuego.plataforma }} </li>
+                <li> {{ message('label.videojuegos.edad') }} : {{ videojuego.edad }} </li>
+            </ul>
+            {% endif %}
+            <div class="d-flex justify-content-end align-items-center">
+                <a href="/admin/videojuegos" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Volver
+                </a>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            {% include "fragments/msessages" %}
-        </div>
-    </div>
-
-    {% if videojuegos is empty %}
-        <div class="alert alert-info text-center">
-            <i class="bi bi-info-circle"></i>
-            {{ message('label.videojuegos.empty') }}
-        </div>
-    {% else %}
-        <ul>
-            <li> {{ message('label.videojuegos.nombre') }} : {{ videojuegos.nombre }} </li>
-            <li> {{ message('label.videojuegos.precio') }} : {{ videojuegos.precio }} </li>
-            <li> {{ message('label.videojuegos.fecha_lanzamiento') }} : {{ videojuegos.fecha_lanzamiento }} </li>
-            <li> {{ message('label.videojuegos.genero') }} : {{ videojuegos.genero }} </li>
-            <li> {{ message('label.videojuegos.plataforma') }} : {{ videojuegos.plataforma }} </li>
-            <li> {{ message('label.videojuegos.edad') }} : {{ videojuegos.edad }} </li>
-        </ul>
-    {% endif %}
 {% endblock%}
