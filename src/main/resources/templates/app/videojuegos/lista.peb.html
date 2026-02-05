@@ -3,10 +3,13 @@
 {% block body %}
     <!-- Lista de Tarjetas -->
     {% if page is empty %}
-        <div class="alert alert-info text-center">
+    <div class="d-flex justify-content-center align-items-center mt-5">
+        <div class="alert alerta-lista text-center w-25">
             <i class="bi bi-info-circle"></i>
             No se han encontrado videojuegos.
         </div>
+    </div>
+
     {% else %}
         <table class="table table-striped" id="listaJuegos">
             <tr>
@@ -39,7 +42,7 @@
                             <i class="bi bi-eye"></i>
                         </a>
                         <a href="/admin/videojuegos/{{ videojuego.id }}/edit">
-                            <i class="bi bi-pencil"></i>
+                            <i class="bi bi-pencil text-danger"></i>
                         </a>
                         <a href="#"
                             class="borrarVideoJuegoLink text-danger">

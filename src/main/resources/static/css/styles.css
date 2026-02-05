@@ -122,3 +122,57 @@ body.bg-visitor {
     box-shadow: 0 0 10px #ffd000, 0 0 25px #ffd000;
 }
 
+.pie-texto{
+    color: white;
+    text-shadow: 0 0 4px #ffd000, 0 0 8px #ffd000;
+    font-size: 1.2em;
+}
+
+.icono-vista{
+    color: rgb(7, 52, 204);
+    transition: all 0.3s ease;
+}
+
+.icono-vista:hover {
+    color: mediumvioletred;
+    text-shadow: 0 0 4px mediumvioletred, 0 0 7px mediumvioletred;
+    transform: scale(1.6);
+}
+
+.icono-editar{
+    color: #819c16;
+    transition: all 0.3s ease;
+}
+
+.icono-editar:hover{
+    color: #000000;
+    text-shadow: 0 0 4px #1bea03, 0 0 7px #1bea03;
+    transform: scale(1.6);
+}
+
+.alerta-lista {
+    width: min(80vw, 400px);
+    aspect-ratio: 1 / 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    color: #1bea03;
+    text-align: center;
+
+    box-shadow: 0 0 20px #1bea03, 0 0 40px #1bea03;
+}
+
+.alerta-contenido {
+    padding: 10%;
+
+    font-size: clamp(4rem, 5vw, 4rem); /* 🔑 aquí */
+
+    line-height: 1.1;
+    font-weight: 600;
+
+    text-shadow: 0 0 4px #1bea03, 0 0 7px #1bea03;
+}
+

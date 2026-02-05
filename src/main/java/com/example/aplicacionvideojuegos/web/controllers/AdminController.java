@@ -42,7 +42,7 @@ public class AdminController {
     @GetMapping("/videojuegos")
     public String videoJuegos (Model model,
                                @RequestParam(name="page", defaultValue = "0") int page,
-                               @RequestParam(name="size", defaultValue = "4") int size) {
+                               @RequestParam(name="size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
         Page<VideoJuegosResponseDto> videoJuegosPage = videoJuegoService.findAll(
                 Optional.empty(), Optional.empty(), Optional.empty(), pageable);

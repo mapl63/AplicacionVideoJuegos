@@ -3,16 +3,18 @@
 {% import "fragments/pager" %}
 
 {% block body %}
-
-    <div class="row mb-4">
-        <div class="col-md-12">
-            {% include "fragments/messages" %}
+    <div class="container  mx-auto">
+        <div class="row mb-4">
+            <div class="col-md-12">
+                {% include "fragments/messages" %}
+            </div>
         </div>
-    </div>
-    {% include "fragments/listaJuegos" %}
-        {{ pager("VideoJuegos", page, _context) }}
-    <div id="placeholder-modal"></div>
 
+        {% include "fragments/listaJuegos" %}
+
+        {{ pager("VideoJuegos", page, _context) }}
+        <div id="placeholder-modal"></div>
+    </div>
 {% endblock %}
 
 {% block scripts %}

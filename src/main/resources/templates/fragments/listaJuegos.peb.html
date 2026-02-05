@@ -1,44 +1,46 @@
 {% if page is empty %}
-<div class="alert alert-info text-center">
-    <i class="bi bi-info-circle"></i>
-    No se han encontrado videojuegos.
-</div>
+    <div class="d-flex justify-content-center align-items-center mt-5">
+        <div class="alert alerta-lista text-center w-25">
+            <i class="bi bi-info-circle"></i>
+            No se han encontrado videojuegos.
+        </div>
+    </div>
 {% else %}
-<table class="table table-striped" id="listaJuegos">
-    <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Cliente</th>
-        <th>Precio</th>
-        <th>Fecha de Lanzamiento</th>
-        <th>Genero</th>
-        <th>Plataforma</th>
-        <th>Edad</th>
-        <th></th>
-    </tr>
-    {% for videojuego in page.content %}
-    <tr>
-        <td class="videoJuegoId">{{ videojuego.id }}</td>
-        <td>{{ videojuego.nombre }}</td>
-        <td>{{ videojuego.cliente }}</td>
-        <td>{{ videojuego.precio }}</td>
-        <td>{{ videojuego.fecha_lanzamiento }}</td>
-        <td>{{ videojuego.genero }}</td>
-        <td>{{ videojuego.plataforma }}</td>
-        <td>{{ videojuego.edad }}</td>
-        <td>
-            <a href="/admin/videojuegos/{{ videojuego.id }}">
-                <i class="bi bi-eye"></i>
-            </a>
-            <a href="/admin/videojuegos/{{ videojuego.id }}/edit">
-                <i class="bi bi-pencil"></i>
-            </a>
-            <a href="#"
-               class="borrarVideoJuegoLink text-danger">
-                <i class="bi bi-trash"></i>
-            </a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+    <table class="table table-striped" id="listaJuegos">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Cliente</th>
+            <th>Precio</th>
+            <th>Fecha de Lanzamiento</th>
+            <th>Genero</th>
+            <th>Plataforma</th>
+            <th>Edad</th>
+            <th></th>
+        </tr>
+        {% for videojuego in page.content %}
+        <tr>
+            <td class="videoJuegoId">{{ videojuego.id }}</td>
+            <td>{{ videojuego.nombre }}</td>
+            <td>{{ videojuego.cliente }}</td>
+            <td>{{ videojuego.precio }}</td>
+            <td>{{ videojuego.fecha_lanzamiento }}</td>
+            <td>{{ videojuego.genero }}</td>
+            <td>{{ videojuego.plataforma }}</td>
+            <td>{{ videojuego.edad }}</td>
+            <td>
+                <a href="/admin/videojuegos/{{ videojuego.id }}" class="">
+                    <i class="bi bi-eye icono-vista"></i>
+                </a>
+                <a href="/admin/videojuegos/{{ videojuego.id }}/edit" class="">
+                    <i class="bi bi-pencil icono-editar"></i>
+                </a>
+                <a href="#"
+                   class="borrarVideoJuegoLink text-danger">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
 {% endif %}
