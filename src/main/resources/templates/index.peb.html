@@ -1,9 +1,10 @@
 {% extends "fragments/layout" %}
 
 {% block body %}
-    <div class="container">
+    <main class="container">
         <div class="my-5 rounded-4 bg-dark opacity-75 text-white">
             <div class="d-flex flex-column align-items-center text-center pt-5">
+
                 <h1 class="titulo-index">
                     Gestión de VideoJuegos
                 </h1>
@@ -13,31 +14,27 @@
                 </p>
 
                 {% if isAuthenticated %}
-                    <h1 class="display-4">
+                    <h2 class="display-4 bienvenida">
                         Saludos, {{ username | default('Usuario') }}
-                    </h1>
-                    <a class="btn boton-personal btn-lg" href="/admin/videojuegos" role="button">
-                        Ver VideoJuegos
-                    </a>
+                    </h2>
+                    {% if isAdmin %}
+                        <a class="btn btn-admin btn-lg my-5" href="/admin/videojuegos">
+                            Panel de Administración
+                        </a>
+                    {% else %}
+                        <a class="btn btn-user btn-lg my-5" href="/app/misVideoJuegos">
+                            Mis VideoJuegos
+                        </a>
+                    {% endif %}
                 {% else %}
-                    <h1 class="display-4"> Saludos, visitante </h1>
-                    <a class="btn btn-outline-warning btn-lg" href="/login" role="button">
+                    <h2 class="display-4"> Saludos, visitante </h2>
+
+                    <a class="btn btn-login btn-lg my-4" href="/login" role="button">
                         Iniciar Sesión
                     </a>
                 {% endif %}
-                <p class="fs-4 text-center">
-                    {% if isAdmin %}
-                        <a class="btn btn-outline-danger bg-black btn-lg mt-5" href="admin/videojuegos">
-                            Ir al Panel de Administración
-                        </a>
-                    {% else %}
-                        <a class="btn boton-personal btn-lg mt-5" href="/app/misVideoJuegos">
-                            Comenzar
-                        </a>
-                    {% endif %}
-                </p>
             </div>
         </div>
-    </div>
+    </main>
 
 {% endblock %}

@@ -27,7 +27,7 @@ public interface VideoJuegoService {
 
     VideoJuegosResponseDto update(Long id, VideoJuegosUpdateDto videoJuegosUpdateDto);
 
-    List<VideoJuegos> buscarPorUsuarioId(Long usuarioId);
+    List<VideoJuegos> buscarPorUsuarioId(Long clienteId);
 
     Optional<VideoJuegos> buscarPorId(Long id);
 

@@ -19,10 +19,10 @@ POST http://localhost:3005/api/v1/auth/signup
 Content-Type: application/json
 
 {
-  "nombre": "patrick",
-  "apellidos": "mancachapa",
-  "username": "patrickMelon",
-  "email": "patrick@prueba.com",
-  "password": "12345",
+  "nombre": "Daniel",
+  "apellidos": "Jimenez",
+  "username": "Daniel",
+  "email": "daniel@prueba.com",
+  "password": "daniel1",
   "passwordComprobacion": "12345"
 }

@@ -59,7 +59,7 @@ public class AdminController {
         Page<VideoJuegosResponseDto> videoJuegosPage = videoJuegoService.findAll(
                 nombre, Optional.empty(), Optional.empty(), pageable);
         model.addAttribute("page", videoJuegosPage);
-        return "fragments/listaVideoJuegos";
+        return "fragments/listaJuegos";
     }
 
     @GetMapping("/videojuegos/{id}")

@@ -40,6 +40,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public JwtAuthResponse singUp(UserSignUpRequest request) {
         log.info("Creando usuario: {}", request);
         if (request.getPassword().contentEquals(request.getPasswordComprobacion())) {
+
+            String passwordHash = passwordEncoder.encode(request.getPassword());
+
+            // 🔎 Logs SOLO para desarrollo / clase
+            log.info("====================================");
+            log.info("PASSWORD ORIGINAL: {}", request.getPassword());
+            log.info("PASSWORD BCRYPT : {}", passwordHash);
+            log.info("====================================");
+
             User user = User.builder()
                     .username(request.getUsername())
                     .password(passwordEncoder.encode(request.getPassword()))
@@ -48,12 +57,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .apellidos(request.getApellidos())
                     .roles(Stream.of(Role.USER).collect(Collectors.toSet()))
                     .build();
-            log.info("Creando usuario: {}", user);
+            log.info("Creando usuario en BD: {}", user);
 
             try {
                 // Salvamos y devolvemos el token
                 var userStored = authUsersRepository.save(user);
-                return JwtAuthResponse.builder().token(jwtService.generateToken(userStored)).build();
+                return JwtAuthResponse.builder()
+                        .token(jwtService.generateToken(userStored))
+                        .build();
+
             } catch (DataIntegrityViolationException ex) {
                 throw new AuthExistingUsernameOrEmail("El usuario con username " + request.getUsername() + " o email " + request.getEmail() + " ya existe");
             }

@@ -28,7 +28,7 @@ html, body {
 }
 
 body.bg-visitor {
-    background-image: url('/images/controller.jpg');
+    background-image: url('/images/mandoNaranja.png');
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
@@ -50,15 +50,18 @@ body.bg-visitor {
     display: block;
 }
 
-.boton-personal{
-    --bs-btn-bg: black;
-    --bs-btn-border-color: red;
-    --bs-btn-color: white;
+.boton-personal {
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: #39ff14;
+    --bs-btn-color: #39ff14;
 
-    --bs-btn-hover-bg: red;
-    --bs-btn-hover-border-color: black;
+    --bs-btn-hover-bg: #39ff14;
+    --bs-btn-hover-border-color: #39ff14;
     --bs-btn-hover-color: black;
+
+    box-shadow: 0 0 8px #39ff14, 0 0 20px #39ff14;
 }
+
 
 .titulo-index{
     text-shadow: 0 0 10px white, 0 0 20px white;
@@ -72,3 +75,50 @@ body.bg-visitor {
     text-shadow: 0 0 15px red, 0 0 20px red;
     transform: scale(1.2);
 }
+
+.bienvenida {
+    color: #c800ff;
+    text-shadow:
+            0 0 5px #c800ff,
+            0 0 10px #c800ff,
+            0 0 20px #c800ff,
+            0 0 40px #8a00ff;
+}
+
+.btn-admin {
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: #ff00c8;
+    --bs-btn-color: #ff00c8;
+
+    --bs-btn-hover-bg: #ff00c8;
+    --bs-btn-hover-border-color: #ff00c8;
+    --bs-btn-hover-color: black;
+
+    box-shadow: 0 0 10px #ff00c8, 0 0 25px #ff00c8;
+}
+
+
+.btn-user {
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: #00f7ff;
+    --bs-btn-color: #00f7ff;
+
+    --bs-btn-hover-bg: #00f7ff;
+    --bs-btn-hover-border-color: #00f7ff;
+    --bs-btn-hover-color: black;
+
+    box-shadow: 0 0 10px #00f7ff, 0 0 25px #00f7ff;
+}
+
+.btn-login {
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: #ffd000;
+    --bs-btn-color: #ffd000;
+
+    --bs-btn-hover-bg: #ffd000;
+    --bs-btn-hover-border-color: #ffd000;
+    --bs-btn-hover-color: black;
+
+    box-shadow: 0 0 10px #ffd000, 0 0 25px #ffd000;
+}
+

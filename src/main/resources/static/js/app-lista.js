@@ -39,18 +39,33 @@ document.addEventListener('DOMContentLoaded', ()=> {
         }
     })
 
-    const buscador = document.querySelector('#buscador');
-    buscador.addEventListener('keyup', async () => {
-        const url = "/admin/videojuegos/filter?";
-        const queryParams = new URLSearchParams({numero: buscador.value}).toString();
-        try {
-            const response = await fetch(url + queryParams);
-            if (!response.ok) throw new Error(`Response status: ${response.status}`);
+    // 🔎 Buscador del NAVBAR en zona ADMIN
+    const form = document.querySelector("#navbarSearchForm");
+    const input = document.querySelector("#navbarSearchInput");
 
-            const html = await response.text();
-            document.querySelector('#listaJuegos').innerHTML = html;
-        } catch (error) {
-            console.error(error.message);
-        }
-    })
+    if (form && input && window.location.pathname.startsWith("/admin/videojuegos")) {
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const nombre = input.value;
+
+            const url = "/admin/videojuegos/filter?" +
+                new URLSearchParams({ nombre }).toString();
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Response status: ${response.status}`);
+
+                const html = await response.text();
+
+                const tabla = document.querySelector("#listaJuegos");
+                if (tabla) tabla.outerHTML = html;
+
+            } catch (error) {
+                console.error(error.message);
+            }
+        });
+    }
+
 });
