@@ -176,3 +176,36 @@ body.bg-visitor {
     text-shadow: 0 0 4px #1bea03, 0 0 7px #1bea03;
 }
 
+.iniciar-sesion {
+    color: white;
+    text-shadow: 0 0 4px chocolate, 0 0 7px chocolate;
+    background: black;
+    font-size: 2.5em;
+    box-shadow: 0 0 10px chocolate, 0 0 20px chocolate;
+    text-align: center;
+}
+
+.usuario-label{
+    color: #ffffff;
+    text-shadow: 0 0 4px #000000, 0 0 7px #000000;
+    font-size: 1.5em;
+}
+
+.contraseña-label{
+    color: #000000;
+    text-shadow: 0 0 4px chocolate, 0 0 7px chocolate;
+    font-size: 1.5em;
+}
+
+.enlace-github{
+    color: white;
+    text-shadow: 0 0 4px #ff0000, 0 0 7px #ff0000;
+    font-size: 1.2em;
+    transition: all 0.3s ease;
+}
+
+.enlace-github:hover {
+    color: #ff0000;
+    text-shadow: 0 0 4px #ff0000, 0 0 7px #ff0000;
+    transform: scale(1.2);
+}
