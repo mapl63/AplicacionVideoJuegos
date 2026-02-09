@@ -1,5 +1,6 @@
 package com.example.aplicacionvideojuegos.web.controllers;
 
+import com.example.aplicacionvideojuegos.rest.clientes.models.Cliente;
 import com.example.aplicacionvideojuegos.rest.users.models.User;
 import com.example.aplicacionvideojuegos.rest.users.services.UserService;
 import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosCreateDto;
@@ -44,14 +45,41 @@ public class VideoJuegosWebController {
         Optional<User> usuario = userService.findByUsername(username);
 
         if (usuario.isEmpty()) {
+            System.out.println("USUARIO VACÍO");
             return List.of();
         } else {
-            return videoJuegosService.buscarPorUsuarioId(usuario.get().getId());
+            Long clienteId = usuario.get().getCliente().getId();
+            List<VideoJuegos> juegos = videoJuegosService.buscarPorClienteId(clienteId);
+
+            System.out.println("VIDEOJUEGOS ENCONTRADOS: " + juegos.size()); // 👈 CLAVE
+
+            return juegos;
         }
     }
 
+
     @GetMapping("/misVideoJuegos")
-    public String list(){
+    public String list(
+            Model model,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size
+    ){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Optional<User> usuario = userService.findByUsername(username);
+
+        if(usuario.isEmpty()){
+            model.addAttribute("page", Page.empty());
+            return "app/videojuegos/lista";
+        }
+
+        Long clienteId = usuario.get().getCliente().getId();
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+
+        Page<VideoJuegosResponseDto> juegos = videoJuegosService.findByClienteId(clienteId, pageable);
+        model.addAttribute("page", juegos);
+
         return "app/videojuegos/lista";
     }
 
@@ -64,8 +92,4 @@ public class VideoJuegosWebController {
         return "/app/videojuegos/videoJuegoDetalle";
 
     }
-
-
-
-
 }

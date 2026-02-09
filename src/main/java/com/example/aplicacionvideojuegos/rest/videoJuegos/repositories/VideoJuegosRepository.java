@@ -22,14 +22,9 @@ public interface VideoJuegosRepository extends JpaRepository<VideoJuegos, Long> 
     @Query("UPDATE VideoJuegos v SET v.isDeleted = true WHERE v.id = :id")
     void updateIsDeletedToTrueById(Long id);
 
-    @Query("select v from VideoJuegos v where v.cliente.usuario.id = :usuarioId")
-    Page<VideoJuegos> findByUsuarioId(Long usuarioId, Pageable pageable);
+    Page<VideoJuegos> findByClienteId(Long clienteId, Pageable pageable);
 
-    @Query("select v from VideoJuegos v where v.cliente.usuario.id = :usuarioId")
-    List<VideoJuegos> findByUsuarioId(Long usuarioId);
-
-    @Query("select case when count(v) > 0 then true else false end from VideoJuegos v where v.cliente.usuario.id = :id")
-    Boolean existsByUsuarioId(Long id);
+    List<VideoJuegos> findByClienteId(Long clienteId);
 
     List<VideoJuegos> findByCliente(Cliente cliente);
 

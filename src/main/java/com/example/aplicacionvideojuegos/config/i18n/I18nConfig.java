@@ -2,11 +2,12 @@ package com.example.aplicacionvideojuegos.config.i18n;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
 import java.util.Locale;
 
@@ -15,9 +16,13 @@ public class I18nConfig implements WebMvcConfigurer {
 
     @Bean
     public LocaleResolver localeResolver() {
-        SessionLocaleResolver slr = new SessionLocaleResolver();
-        slr.setDefaultLocale(new Locale(("es")));
-        return slr;
+        CookieLocaleResolver clr = new CookieLocaleResolver();
+
+        clr.setDefaultLocale(new Locale(("es")));
+        clr.setCookieName("lang");
+        clr.setCookieMaxAge(7 * 24 * 60 * 60);
+
+        return clr;
     }
 
     @Bean

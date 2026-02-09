@@ -3,6 +3,10 @@ package com.example.aplicacionvideojuegos.web.controllers;
 import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosResponseDto;
 import com.example.aplicacionvideojuegos.rest.videoJuegos.services.VideoJuegoService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -39,6 +43,25 @@ public class ZonaPublicaController {
 
         model.addAttribute("page", videoJuegoPage);
         return "index";
+    }
+
+    @GetMapping("/set-lang")
+    public String setLang(@RequestParam String lang,
+                          HttpServletResponse response,
+                          HttpServletRequest request){
+
+        if (!lang.equals("es") && !lang.equals("en")) {
+            lang = "es"; // Valor predeterminado si el idioma no es válido
+        }
+
+        Cookie cookie = new Cookie("lang", lang);
+        cookie.setMaxAge(7 * 24 * 60 * 60);
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
+
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/public/index");
     }
 
 }

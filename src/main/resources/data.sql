@@ -42,7 +42,6 @@ insert into USER_ROLES (user_id, roles)
 values (3, 'USER');
 
 
-
 -- =========================
 -- CLIENTE ADMINISTRADOR
 -- =========================
@@ -63,7 +62,7 @@ values (
        );
 
 -- =========================
--- ROLES ADMINISTRADOR
+-- ROLES USER
 -- =========================
 insert into USER_ROLES (user_id, roles)
 values
@@ -86,6 +85,27 @@ values (
 insert into USER_ROLES (user_id, roles)
 values
     ((select id from USUARIOS where username = 'patrickU'), 'USER');
+
+
+-- =========================
+-- ROLES USER SIN VIDEOJUEGOS
+-- =========================
+insert into clientes(nombre) values ('Daniel');
+
+insert into USUARIOS (nombre, apellidos, username, email, password, cliente_id)
+values (
+           'Daniel',
+           'Jimenez',
+           'Daniel1',
+        'daniel@prueba.com',
+           '$2a$10$Hin7D0eTRx1oh7STkzXk8Oz7rYjX.aJiLsRql5RH65SizLyvsTXki',
+            (select id from CLIENTES where nombre = 'Daniel')
+        );
+
+insert into USER_ROLES (user_id, roles)
+values
+    ((select id from USUARIOS where username = 'Daniel1'), 'USER');
+
 
 INSERT INTO VIDEOJUEGOS (cliente_id, nombre, precio, fecha_lanzamiento, genero, plataforma, edad)
 VALUES

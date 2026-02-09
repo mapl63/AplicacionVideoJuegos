@@ -95,9 +95,9 @@ public class VideoJuegosServiceImpl implements VideoJuegoService, InitializingBe
     }
 
     @Override
-    public Page<VideoJuegosResponseDto> findByUsuarioId(Long id, Pageable pageable) {
+    public Page<VideoJuegosResponseDto> findByClienteId(Long id, Pageable pageable) {
         log.info("Buscando todos los VideoJuegos del usuario con id: {}", id);
-        return videoJuegosRepository.findByUsuarioId(id, pageable)
+        return videoJuegosRepository.findByClienteId(id, pageable)
                 .map(videoJuegosMapper::toVideoJuegosResponseDto);
     }
 
@@ -180,9 +180,9 @@ public class VideoJuegosServiceImpl implements VideoJuegoService, InitializingBe
     }
 
     @Override
-    public List<VideoJuegos> buscarPorUsuarioId(Long usuarioId) {
-        log.info("Buscando VideoJuegos por usuarioId: {}", usuarioId);
-        return videoJuegosRepository.findByUsuarioId(usuarioId);
+    public List<VideoJuegos> buscarPorClienteId(Long clienteId) {
+        log.info("Buscando VideoJuegos por clienteId: {}", clienteId);
+        return videoJuegosRepository.findByClienteId(clienteId);
     }
 
     @Override

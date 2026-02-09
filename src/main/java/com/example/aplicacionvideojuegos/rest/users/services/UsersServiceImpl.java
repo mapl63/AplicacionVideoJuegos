@@ -74,7 +74,7 @@ public class UsersServiceImpl implements UserService {
         var user = usersRepository.findById(id)
                 .orElseThrow(() -> new UserNotFound(id));
 
-        var videoJuegos = videoJuegosRepository.findByUsuarioId(id).stream().map(p -> p.getNombre()).toList();
+        var videoJuegos = videoJuegosRepository.findByClienteId(id).stream().map(p -> p.getNombre()).toList();
 
         return usersMapper.toUserInfoResponse(user, videoJuegos);
     }
@@ -119,7 +119,7 @@ public class UsersServiceImpl implements UserService {
         User user = usersRepository.findById(id)
                 .orElseThrow(() -> new UserNotFound(id));
 
-        if (videoJuegosRepository.findByUsuarioId(id).isEmpty()) {
+        if (videoJuegosRepository.findByClienteId(id).isEmpty()) {
             // Si hay tarjetas, lo marcamos como borrado lógico
             log.info("Borrado lógico de usuario por id: {}", id);
             usersRepository.updateIsDeleteToTrueById(id);

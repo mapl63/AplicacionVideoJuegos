@@ -41,10 +41,12 @@ public class Cliente {
     private Boolean isDeleted = false;
 
     @OneToMany(mappedBy = "cliente")
+    @ToString.Exclude
     @JsonIgnoreProperties("cliente")
     private List<VideoJuegos> videoJuegos;
 
     @OneToOne(mappedBy = "cliente")
+    @ToString.Exclude
     @JsonIgnoreProperties("cliente")
     private User usuario;
 

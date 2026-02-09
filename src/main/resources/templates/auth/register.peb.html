@@ -1,0 +1,93 @@
+{% extends "fragments/layout" %}
+
+{% block body %}
+<div class="container d-flex justify-content-center align-items-center my-5">
+
+    <div class="transparent-container p-5 rounded-4 shadow-lg" style="max-width:600px; width:100%;">
+
+        <h2 class="text-center mb-4 fw-bold">
+            {{ message('auth.register') }}
+        </h2>
+
+        {% include "fragments/messages" %}
+
+        <form method="POST" action="/auth/register">
+            <input type="hidden" name="{{ csrfParamName }}" value="{{ csrfToken }}">
+
+            <!-- Nombre -->
+            <div class="mb-3">
+                <label class="form-label">{{ message('auth.nombre') }}</label>
+                <input class="form-control"
+                       type="text"
+                       name="nombre"
+                       placeholder="{{ message('auth.namePlaceholder') }}"
+                       required>
+            </div>
+
+            <!-- Apellidos -->
+            <div class="mb-3">
+                <label class="form-label">{{ message('auth.apellidos') }}</label>
+                <input class="form-control"
+                       type="text"
+                       name="apellidos"
+                       placeholder="{{ message('auth.surnamePlaceholder') }}"
+                       required>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">{{ message('auth.username') }}</label>
+                <input class="form-control"
+                       type="text"
+                       name="username"
+                       placeholder="{{ message('auth.usernamePlaceholder') }}"
+                       required>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label class="form-label">{{ message('auth.email') }}</label>
+                <input class="form-control"
+                       type="email"
+                       name="email"
+                       placeholder="{{ message('auth.emailPlaceholder') }}"
+                       required>
+            </div>
+
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label class="form-label">{{ message('auth.password') }}</label>
+                <input class="form-control"
+                       type="password"
+                       name="password"
+                       placeholder="{{ message('auth.passwordPlaceholder') }}"
+                       required>
+            </div>
+
+            <!-- Repeat password -->
+            <div class="mb-4">
+                <label class="form-label">{{ message('auth.password.repeat') }}</label>
+                <input class="form-control"
+                       type="password"
+                       name="passwordComprobacion"
+                       placeholder="{{ message('auth.passwordRepeatPlaceholder') }}"
+                       required>
+            </div>
+
+            <!-- Botón -->
+            <button class="btn btn-login w-50 mb-3" type="submit">
+                {{ message('auth.register') }}
+            </button>
+        </form>
+
+        <!-- Link  -->
+        <div class="text-center fs-4">
+            <a href="/auth/login" class="btn btn-outline-info w-50">
+                <i class="bi bi-at"></i>
+                {{ message('auth.haveAccount') }}
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

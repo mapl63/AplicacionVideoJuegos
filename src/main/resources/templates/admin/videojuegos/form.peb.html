@@ -6,30 +6,35 @@
     <div class="d-flex justify-content-center my-5">
         <div class="transparent-container  w-50 shadow-lg rounded-4">
             <h2 class="fs-1 text-center fw-bold">
-                {% if videojuegos['new'] %}
-                    Nuevo
-                {% endif %}
-                VideoJuego
+                {{ modoEditar
+                    ? message('form.videojuegos.edit')
+                    : message('form.videojuegos.new')
+                }}
             </h2>
             <form class="form-horizontal" id="add-videojuegos-form" method="post"
                   action="{% if modoEditar %}/admin/videojuegos/{{videoJuegoId}}/edit{% else %}/admin/videojuegos/new{% endif %}">
                 <input name="{{ csrfParamName }}" type="hidden" id="id" value="{{ csrfToken }}">
                 <div class="form-group has-feedback">
-                    {{ inputField("videojuego", "Nombre", "nombre", "text", videojuego.nombre, _context) }}
-                    {{ inputField("videojuego", "Precio", "precio", "number", videojuego.precio, _context) }}
-                    {{ inputField("videojuego", "Fecha de lanzamiento", "fecha_lanzamiento", "date", videojuego.fecha_lanzamiento, _context) }}
-                    {{ inputField("videojuego", "Genero", "genero", "text", videojuego.genero, _context) }}
-                    {{ inputField("videojuego", "Plataforma", "plataforma", "select", videojuego.plataforma, _context, plataformas) }}
+                    {{ inputField("videojuego", message('label.videojuegos.nombre'), "nombre", "text", videojuego.nombre, _context) }}
+                    {{ inputField("videojuego", message('label.videojuegos.precio'), "precio", "number", videojuego.precio, _context) }}
+                    {{ inputField("videojuego", message('label.videojuegos.fechaLanzamiento'), "fecha_lanzamiento", "date", videojuego.fecha_lanzamiento, _context) }}
+                    {{ inputField("videojuego", message('label.videojuegos.genero'), "genero", "text", videojuego.genero, _context) }}
+                    {{ inputField("videojuego", message('label.videojuegos.plataforma'), "plataforma", "select", videojuego.plataforma, _context, plataformas) }}
 
-                    {{ inputField("videojuego", "Edad", "edad", "number", videojuego.edad, _context) }}
-                    {% if not modoEditar %}
-                        {{ inputField("videojuego", "Cliente", "cliente", "text", videojuego.cliente, _context) }}
+                    {{ inputField("videojuego", message('label.videojuegos.edad'), "edad", "number", videojuego.edad, _context) }}
+                    {% if isAdmin and not modoEditar %}
+                        {{ inputField("videojuego",
+                            message('label.videojuegos.cliente'),
+                            "cliente",
+                            "text",
+                            videojuego.cliente,
+                            _context) }}
                     {% endif %}
                 </div>
                 <div class="form-group">
                     <div class="d-flex justify-content-end mt-4">
                         <button class="btn btn-info" type="submit">
-                            {{ modoEditar ? 'Actualizar VideoJuego' : 'Añadir VideoJuego' }}
+                            {{ modoEditar ? message('form.videojuegos.boton') : message('form.videojuegos.boton.update') }}
                         </button>
                     </div>
                 </div>

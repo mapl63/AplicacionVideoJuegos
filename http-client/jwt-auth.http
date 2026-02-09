@@ -21,8 +21,8 @@ Content-Type: application/json
 {
   "nombre": "Daniel",
   "apellidos": "Jimenez",
-  "username": "Daniel",
+  "username": "Daniel1",
   "email": "daniel@prueba.com",
-  "password": "daniel1",
+  "password": "12345",
   "passwordComprobacion": "12345"
 }

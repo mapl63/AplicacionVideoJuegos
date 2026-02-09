@@ -7,51 +7,45 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
                     <a class="nav-link active" href="/public">
-                        <i class="bi bi-house-door"></i> {{ message('nav.home') }}
+                        <i class="bi bi-house-door"></i>
+                        {{ message('nav.home') }}
                     </a>
                 </li>
                 {% if isAdmin %}
                     <li class="nav-item">
                         <a class="nav-link" href="/admin/videojuegos/new">
-                            <i class="bi bi-controller"></i> {{ message('nav.new.videojuegos') }}
+                            <i class="bi bi-controller"></i>
+                            {{ message('nav.new.videojuegos') }}
                         </a>
                     </li>
                 {% endif %}
             </ul>
 
-            <form id="navbarSearchForm" class="d-flex me-3" method="get" role="search">
-                <input class="form-control"
-                       id="navbarSearchInput"
-                       name="q"
-                       placeholder="{{ message('videojuegos.search') }}"
-                       type="search"
-                       value="{{ q | default('') }}">
-                <button class="btn btn-outline-light ms-2" type="submit">
-                    <i class="bi bi-search"></i>
-                </button>
-            </form>
+            {% if isAdmin %}
+                <form id="navbarSearchForm" class="d-flex me-3" method="get" role="search">
+                    <input class="form-control"
+                           id="navbarSearchInput"
+                           name="q"
+                           placeholder="{{ message('videojuegos.search') }}"
+                           type="search"
+                           value="{{ q | default('') }}">
+                    <button class="btn btn-outline-light ms-2" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+            {% endif %}
 
             <ul class="navbar-nav">
-                <!-- Language Switcher -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button">
                         <i class="bi bi-globe"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="?lang=es">
+                        <li><a class="dropdown-item" href="/public/set-lang?lang=es">
                             <img alt="ES" src="https://flagcdn.com/w20/es.png" width="20"> Español
                         </a></li>
-                        <li><a class="dropdown-item" href="?lang=en">
+                        <li><a class="dropdown-item" href="/public/set-lang?lang=en">
                             <img alt="EN" src="https://flagcdn.com/w20/gb.png" width="20"> English
-                        </a></li>
-                        <li><a class="dropdown-item" href="?lang=fr">
-                            <img alt="FR" src="https://flagcdn.com/w20/fr.png" width="20"> Français
-                        </a></li>
-                        <li><a class="dropdown-item" href="?lang=de">
-                            <img alt="DE" src="https://flagcdn.com/w20/de.png" width="20"> Deutsch
-                        </a></li>
-                        <li><a class="dropdown-item" href="?lang=pt">
-                            <img alt="PT" src="https://flagcdn.com/w20/pt.png" width="20"> Português
                         </a></li>
                     </ul>
                 </li>
@@ -69,7 +63,8 @@
                         </li>
                         <li>
                             <a class="dropdown-item" href="/app/perfil">
-                                <i class="bi bi-person"></i> Mi Perfil
+                                <i class="bi bi-person"></i>
+                                {{ message('nav.profile') }}
                             </a>
                         </li>
                         <li>

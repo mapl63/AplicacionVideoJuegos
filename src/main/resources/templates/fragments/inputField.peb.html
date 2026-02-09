@@ -2,7 +2,7 @@
 
     {% set valid = not hasFieldErrors(formName, inputName) %}
 
-    <div class="form-group {{ valid ? '' : 'has-error' }}">
+    <div class="form-group {{ valid ? '' : 'has-error' }} ">
         <label class="col-sm-2 control-label">
             {{ label }}
         </label>
@@ -45,7 +45,7 @@
                 <select class="form-control"
                         id="{{ inputName }}"
                         name="{{ inputName }}">
-                    <option value="">-- Selecciona plataforma --</option>
+                    <option value="">--{{ message('form.select.placeholder') }}--</option>
                     {% for option in options %}
                         <option value="{{ option }}" {{ option == inputValue ? 'selected' : ''  }}>
                                 {{ message('plataforma.' ~ option) }}

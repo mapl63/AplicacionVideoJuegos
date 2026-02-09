@@ -32,12 +32,13 @@ public class PerfilController {
     }
 
     @PostMapping("/edit")
-    public String updateProfile(@Valid @ModelAttribute("usuario") User updatedUser,
+    public String updateProfile(@ModelAttribute("usuario") User updatedUser,
                                 BindingResult bindingResult,
                                 Model model) {
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("mensaje", "Ha ocurrido un error al actualizar el perfil.");
+            model.addAttribute("mensaje",
+                    "Ha ocurrido un error al actualizar el perfil.");
             return "app/perfil";
         }
 
@@ -48,12 +49,12 @@ public class PerfilController {
         if (existingUser != null) {
             existingUser.setNombre(updatedUser.getNombre());
             existingUser.setApellidos(updatedUser.getApellidos());
+            userService.save(existingUser);
         }
 
-        userService.save(existingUser);
         model.addAttribute("mensaje", "Perfil actualizado correctamente");
         model.addAttribute("usuario", existingUser);
 
-        return "redirect:/app/perfil";
+        return "app/perfil";
     }
 }

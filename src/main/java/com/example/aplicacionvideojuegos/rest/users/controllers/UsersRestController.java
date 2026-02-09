@@ -148,7 +148,7 @@ public class UsersRestController {
 
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return ResponseEntity.ok(PageResponse.of(videoJuegoService.findByUsuarioId(user.getId(), pageable), sortBy, direction));
+        return ResponseEntity.ok(PageResponse.of(videoJuegoService.findByClienteId(user.getId(), pageable), sortBy, direction));
     }
 
     @GetMapping("/me/videojuegos/{id}")

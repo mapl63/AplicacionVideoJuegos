@@ -1,21 +1,21 @@
-{% if page is empty %}
+{% if page.empty %}
     <div class="d-flex justify-content-center align-items-center mt-5">
-        <div class="alert alerta-lista text-center w-25">
+        <div class="alert alerta-lista text-center w-50">
             <i class="bi bi-info-circle"></i>
             No se han encontrado videojuegos.
         </div>
     </div>
 {% else %}
-    <table class="table table-striped" id="listaJuegos">
+    <table class="table table-striped text-center" id="listaJuegos">
         <tr>
             <th>ID</th>
-            <th>Nombre</th>
-            <th>Cliente</th>
-            <th>Precio</th>
-            <th>Fecha de Lanzamiento</th>
-            <th>Genero</th>
-            <th>Plataforma</th>
-            <th>Edad</th>
+            <th>{{ message('label.videojuegos.nombre') }}</th>
+            <th>{{ message('label.videojuegos.cliente') }}</th>
+            <th>{{ message('label.videojuegos.precio') }}</th>
+            <th>{{ message('label.videojuegos.fechaLanzamiento') }}</th>
+            <th>{{ message('label.videojuegos.genero') }}</th>
+            <th>{{ message('label.videojuegos.plataforma') }}</th>
+            <th>{{ message('label.videojuegos.edad') }}</th>
             <th></th>
         </tr>
         {% for videojuego in page.content %}
@@ -28,17 +28,23 @@
             <td>{{ videojuego.genero }}</td>
             <td>{{ videojuego.plataforma }}</td>
             <td>{{ videojuego.edad }}</td>
-            <td>
-                <a href="/admin/videojuegos/{{ videojuego.id }}" class="">
-                    <i class="bi bi-eye icono-vista"></i>
-                </a>
-                <a href="/admin/videojuegos/{{ videojuego.id }}/edit" class="">
-                    <i class="bi bi-pencil icono-editar"></i>
-                </a>
-                <a href="#"
-                   class="borrarVideoJuegoLink text-danger">
-                    <i class="bi bi-trash"></i>
-                </a>
+            <td class="gap-2 d-flex">
+                {% if isAdmin %}
+                    <a href="/admin/videojuegos/{{ videojuego.id }}" class="">
+                        <i class="bi bi-eye icono-vista"></i>
+                    </a>
+                    <a href="/admin/videojuegos/{{ videojuego.id }}/edit" class="">
+                        <i class="bi bi-pencil icono-editar"></i>
+                    </a>
+                    <a href="#"
+                       class="borrarVideoJuegoLink text-danger">
+                        <i class="bi bi-trash icono-borrar"></i>
+                    </a>
+                {% else %}
+                    <a href="/app/misvideojuegos/{{ videojuego.id }}" class="">
+                        <i class="bi bi-eye icono-vista"></i>
+                    </a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}

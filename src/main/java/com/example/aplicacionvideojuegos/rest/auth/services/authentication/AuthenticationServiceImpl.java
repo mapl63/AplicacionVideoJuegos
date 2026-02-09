@@ -10,6 +10,8 @@ import com.example.aplicacionvideojuegos.rest.auth.exceptions.AuthSignInNotValid
 import com.example.aplicacionvideojuegos.rest.auth.repositories.AuthUsersRepository;
 import com.example.aplicacionvideojuegos.rest.auth.services.jwt.JwtService;
 
+import com.example.aplicacionvideojuegos.rest.clientes.models.Cliente;
+import com.example.aplicacionvideojuegos.rest.clientes.repositories.ClienteRepository;
 import com.example.aplicacionvideojuegos.rest.users.models.Role;
 import com.example.aplicacionvideojuegos.rest.users.models.User;
 
@@ -35,45 +37,65 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final ClienteRepository clienteRepository;
 
     @Override
     public JwtAuthResponse singUp(UserSignUpRequest request) {
-        log.info("Creando usuario: {}", request);
-        if (request.getPassword().contentEquals(request.getPasswordComprobacion())) {
 
+        log.info("Creando usuario: {}", request);
+
+        // 1️⃣ Validar contraseñas
+        if (!request.getPassword().contentEquals(request.getPasswordComprobacion())) {
+            throw new AuthDifferentPasswords("Las contraseñas no coinciden");
+        }
+
+        try {
+
+            // 2️⃣ Encriptar password
             String passwordHash = passwordEncoder.encode(request.getPassword());
 
-            // 🔎 Logs SOLO para desarrollo / clase
+            // 🔎 LOGS SOLO PARA DESARROLLO / CLASE
             log.info("====================================");
             log.info("PASSWORD ORIGINAL: {}", request.getPassword());
             log.info("PASSWORD BCRYPT : {}", passwordHash);
             log.info("====================================");
 
+            // 3️⃣ Crear CLIENTE
+            Cliente cliente = Cliente.builder()
+                    .nombre(request.getNombre())
+                    .build();
+
+            clienteRepository.save(cliente);
+
+            // 4️⃣ Crear USER asociado al cliente
             User user = User.builder()
                     .username(request.getUsername())
-                    .password(passwordEncoder.encode(request.getPassword()))
+                    .password(passwordHash)
                     .email(request.getEmail())
                     .nombre(request.getNombre())
                     .apellidos(request.getApellidos())
+                    .cliente(cliente)
                     .roles(Stream.of(Role.USER).collect(Collectors.toSet()))
                     .build();
+
             log.info("Creando usuario en BD: {}", user);
 
-            try {
-                // Salvamos y devolvemos el token
-                var userStored = authUsersRepository.save(user);
-                return JwtAuthResponse.builder()
-                        .token(jwtService.generateToken(userStored))
-                        .build();
+            // 5️⃣ Guardar usuario
+            var userStored = authUsersRepository.save(user);
 
-            } catch (DataIntegrityViolationException ex) {
-                throw new AuthExistingUsernameOrEmail("El usuario con username " + request.getUsername() + " o email " + request.getEmail() + " ya existe");
-            }
-        } else {
-            throw new AuthDifferentPasswords("Las contraseñas no coinciden");
+            // 6️⃣ Generar JWT (login automático backend)
+            return JwtAuthResponse.builder()
+                    .token(jwtService.generateToken(userStored))
+                    .build();
 
+        } catch (DataIntegrityViolationException ex) {
+            throw new AuthExistingUsernameOrEmail(
+                    "El usuario con username " + request.getUsername() +
+                            " o email " + request.getEmail() + " ya existe"
+            );
         }
     }
+
 
     @Override
     public JwtAuthResponse signIn(UserSignInRequest request) {

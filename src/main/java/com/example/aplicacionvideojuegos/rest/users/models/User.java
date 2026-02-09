@@ -71,6 +71,7 @@ public class User implements UserDetails {
 
     @OneToOne
     @JoinColumn(name = "cliente_id")
+    @ToString.Exclude
     @JsonIgnoreProperties("usuario")
     private Cliente cliente;
 

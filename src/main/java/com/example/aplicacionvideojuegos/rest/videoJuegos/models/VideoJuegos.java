@@ -25,6 +25,7 @@ public class VideoJuegos {
     private Long id;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "cliente_id")
     @Schema(description = "Cliente asociado al videojuego", example = "Jeromito")
     private Cliente cliente;
