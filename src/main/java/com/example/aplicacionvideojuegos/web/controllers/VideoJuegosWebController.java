@@ -85,11 +85,11 @@ public class VideoJuegosWebController {
 
     @GetMapping("/misVideoJuegos/{id}")
     public String getById(@PathVariable Long id, Model model) {
-        VideoJuegos videoJuego = videoJuegosService.buscarPorId(id).orElse(null);
+        VideoJuegos videoJuegos = videoJuegosService.buscarPorId(id).orElse(null);
 
-        model.addAttribute("videoJuegos", videoJuego);
+        model.addAttribute("videojuego", videoJuegos);
 
-        return "/app/videojuegos/videoJuegoDetalle";
+        return "/app/videojuegos/detalle";
 
     }
 }

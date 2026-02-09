@@ -1,0 +1,59 @@
+{% extends "fragments/layout" %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="transparent-container d-flex justify-content-center align-items-center">
+            <div class="card bg-transparent w-75">
+                <h1 class="titulo-detalle card-header text-center">
+                    <i class="bi bi-controller"></i>
+                    {{ message('label.videojuegos.detalle') }} {{ videojuego.id }}
+                </h1>
+
+                <div class="row">
+                    <div class="col-12">
+                        {% include "fragments/messages" %}
+                    </div>
+                </div>
+
+                {% if videojuego is empty %}
+                    <div class="alert alert-info text-center">
+                        <i class="bi bi-info-circle"></i>
+                        {{ message('label.videojuegos.empty') }}
+                    </div>
+                {% else %}
+                    <ul class="list-inline list-group-flush text-center my-4  ">
+                        <li class="list-group-item">
+                            {{ message('label.videojuegos.nombre') }} : {{ videojuego.nombre }}
+                        </li>
+                        <li class="list-group-item">
+                            {{ message('label.videojuegos.precio') }} : {{ videojuego.precio }}
+                        </li>
+                        <li class="list-group-item">
+                            {{ message('label.videojuegos.fechaLanzamiento') }} : {{ videojuego.fecha_lanzamiento }}
+                        </li>
+                        <li class="list-group-item">
+                            {{ message('label.videojuegos.genero') }} : {{ videojuego.genero }}
+                        </li>
+                        <li class="list-group-item">
+                            {{ message('label.videojuegos.plataforma') }} : {{ videojuego.plataforma }}
+                        </li>
+                        <li class="list-group-item">
+                            {{ message('label.videojuegos.edad') }} : {{ videojuego.edad }}
+                        </li>
+                    </ul>
+                {% endif %}
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <a href="/public" class="btn btn-neon-green-strong">
+                        <i class="bi bi-house"></i>
+                        {{ message('nav.home') }}
+                    </a>
+                    <a href="/app/misVideoJuegos" class="btn btn-neon-red">
+                        <i class="bi bi-arrow-left"></i>
+                        {{ message('profile.boton.volver') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

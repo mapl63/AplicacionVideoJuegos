@@ -465,3 +465,33 @@ body.bg-visitor {
     text-shadow: 0 0 2px white, 0 0 5px white;
 
 }
+
+.titulo-detalle{
+    color: #a800a8;
+    text-shadow: 0 0 7px #a800a8, 0 0 14px #a800a8;
+    font-size: 3em;
+    transition: all 0.3s ease;
+}
+
+.titulo-detalle:hover{
+    color: white;
+    text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+    transform: scale(1.1);
+}
+
+.list-group-item{
+    background: transparent;
+    color: white;
+    text-shadow: 0 0 5px white, 0 0 10px white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    transition: all 0.3s ease;
+    font-size: 1.4em;
+}
+
+.list-group-item:hover{
+    transform: scale(1.1);
+    color: red;
+    text-shadow: 0 0 4px red, 0 0 7px red;
+
+}
