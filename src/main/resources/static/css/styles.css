@@ -109,7 +109,7 @@ body.bg-visitor {
 }
 
 .btn-login {
-    --bs-btn-bg: transparent;
+    --bs-btn-bg: black;
     --bs-btn-border-color: #ffd000;
     --bs-btn-color: #ffd000;
 
@@ -182,17 +182,18 @@ body.bg-visitor {
 }
 
 .btn-neon-red {
-    background: linear-gradient(135deg, #ff2e2e, #b30000);
-    border: none;
+    background: black;
+    border: 2px solid #ff0000;
     color: #fff;
     font-weight: 700;
     border-radius: 12px;
     padding: 10px 22px;
     transition: 0.3s ease;
-    box-shadow: 0 0 12px rgba(255, 46, 46, 0.6);
+    box-shadow: 0 0 10px rgba(255, 46, 46, 1), 0 0 20px rgba(255, 46, 46, 0.7);
 }
 
 .btn-neon-red:hover {
+    background: linear-gradient(135deg, #ff2e2e, #b30000);
     transform: translateY(-2px) scale(1.03);
     box-shadow: 0 0 22px rgba(255, 46, 46, 1);
 }
@@ -205,34 +206,35 @@ body.bg-visitor {
     border-radius: 12px;
     padding: 10px 22px;
     transition: 0.3s ease;
-    box-shadow: 0 0 14px rgba(0, 255, 136, 0.7);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.7), 0 0 25px rgba(0, 255, 136, 0.4);
 }
 
 .btn-neon-green-strong:hover {
-    transform: translateY(-2px) scale(1.04);
-    box-shadow: 0 0 26px rgba(0, 255, 136, 1);
+    transform: translateY(-2px) scale(1.1);
+    box-shadow: 0 0 26px rgba(0, 255, 136, 1), 0 0 25px rgba(0, 255, 136, 0.4);
 }
 
 .btn-neon-yellow {
     background: linear-gradient(135deg, #ffd93d, #ffb300);
     border: none;
-    color: #3a2a00;
+    color: #434242;
     font-weight: 700;
     border-radius: 12px;
     padding: 10px 22px;
     transition: 0.3s ease;
-    box-shadow: 0 0 14px rgba(255, 217, 61, 0.7);
+    box-shadow: 0 0 10px rgba(255, 217, 61, 0.7);
 }
 
 .btn-neon-yellow:hover {
-    transform: translateY(-2px) scale(1.04);
-    box-shadow: 0 0 26px rgba(255, 217, 61, 1);
+    color: #000000;
+    transform: translateY(-2px) scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 217, 61, 1), 0 0 25px rgba(255, 217, 61, 0.4);
 }
 
 
 .pie-texto{
     color: white;
-    text-shadow: 0 0 4px #ffd000, 0 0 8px #ffd000;
+    text-shadow: 0 0 4px #9f6100, 0 0 8px #855700;
     font-size: 1.2em;
 }
 
@@ -384,6 +386,8 @@ body.bg-visitor {
     border-radius: 8px;
 }
 
+/* Registrarse*/
+
 .boton-registro{
     --bs-btn-bg: transparent;
     --bs-btn-border-color: chocolate;
@@ -406,6 +410,27 @@ body.bg-visitor {
     color: white;
     text-shadow: 0 0 4px whitesmoke, 0 0 7px whitesmoke;
     font-size: 1.5em;
+
+}
+
+.perfil-titulo{
+    background: linear-gradient(to right, #ff0000, #000000);
+    border: 2px solid crimson;
+    color: white;
+    text-shadow: 0 0 5px white, 0 0 10px white;
+    font-size: 3em;
+    box-shadow: 0 0 15px crimson, 0 0 30px crimson;
+    transition: all 0.3s ease;
+}
+
+.perfil-titulo:hover{
+    background: linear-gradient(to left, #ff0000, #000000);
+    color: white;
+    text-shadow: 0 0 7px white, 0 0 14px white;
+    transform: scale(1.1);
+    border-radius: 10px;
+    border: 2px solid crimson;
+    box-shadow: 0 0 15px black, 0 0 30px black;
 
 }
 
