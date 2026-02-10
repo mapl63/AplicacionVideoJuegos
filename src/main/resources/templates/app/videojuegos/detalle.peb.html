@@ -1,7 +1,6 @@
 {% extends "fragments/layout" %}
 
 {% block body %}
-
 <div class="container mt-5">
     <div class="transparent-container d-flex justify-content-center align-items-center">
         <div class="card bg-transparent w-75">
@@ -49,7 +48,7 @@
                     <i class="bi bi-house"></i>
                     {{ message('nav.home') }}
                 </a>
-                <a href="/admin/videojuegos" class="btn btn-neon-red">
+                <a href="/app/misVideoJuegos" class="btn btn-neon-red">
                     <i class="bi bi-arrow-left"></i>
                     {{ message('profile.boton.volver') }}
                 </a>
@@ -57,5 +56,4 @@
         </div>
     </div>
 </div>
-
-{% endblock%}
+{% endblock %}

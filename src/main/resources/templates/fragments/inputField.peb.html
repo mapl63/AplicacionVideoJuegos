@@ -1,82 +1,82 @@
 {% macro inputField(formName, label, inputName, type, inputValue, _context, options = []) %}
 
-    {% set valid = not hasFieldErrors(formName, inputName) %}
+{% set valid = not hasFieldErrors(formName, inputName) %}
 
-    <div class="form-group {{ valid ? '' : 'has-error' }} ">
-        <label class="col-sm-2 control-label">
-            {{ label }}
-        </label>
+<div class="form-group {{ valid ? '' : 'has-error' }} ">
+    <label class="col-sm-2 control-label">
+        {{ label }}
+    </label>
 
-        <div class="col-sm-10">
+    <div class="col-sm-10">
 
-            {# ===== INPUT TEXT ===== #}
-            {% if type == "text" %}
-                <input class="form-control"
-                       type="text"
+        {# ===== INPUT TEXT ===== #}
+        {% if type == "text" %}
+        <input class="form-control"
+               type="text"
+               id="{{ inputName }}"
+               name="{{ inputName }}"
+               value="{{ inputValue }}"/>
+
+        {# ===== INPUT NUMBER ===== #}
+        {% elseif type == "number" %}
+        <input class="form-control"
+               type="number"
+               id="{{ inputName }}"
+               name="{{ inputName }}"
+               value="{{ inputValue }}"/>
+
+        {# ===== INPUT DATE ===== #}
+        {% elseif type == "date" %}
+        <input class="form-control"
+               type="date"
+               id="{{ inputName }}"
+               name="{{ inputName }}"
+               value="{{ inputValue }}"/>
+
+        {# ===== TEXTAREA (NUEVO) ===== #}
+        {% elseif type == "textarea" %}
+        <textarea class="form-control"
+                  id="{{ inputName }}"
+                  name="{{ inputName }}"
+                  rows="4">{{ inputValue }}</textarea>
+
+        {# ===== SELECT (NUEVO) ===== #}
+        {% elseif type == "select" %}
+        <select class="form-control"
+                id="{{ inputName }}"
+                name="{{ inputName }}">
+            <option value="">--{{ message('form.select.placeholder') }}--</option>
+            {% for option in options %}
+            <option value="{{ option }}" {{ option == inputValue ? 'selected' : ''  }}>
+            {{ message('plataforma.' ~ option) }}
+            </option>
+            {% endfor %}
+        </select>
+
+        {# ===== CHECKBOX (NUEVO) ===== #}
+        {% elseif type == "checkbox" %}
+        <div class="checkbox">
+            <label>
+                <input type="checkbox"
                        id="{{ inputName }}"
                        name="{{ inputName }}"
-                       value="{{ inputValue }}"/>
-
-            {# ===== INPUT NUMBER ===== #}
-            {% elseif type == "number" %}
-                <input class="form-control"
-                       type="number"
-                       id="{{ inputName }}"
-                       name="{{ inputName }}"
-                       value="{{ inputValue }}"/>
-
-            {# ===== INPUT DATE ===== #}
-            {% elseif type == "date" %}
-                <input class="form-control"
-                       type="date"
-                       id="{{ inputName }}"
-                       name="{{ inputName }}"
-                       value="{{ inputValue }}"/>
-
-            {# ===== TEXTAREA (NUEVO) ===== #}
-            {% elseif type == "textarea" %}
-                <textarea class="form-control"
-                          id="{{ inputName }}"
-                          name="{{ inputName }}"
-                          rows="4">{{ inputValue }}</textarea>
-
-            {# ===== SELECT (NUEVO) ===== #}
-            {% elseif type == "select" %}
-                <select class="form-control"
-                        id="{{ inputName }}"
-                        name="{{ inputName }}">
-                    <option value="">--{{ message('form.select.placeholder') }}--</option>
-                    {% for option in options %}
-                        <option value="{{ option }}" {{ option == inputValue ? 'selected' : ''  }}>
-                                {{ message('plataforma.' ~ option) }}
-                        </option>
-                    {% endfor %}
-                </select>
-
-            {# ===== CHECKBOX (NUEVO) ===== #}
-            {% elseif type == "checkbox" %}
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox"
-                               id="{{ inputName }}"
-                               name="{{ inputName }}"
-                               value="true"
-                               {{ inputValue ? 'checked' : '' }}>
-                        {{ label }}
-                    </label>
-                </div>
-            {% endif %}
-
-            {# ===== VALIDACIÓN (SE QUEDA IGUAL) ===== #}
-            {% if valid %}
-                <span class="bi bi-check form-control-feedback" aria-hidden="true"></span>
-            {% else %}
-                <span class="bi bi-x form-control-feedback" aria-hidden="true"></span>
-                {% for err in getFieldErrors(formName, inputName) %}
-                    <span class="help-inline">{{ err }}<br></span>
-                {% endfor %}
-            {% endif %}
+                       value="true"
+                       {{ inputValue ? 'checked' : '' }}>
+                {{ label }}
+            </label>
         </div>
+        {% endif %}
+
+        {# ===== VALIDACIÓN (SE QUEDA IGUAL) ===== #}
+        {% if valid %}
+        <span class="bi bi-check form-control-feedback" aria-hidden="true"></span>
+        {% else %}
+        <span class="bi bi-x form-control-feedback" aria-hidden="true"></span>
+        {% for err in getFieldErrors(formName, inputName) %}
+        <span class="help-inline">{{ err }}<br></span>
+        {% endfor %}
+        {% endif %}
     </div>
+</div>
 
 {% endmacro %}

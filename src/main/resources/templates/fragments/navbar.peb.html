@@ -12,27 +12,27 @@
                     </a>
                 </li>
                 {% if isAdmin %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/videojuegos/new">
-                            <i class="bi bi-controller"></i>
-                            {{ message('nav.new.videojuegos') }}
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/videojuegos/new">
+                        <i class="bi bi-controller"></i>
+                        {{ message('nav.new.videojuegos') }}
+                    </a>
+                </li>
                 {% endif %}
             </ul>
 
             {% if isAdmin %}
-                <form id="navbarSearchForm" class="d-flex me-3" method="get" role="search">
-                    <input class="form-control"
-                           id="navbarSearchInput"
-                           name="q"
-                           placeholder="{{ message('videojuegos.search') }}"
-                           type="search"
-                           value="{{ q | default('') }}">
-                    <button class="btn btn-outline-light ms-2" type="submit">
-                        <i class="bi bi-search"></i>
-                    </button>
-                </form>
+            <form id="navbarSearchForm" class="d-flex me-3" method="get" role="search">
+                <input class="form-control"
+                       id="navbarSearchInput"
+                       name="q"
+                       placeholder="{{ message('videojuegos.search') }}"
+                       type="search"
+                       value="{{ q | default('') }}">
+                <button class="btn btn-outline-light ms-2" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
             {% endif %}
 
             <ul class="navbar-nav">
