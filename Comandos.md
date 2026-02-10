@@ -32,5 +32,5 @@ docker compose up
 
 # Para el cocker de produccion
 ```
-docker compose -f doccker-compose-produccion.yml up 
+docker compose -f docker-compose-prod.yml up db 
 ```

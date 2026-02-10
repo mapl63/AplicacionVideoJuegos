@@ -2,30 +2,40 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.5.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.example</groupId>
+
     <artifactId>AplicacionVideoJuegos</artifactId>
+
     <version>0.0.1-SNAPSHOT</version>
+
     <name>AplicacionVideoJuegos</name>
+
     <description>AplicacionVideoJuegos</description>
+
     <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
+        <licenses>
+            <license/>
+        </licenses>
+
+        <developers>
+            <developer/>
+        </developers>
+
+        <scm>
+            <connection/>
+            <developerConnection/>
+            <tag/>
+            <url/>
+        </scm>
+
     <properties>
         <java.version>25</java.version>
         <jwt.version>4.5.0</jwt.version>
@@ -35,8 +45,8 @@
         <bootstrap.version>5.3.8</bootstrap.version>
         <bootstrap-icons.version>1.13.1</bootstrap-icons.version>
     </properties>
-    <dependencies>
 
+    <dependencies>
         <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -80,12 +90,6 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Database Drivers -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
 
         <!-- JWT - using Auth0 JWT -->
         <dependency>
@@ -108,6 +112,7 @@
             <artifactId>pebble-spring-boot-starter</artifactId>
             <version>${pebble.version}</version>
         </dependency>
+
         <dependency>
             <groupId>io.pebbletemplates</groupId>
             <artifactId>pebble</artifactId>
@@ -128,11 +133,13 @@
             <artifactId>webjars-locator-lite</artifactId>
             <version>${webjars-locator.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.webjars.npm</groupId>
             <artifactId>bootstrap</artifactId>
             <version>${bootstrap.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.webjars.npm</groupId>
             <artifactId>bootstrap-icons</artifactId>
@@ -154,12 +161,52 @@
 
     </dependencies>
 
+    <!-- Database Drivers y Perfiles -->
+    <profiles>
+            <profile>
+
+                <id>dev</id>
+
+                <activation>
+                    <activeByDefault>true</activeByDefault>
+                </activation>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+
+            </profile>
+
+            <profile>
+
+                <id>prod</id>
+
+                <dependencies>
+
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <scope>runtime</scope>
+                    </dependency>
+
+                </dependencies>
+
+            </profile>
+    </profiles>
+
     <build>
         <finalName>${project.artifactId}</finalName>
+
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+
                 <configuration>
                     <annotationProcessorPaths>
                         <path>
@@ -169,9 +216,11 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+
                 <configuration>
                     <excludes>
                         <exclude>
@@ -181,6 +230,7 @@
                     </excludes>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
