@@ -16,5 +16,5 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
     volumes:
-        - ./postgresql-init
+      - ./postgresql-init/data.sql:/docker-entrypoint-initdb.d/data.sql
 

@@ -56,6 +56,7 @@ public class AdminController {
                                     @RequestParam(name = "page", defaultValue = "0") int page,
                                     @RequestParam(name = "size", defaultValue = "4") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+
         Page<VideoJuegosResponseDto> videoJuegosPage = videoJuegoService.findAll(
                 nombre, Optional.empty(), Optional.empty(), pageable);
         model.addAttribute("page", videoJuegosPage);

@@ -1,9 +1,0 @@
-name: AplicacionVideoJuegos
-services:
-  app:
-    build: .
-    container_name: app
-    ports:
-      - "8080:3005"
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
