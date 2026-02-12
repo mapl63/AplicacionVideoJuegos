@@ -6,7 +6,7 @@ services:
     ports:
       - "8080:3005"
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=prod
   db:
     image: postgres:18-alpine
     ports:

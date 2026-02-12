@@ -34,7 +34,11 @@ docker compose up
 ```
 docker compose -f docker-compose-prod.yml up db 
 ```
+# Para arrancar el docker de produccion en modo detached ```
+```
+docker compose -f docker-compose-prod.yml up -d db
+```
 # Para parar el docker y borrar el contenedor de la base de datos
 ```
-docker compose -f docker-compose-prod.yml down db 
+docker compose -f docker-compose-prod.yml down -v  
 ```
