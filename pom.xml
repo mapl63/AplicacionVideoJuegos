@@ -164,13 +164,14 @@
     <!-- Database Drivers y Perfiles -->
     <profiles>
             <profile>
-
                 <id>dev</id>
+
                 <activation>
                     <activeByDefault>true</activeByDefault>
                 </activation>
+
                 <properties>
-                    <spring.profiles.active>dev</spring.profiles.active>
+                    <activatedProperties>dev</activatedProperties>
                 </properties>
 
                 <dependencies>
@@ -180,15 +181,13 @@
                         <scope>runtime</scope>
                     </dependency>
                 </dependencies>
-
             </profile>
 
             <profile>
-
                 <id>prod</id>
 
                 <properties>
-                    <spring.profiles.active>prod</spring.profiles.active>
+                    <activatedProperties>prod</activatedProperties>
                 </properties>
 
                 <dependencies>
@@ -200,7 +199,6 @@
                     </dependency>
 
                 </dependencies>
-
             </profile>
     </profiles>
 
