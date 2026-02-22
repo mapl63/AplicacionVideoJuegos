@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -74,6 +75,7 @@ public class VideoJuegosController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VideoJuegosResponseDto> create(@Valid @RequestBody VideoJuegosCreateDto videoJuegosCreateDto){
         log.info("Creando un nuevo videojuegos {}", videoJuegosCreateDto);
         /*if(result.hasErrors()){
@@ -95,6 +97,7 @@ public class VideoJuegosController {
      */
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VideoJuegosResponseDto> update( @PathVariable Long id,@Valid @RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
         log.info("Actualizando videojuegos por id={} con videojuego={}",id, videoJuegosUpdateDto);
 
@@ -102,6 +105,7 @@ public class VideoJuegosController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VideoJuegosResponseDto> updatePartial(@PathVariable Long id,@Valid @RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
         log.info("Actualizando parcialmente un videojuego con id={} con videojuego={}" ,id, videoJuegosUpdateDto);
 
@@ -117,6 +121,7 @@ public class VideoJuegosController {
      */
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VideoJuegosResponseDto> delete(@PathVariable Long id){
         log.info("Eliminando videojuegos por id {}", id);
         videoJuegoService.deleteById(id);
