@@ -32,7 +32,7 @@ public class PerfilController {
     }
 
     @PostMapping("/edit")
-    public String updateProfile(@ModelAttribute("usuario") User updatedUser,
+    public String updateProfile(@Valid @ModelAttribute("usuario") User updatedUser,
                                 BindingResult bindingResult,
                                 Model model) {
 

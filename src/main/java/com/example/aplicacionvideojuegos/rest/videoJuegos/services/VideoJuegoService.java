@@ -21,13 +21,16 @@ public interface VideoJuegoService {
 
     VideoJuegosResponseDto findById(Long id);
 
-    Page<VideoJuegosResponseDto> findByClienteId(Long id, Pageable pageable);
 
     VideoJuegosResponseDto save(VideoJuegosCreateDto  videoJuegosCreateDto);
 
     VideoJuegosResponseDto update(Long id, VideoJuegosUpdateDto videoJuegosUpdateDto);
 
-    List<VideoJuegos> buscarPorClienteId(Long clienteId);
+
+    Page<VideoJuegosResponseDto> findByUsuarioId(Long usuarioId, Pageable pageable);
+
+
+    List<VideoJuegos> buscarPorUsuarioId(Long usuarioId);
 
     Optional<VideoJuegos> buscarPorId(Long id);
 

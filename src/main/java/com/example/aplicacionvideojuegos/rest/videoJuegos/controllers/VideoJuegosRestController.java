@@ -4,6 +4,7 @@ import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosCreateD
 import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosResponseDto;
 import com.example.aplicacionvideojuegos.rest.videoJuegos.dto.VideoJuegosUpdateDto;
 import com.example.aplicacionvideojuegos.rest.videoJuegos.services.VideoJuegoService;
+import jakarta.persistence.PostRemove;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,7 +42,7 @@ import java.util.Optional;
 @Tag(name = "VideoJuegos", description = "Endpoint de VideoJuegos de nuestra API")
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("api/${API_VERSION:v1}/videoJuegos")
+@RequestMapping("/api/${API_VERSION:v1}/videoJuegos")
 @RestController
 
 public class VideoJuegosRestController {
@@ -74,14 +76,12 @@ public class VideoJuegosRestController {
         @RequestParam(defaultValue = "10") int size,
         @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(defaultValue = "asc") String direction,
-        HttpServletRequest request)
-    {
+        HttpServletRequest request) {
         log.info("Buscando todos los videojuegos por nombre = {}, cliente = {}, isDeleted = {}", nombre, cliente, isDeleted);
 
         Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
-
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(request.getRequestURL().toString());
 
        Page<VideoJuegosResponseDto> pageResult = videoJuegoService.findAll(nombre, cliente, isDeleted, pageable);
@@ -129,14 +129,11 @@ public class VideoJuegosRestController {
         @ApiResponse(responseCode = "201", description = "Videojuego creado"),
         @ApiResponse(responseCode = "400", description = "Videojuego no válido")
     })
-
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VideoJuegosResponseDto> create(@Valid @RequestBody VideoJuegosCreateDto videoJuegosCreateDto){
         log.info("Creando un nuevo videojuegos {}", videoJuegosCreateDto);
-        /*if(result.hasErrors()){
-            log.info("Error al crear un videojuegos {}", result.getAllErrors());
-            throw new VideoJuegosBadRequest("Error al crear un videojuegos " + result.getAllErrors());
-        }*/
+
         var saved =  videoJuegoService.save(videoJuegosCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
@@ -161,8 +158,8 @@ public class VideoJuegosRestController {
         @ApiResponse(responseCode = "400", description = "Videojuego no válido"),
         @ApiResponse(responseCode = "404", description = "Videojuego no encontrado")
     })
-
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VideoJuegosResponseDto> update( @PathVariable Long id,@Valid @RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
         log.info("Actualizando videojuegos por id={} con videojuego={}",id, videoJuegosUpdateDto);
 
@@ -189,9 +186,10 @@ public class VideoJuegosRestController {
         @ApiResponse(responseCode = "400", description = "Videojuego no válido"),
         @ApiResponse(responseCode = "404", description = "Videojuego no encontrado")
     })
-
     @PatchMapping("/{id}")
-    public ResponseEntity<VideoJuegosResponseDto> updatePartial(@PathVariable Long id,@Valid @RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<VideoJuegosResponseDto> updatePartial(@PathVariable Long id,
+                                                                @Valid @RequestBody VideoJuegosUpdateDto videoJuegosUpdateDto){
         log.info("Actualizando parcialmente un videojuego con id={} con videojuego={}" ,id, videoJuegosUpdateDto);
 
         return ResponseEntity.ok(videoJuegoService.update(id, videoJuegosUpdateDto));
@@ -212,8 +210,8 @@ public class VideoJuegosRestController {
         @ApiResponse(responseCode = "204", description = "Videojuego borrado"),
         @ApiResponse(responseCode = "404", description = "Videojuego no encontrado")
     })
-
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VideoJuegosResponseDto> delete(@PathVariable Long id){
         log.info("Eliminando videojuegos por id {}", id);
         videoJuegoService.deleteById(id);

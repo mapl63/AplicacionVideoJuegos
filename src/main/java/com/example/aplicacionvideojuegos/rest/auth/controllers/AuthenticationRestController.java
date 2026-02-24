@@ -31,7 +31,7 @@ public class AuthenticationRestController {
     @PostMapping("/signup")
     public ResponseEntity<JwtAuthResponse> singUp(@Valid @RequestBody UserSignUpRequest request){
         log.info("Registro usuario: {}", request);
-        return ResponseEntity.ok(authenticationService.singUp(request));
+        return ResponseEntity.ok(authenticationService.signUp(request));
     }
 
     @PostMapping("/signin")

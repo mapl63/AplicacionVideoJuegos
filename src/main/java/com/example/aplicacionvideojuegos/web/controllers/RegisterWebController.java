@@ -36,7 +36,7 @@ public class RegisterWebController {
         }
 
         try {
-            authenticationService.singUp(request);
+            authenticationService.signUp(request);
             redirect.addFlashAttribute("success", "Usuario registrado exitosamente");
             return "redirect:/auth/login";
         } catch (Exception e) {

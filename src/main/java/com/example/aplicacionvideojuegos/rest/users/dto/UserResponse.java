@@ -9,6 +9,13 @@ import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
+
+// ======================================================
+// 🔵 DTO UserResponse
+// ======================================================
+// UserResponse → SALIDA (mostrar datos)
+// ======================================================
+
 @Data
 @Builder
 @NoArgsConstructor

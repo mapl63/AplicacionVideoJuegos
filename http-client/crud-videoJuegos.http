@@ -35,6 +35,21 @@ content-type: application/json
   "edad": 18
 }
 
+### CREAR VIDEOJUEGO (ADMIN)
+POST http://localhost:3005/api/v1/videoJuegos
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "nombre": "Juego Test",
+  "cliente": "Juan",
+  "precio": 20,
+  "fecha_lanzamiento": "2020-01-01",
+  "genero": "Accion",
+  "plataforma": "PS4",
+  "edad": 12
+}
+
 
 
 ### actualizando total con put

@@ -6,7 +6,7 @@ import com.example.aplicacionvideojuegos.rest.auth.dto.UserSignUpRequest;
 
 public interface AuthenticationService {
 
-    JwtAuthResponse singUp(UserSignUpRequest request);
+    JwtAuthResponse signUp(UserSignUpRequest request);
 
     JwtAuthResponse signIn(UserSignInRequest request);
 }

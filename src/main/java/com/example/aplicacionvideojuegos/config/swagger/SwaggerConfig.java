@@ -54,7 +54,7 @@ class SwaggerConfig {
                 .externalDocs(
                         new ExternalDocumentation()
                                 .description("GitHub API Videojuegos")
-                                .url("https://github.com/mapl63/AplicacionVideoJuegos.git")
+                                .url("https://github.com/mapl63/AplicacionVideoJuegos")
                 )
 
                 .addSecurityItem(
@@ -73,7 +73,7 @@ class SwaggerConfig {
     GroupedOpenApi httApi(){
         return GroupedOpenApi.builder()
                 .group("http")
-                .pathsToMatch("/api/ + apiVersion + /videoJuegos/**")
+                .pathsToMatch("/api/" + apiVersion + "/videoJuegos/**")
                 .displayName("API Gestion de videojuegos Spring Boot 2025/2026")
                 .build();
     }

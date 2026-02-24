@@ -37,9 +37,10 @@ public class GlobalControllerAdvice {
 
     @ModelAttribute("currentUser")
     public User getCurrentUser(Authentication authentication) {
-        if (authentication != null && authentication.isAuthenticated()
-        && !(authentication.getPrincipal() instanceof String)) {
-            return (User) authentication.getPrincipal();
+        if (authentication != null
+                && authentication.isAuthenticated()
+                && authentication.getPrincipal() instanceof User user) {
+            return user;
         }
         return null;
     }
@@ -52,9 +53,10 @@ public class GlobalControllerAdvice {
 
     @ModelAttribute("isAdmin")
     public boolean isAdmin(Authentication authentication) {
-        if (authentication != null && authentication.isAuthenticated()
-                && !(authentication.getPrincipal() instanceof String)) {
-            User user = (User) authentication.getPrincipal();
+        if (authentication != null
+                && authentication.isAuthenticated()
+                && authentication.getPrincipal() instanceof User user) {
+
             return user.getRoles().stream()
                     .anyMatch(role -> role.toString().equals("ADMIN"));
         }
@@ -64,22 +66,23 @@ public class GlobalControllerAdvice {
 
     @ModelAttribute("username")
     public String getUsername(Authentication authentication) {
-        if (authentication != null && authentication.isAuthenticated()
-                && !(authentication.getPrincipal() instanceof String)) {
-            User user = (User) authentication.getPrincipal();
+        if (authentication != null
+                && authentication.isAuthenticated()
+                && authentication.getPrincipal() instanceof User user) {
+
             return user.getNombre() + " " + user.getApellidos();
         }
-
         return null;
     }
 
     @ModelAttribute("userRoles")
     public String getUserRoles(Authentication authentication) {
-        if (authentication != null && authentication.isAuthenticated()
-                && !(authentication.getPrincipal() instanceof String)) {
-            User user = (User) authentication.getPrincipal();
+        if (authentication != null
+                && authentication.isAuthenticated()
+                && authentication.getPrincipal() instanceof User user) {
+
             return user.getRoles().stream()
-                    .map(Object :: toString)
+                    .map(Object::toString)
                     .collect(Collectors.joining(", "));
         }
         return null;

@@ -1,5 +1,7 @@
 package com.example.aplicacionvideojuegos.rest.users.services;
 
+import com.example.aplicacionvideojuegos.rest.clientes.models.Cliente;
+import com.example.aplicacionvideojuegos.rest.clientes.models.Cliente;
 import com.example.aplicacionvideojuegos.rest.users.dto.UserInfoResponse;
 import com.example.aplicacionvideojuegos.rest.users.dto.UserRequest;
 import com.example.aplicacionvideojuegos.rest.users.dto.UserResponse;
@@ -20,7 +22,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -74,7 +75,7 @@ public class UsersServiceImpl implements UserService {
         var user = usersRepository.findById(id)
                 .orElseThrow(() -> new UserNotFound(id));
 
-        var videoJuegos = videoJuegosRepository.findByClienteId(id).stream().map(p -> p.getNombre()).toList();
+        var videoJuegos = videoJuegosRepository.findByUsuarioId(id).stream().map(p -> p.getNombre()).toList();
 
         return usersMapper.toUserInfoResponse(user, videoJuegos);
     }
@@ -119,8 +120,8 @@ public class UsersServiceImpl implements UserService {
         User user = usersRepository.findById(id)
                 .orElseThrow(() -> new UserNotFound(id));
 
-        if (videoJuegosRepository.findByClienteId(id).isEmpty()) {
-            // Si hay tarjetas, lo marcamos como borrado lógico
+        if (videoJuegosRepository.existsByUsuarioId(id)) {
+            // Si hay tarjetas -> marcamos como borrado lógico
             log.info("Borrado lógico de usuario por id: {}", id);
             usersRepository.updateIsDeleteToTrueById(id);
         }else{

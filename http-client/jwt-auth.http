@@ -14,6 +14,8 @@ Content-Type: application/json
 
 ### Authorization by token, part 2. Use token to authorize.
 
+
+
 ### Proceso de Registro
 POST http://localhost:3005/api/v1/auth/signup
 Content-Type: application/json

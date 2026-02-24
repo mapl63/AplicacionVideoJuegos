@@ -11,6 +11,12 @@ import java.util.ArrayList;
 import java.util.*;
 import java.util.Set;
 
+// ======================================================
+// 🔵 DTO UserInfoResponse
+// ======================================================
+//Mostrar usuario + información adicional
+// ======================================================
+
 @Data
 @Builder
 @NoArgsConstructor

@@ -40,7 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final ClienteRepository clienteRepository;
 
     @Override
-    public JwtAuthResponse singUp(UserSignUpRequest request) {
+    public JwtAuthResponse signUp(UserSignUpRequest request) {
 
         log.info("Creando usuario: {}", request);
 
